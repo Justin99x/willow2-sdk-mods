@@ -1,3 +1,0 @@
-[tool.black]
-line-length = 140  # Change this to your preferred line length
-target-version = ['py313']  # Choose target Python versions (e.g., 'py37', 'py38', 'py39', 'py310')
