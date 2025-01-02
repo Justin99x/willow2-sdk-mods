@@ -15,7 +15,6 @@ if TYPE_CHECKING:
 
 class SPOptions:
     def __init__(self):
-        # self.category_change_callbacks: Set[Callable[[], None]] = set()
         self.mod: SpeedrunPractice | None = None
 
         self.save_game_path = HiddenOption(

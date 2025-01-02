@@ -65,9 +65,55 @@ class SpeedrunPractice(Mod):
         self.sp_hooks.disable()
         self.sp_keybinds.disable()
 
+    def enable(self) -> None:
+        """Called to enable the mod. Overwriting base version because I enable/disable keybinds depending on character"""
+        if self.enabling_locked:
+            return
+        if self.is_enabled:
+            return
+
+        self.is_enabled = True
+
+        # for keybind in self.keybinds:
+        #     keybind.enable()
+        for hook in self.hooks:
+            hook.enable()
+        for command in self.commands:
+            command.enable()
+
+        if self.on_enable is not None:
+            self.on_enable()
+
+        if self.auto_enable:
+            self.save_settings()
+
+    def disable(self, dont_update_setting: bool = False) -> None:
+        """
+        Called to disable the mod. Overwriting base version because I enable/disable keybinds depending on character
+        """
+        if self.enabling_locked:
+            return
+        if not self.is_enabled:
+            return
+
+        self.is_enabled = False
+
+        # for keybind in self.keybinds:
+        #     keybind.disable()
+        for hook in self.hooks:
+            hook.disable()
+        for command in self.commands:
+            command.disable()
+
+        if self.on_disable is not None:
+            self.on_disable()
+
+        if self.auto_enable and not dont_update_setting:
+            self.save_settings()
+
     def _on_enable(self) -> None:
         self.disable_all()
-        player_class = get_player_class()
+        player_class = get_player_class(get_pc())
         if player_class:
             run_category = get_run_category(self.game_version, player_class)
             self.enable_all(self.game_version, player_class, run_category)
@@ -91,14 +137,14 @@ class SpeedrunPractice(Mod):
     def _on_disable(self) -> None:
         self.disable_all()
         remove_hook("WillowGame.WillowPlayerController:FinishSaveGameLoad", Type.POST, self.name)
-        print("SRP disabled :(")
+        print(f"{NAME} disabled.")
 
     def load_character(self, obj: WillowPlayerController, args: WillowPlayerController.FinishSaveGameLoad.args,
                        ret: WillowPlayerController.FinishSaveGameLoad.ret, func: BoundFunction) -> None:
         if not args.SaveGame:
             return
         self.disable_all()
-        player_class = get_player_class()
+        player_class = PlayerClass.from_str(args.SaveGame.PlayerClassDefinition.Name)
         run_category = get_run_category(self.game_version, player_class)
         self.enable_all(self.game_version, player_class, run_category)
 

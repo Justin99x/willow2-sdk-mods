@@ -1,32 +1,13 @@
-TODO for new SDK release:
-~~1. Change name back to Speedrun Practice or whatever (currently _SRP)~~
-~~2. Use UserFeedback text input~~
-~~3. Make sure everything still works on new and old patches~~
-~~4. Check game version - Done. Now need to add support for UVHM, non-Sal Geared, and current patch~~
-
-
-4. Figure out how to add to mod db
-5. pyproject stuff
-7. Ask apple to blacklist
-
-Future features
-
-- Co-op Any% support
-  - Skill stacks from host
-  - External attribute effects from weapon duping (weapon merging doesn't work off-host)
-  - 
-- Visualizer module? Either PR for gc's version or add all functionality to SRP
-    - Include enemy spawns and save stations (enemy spawns could be difficult)
-    - Collision visualizer too?
-
 # Speedrun Practice Mod
 
 Borderlands 2 mod with various utilities to help in practicing speedruns. All solo speedruns are currently supported on
 some level, although many runs (e.g. current patch) don't need much help other than an easy way to make practice saves.
 
+Co-op support is in active developement as of January 1, 2025
+
 ## Installation
 
-1. Make sure the BL2 Python SDK is installed according to NEED LINK HERE
+1. Make sure the new BL2 Python SDK is installed according to https://bl-sdk.github.io/willow2-mod-db/
 2. This mod has the following dependencies:
     1. Borderlands Commander v2.5: https://bl-sdk.github.io/mods/BorderlandsCommander/
 3. Copy speedrun_practice.sdkmod into your sdk_mods folder.
@@ -66,7 +47,7 @@ when using the checkpoint feature.
 ### Stacks and skills keybinds
 
 Using an in game keybind and input window, can set the following to desired values. Note that you must be using a game
-patch that allows these for the keybinds to be enabled. For example, weapon merging is not available on patches 1.8.4
+patch that allows these for the keybinds to be enabled. For example, weapon merging is not available on patches 1.8.5
 and later.
 
 - Anarchy stacks (Gaige only)
@@ -75,16 +56,6 @@ and later.
 - Evil Smasher chance stacks (All Quests only)
 - Evil Smasher SMASH stacks (All Quests only)
 - Merge all equipped weapons
-
-### Show current stacks/bonuses
-
-A keybind can be set up to show useful game states:
-
-- Number of Buck Up stacks
-- Number of free shot stacks
-- Number of Evil Smasher chance stacks (All Quests only)
-- Number of Evil Smasher SMASH stacks (All Quests only)
-- Current critical hit bonus
 
 ### Jakobs shotgun auto-fire
 

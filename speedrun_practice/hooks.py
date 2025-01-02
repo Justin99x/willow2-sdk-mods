@@ -13,25 +13,16 @@ if TYPE_CHECKING:
 
 class SPHooks:
 
-    # def __init__(self):
-    #     self.player_class: Optional[PlayerClass] = None
-    #     self.run_category: Optional[RunCategory] = None
-
-        # self.set_catapult_priority = set_catapult_priority.bind(self)
-        # self.block_achievements = block_achievements.bind(self)
-
     def enable(self, run_category: RunCategory):
         if run_category == RunCategory.AnyPercentGaige:
             add_hook("Engine.Actor:TriggerGlobalEventClass", Type.POST, "catapult", set_catapult_priority)
         add_hook("WillowGame.WillowGFxMovie:ShowAchievementsUI", Type.PRE, 'block_achievements', block_achievements)
 
     def disable(self):
-
         remove_hook("WillowGame.WillowGFxMovie:ShowAchievementsUI", Type.PRE, 'block_achievements')
         remove_hook("Engine.Actor:TriggerGlobalEventClass", Type.POST, "catapult")
 
 
-# @hook('Engine.Actor:TriggerGlobalEventClass', Type.POST)
 def set_catapult_priority(obj: Actor, args: Actor.TriggerGlobalEventClass.args, ret: Actor.TriggerGlobalEventClass.ret,
                           func: BoundFunction) -> None:
     """When in later parts of game for Any% Gaige, set catapult as first priority"""
@@ -42,9 +33,10 @@ def set_catapult_priority(obj: Actor, args: Actor.TriggerGlobalEventClass.args, 
         else:
             pc.ConsoleCommand(f"set GD_Globals.VehicleSpawnStation.VSSUI_SawBladeTechnical PreferredOrdering 0")
 
-# @hook('WillowGame.WillowGFxMovie:ShowAchievementsUI', Type.PRE)
+
 def block_achievements(obj: WillowGFxMovie, args: WillowGFxMovie.ShowAchievementsUI.args, ret: WillowGFxMovie.ShowAchievementsUI.ret,
-                          func: BoundFunction):
+                       func: BoundFunction):
     return Block
+
 
 register_module(__name__)

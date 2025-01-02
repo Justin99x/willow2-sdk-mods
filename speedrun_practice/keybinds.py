@@ -91,11 +91,16 @@ class SPKeybinds:
         for kb in keybinds:
             kb.is_hidden = False
             kb.callback = kb.sp_callback
+            kb.enable()
+            kb.is_enabled = True
 
     def _disable_keybinds(self, keybinds: List[SPKeybind]):
         for kb in keybinds:
             kb.is_hidden = True
             kb.callback = None
+            if kb.is_enabled:
+                kb.disable()
+                kb.is_enabled = False
 
     def reset_to_position_and_trigger_skills(self) -> None:
         '''Need to remove this functionality for now since I can't import from Commander legacy'''

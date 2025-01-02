@@ -135,16 +135,14 @@ def extract_user_save_path() -> str:
     raise ValueError(f"Could not find save folder for id {save_dir_id}")
 
 
-def get_player_class() -> PlayerClass | None:
-    pc = get_pc()
-    try:
-        player_standin = cast("PlayerStandIn", find_object("PlayerStandIn", "menumap.TheWorld:PersistentLevel.PlayerStandIn_2"))
-        if player_standin.SaveGame:
+def get_player_class(pc: WillowPlayerController) -> PlayerClass | None:
+    if pc and pc.PlayerClass:
+        return PlayerClass.from_str(pc.PlayerClass.Name)
+    elif pc:
+        player_standin = pc.GetPlayerStandIn(pc.PlayerReplicationInfo)
+        if player_standin and player_standin.SaveGame:
             return PlayerClass.from_str(player_standin.SaveGame.PlayerClassDefinition.Name)
-        return
-    except ValueError:
-        if pc and pc.PlayerClass:
-            return PlayerClass.from_str(pc.PlayerClass.Name)
+    return
 
 
 def get_game_version() -> GameVersion:
@@ -200,7 +198,10 @@ def apply_position(pc: WillowPlayerController, position: Position):
 def restore_commander_position():
     pc = get_pc()
     map_name = pc.WorldInfo.GetMapName(True)
-    commander_position = commander.Positions.CurrentValue.get(map_name)[commander._Position]
+    try:
+        commander_position = commander.Positions.CurrentValue.get(map_name)[commander._Position]
+    except TypeError:
+        commander_position = None
     if commander_position:
         position = Position(
             X=commander_position['X'],
@@ -211,7 +212,7 @@ def restore_commander_position():
         )
         apply_position(pc, position)
     else:
-        feedback(pc, f"Position {commander._Position + 1} Not Saved")
+        feedback(pc, f"No saved Commander position found")
 
 
 def feedback(pc: WillowPlayerController, feedback: str) -> None:

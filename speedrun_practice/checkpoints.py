@@ -220,7 +220,7 @@ class CheckpointSaver:
 
         weapons_temp = [0, 0, 0, 0, 0]  # Active weapon slot followed by bools for merged weapons or not.
         active_weapon = cast("WillowWeapon", self.pc.GetActiveOrBestWeapon())
-        weapons_temp[0] = active_weapon.QuickSelectSlot
+        weapons_temp[0] = active_weapon.QuickSelectSlot if active_weapon else 1
         for weapon in equipped_weapons:
             if weapon:
                 clip_size = int(self.clipsize_attr.GetValue(weapon)[0])
