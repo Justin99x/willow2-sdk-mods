@@ -232,6 +232,6 @@ class GearRandomizer:
         for sh in overlevel_shields:
             inv_manager.AddInventory(sh, False)
 
-        feedback(self.pc, f"Guns and shields randomized! Check backback for new gear.")
+        feedback(self.pc.PlayerReplicationInfo, f"Guns and shields randomized! Check backback for new gear.")
 
 register_module(__name__)

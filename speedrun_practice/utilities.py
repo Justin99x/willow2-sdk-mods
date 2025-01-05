@@ -9,6 +9,7 @@ from typing import Any, List, TYPE_CHECKING, Type, TypeVar, cast
 
 from legacy_compat import legacy_compat
 from mods_base import MODS_DIR, get_pc as _get_pc
+from networking import targeted
 from speedrun_practice.reloader import register_module
 from unrealsdk import find_object, make_struct
 
@@ -146,7 +147,7 @@ def get_player_class(pc: WillowPlayerController) -> PlayerClass | None:
 
 
 def get_game_version() -> GameVersion:
-    lan_movie: LANServerBrowserGFxMovie = find_object("LANServerBrowserGFxMovie", "WillowGame.Default__LANServerBrowserGFxMovie")
+    lan_movie: LANServerBrowserGFxMovie = cast("LANServerBrowserGFxMovie", find_object("LANServerBrowserGFxMovie", "WillowGame.Default__LANServerBrowserGFxMovie"))
     version = lan_movie.GetFriendlyGameVersionString()
     return GameVersion.from_str(version)
 
@@ -212,11 +213,14 @@ def restore_commander_position():
         )
         apply_position(pc, position)
     else:
-        feedback(pc, f"No saved Commander position found")
+        feedback(pc.PlayerReplicationInfo, f"No saved Commander position found")
 
 
-def feedback(pc: WillowPlayerController, feedback: str) -> None:
+# TODO: Make this a network method so that host can send success messages to players
+@targeted.string_message
+def feedback(feedback: str) -> None:
     """Presents a "training" message to the user with the given string"""
+    pc = get_pc()
     HUDMovie = pc.GetHUDMovie()
     if HUDMovie is None:
         return
@@ -245,15 +249,6 @@ def try_parse_int(s: str):
         print(f"Unable to parse input {s}, setting value to 0")
         return 0
 
-
-T = TypeVar('T', bound=Enum)
-
-
-def enum_from_value(cls: Type[T], value: Any) -> T:
-    for member in cls:
-        if member.value == value:
-            return member
-    raise ValueError(f"{value} is not a valid value for {cls.__name__}")
 
 
 register_module(__name__)

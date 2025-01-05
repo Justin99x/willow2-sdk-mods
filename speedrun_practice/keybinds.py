@@ -1,14 +1,15 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from typing import Callable, List, TYPE_CHECKING, cast
 
 from mods_base import KeybindType
-from speedrun_practice.checkpoints import CheckpointSaver, text_input_checkpoint
+from speedrun_practice.checkpoints import CheckpointSaver, request_load_checkpoint, request_save_checkpoint, text_input_checkpoint
 from speedrun_practice.gear import GearRandomizer
 from speedrun_practice.options import SPOptions
 from speedrun_practice.reloader import register_module
-from speedrun_practice.skills import set_designer_attribute_value, set_skill_stacks, text_input_stacks, trigger_kill_skills
+from speedrun_practice.skills import request_set_designer_attribute_value, request_set_skill_stacks, \
+    request_trigger_kill_skills, text_input_stacks
 from speedrun_practice.utilities import GameVersion, PlayerClass, RunCategory, feedback, get_pc, restore_commander_position
 from unrealsdk import find_all, find_enum, make_struct
 from unrealsdk.hooks import Block
@@ -33,6 +34,7 @@ class SPKeybinds:
         self.game_version: GameVersion | None = None
         self.player_class: PlayerClass | None = None
         self.run_category: RunCategory | None = None
+        self.host: bool = True
 
         self.buckup = SPKeybind("Set Buckup Stacks", "None", sp_callback=set_buckup_stacks, is_hidden=True, order=1)
         self.anarchy = SPKeybind("Set Anarchy Stacks", "None", sp_callback=set_anarchy_stacks, is_hidden=True, order=2)
@@ -66,20 +68,22 @@ class SPKeybinds:
         self.player_class = player_class
         self.run_category = run_category
 
-        self._enable_keybinds([self.save_checkpoint, self.overwrite_checkpoint, self.load_checkpoint, self.touch_save])
+        self._enable_keybinds([self.save_checkpoint,self.overwrite_checkpoint, self.load_checkpoint, self.touch_save])
 
         if self.player_class == PlayerClass.Gaige:
             self._enable_keybinds([self.buckup, self.anarchy])
-            if self.run_category == RunCategory.AnyPercentGaige:
+            if self.run_category == RunCategory.AnyPercentGaige and self.host:
                 self._enable_keybinds([self.randomize_gear])
 
         if self.game_version.in_group([GameVersion.vMerge]):
-            self._enable_keybinds([self.free_shot_stacks, self.merge_weapons])
+            self._enable_keybinds([self.free_shot_stacks])
+            if self.host:
+                self._enable_keybinds([self.merge_weapons])
 
         if self.game_version.in_group([GameVersion.vStack]):
             self._enable_keybinds([self.smasher_chance_stacks, self.smasher_SMASH_stacks])
 
-        if self.run_category == RunCategory.GearedSal:
+        if self.run_category == RunCategory.GearedSal and self.host:
             self._enable_keybinds([self.reset_gunzerk, self.reset_and_trigger])
 
     def disable(self):
@@ -103,38 +107,28 @@ class SPKeybinds:
                 kb.is_enabled = False
 
     def reset_to_position_and_trigger_skills(self) -> None:
-        '''Need to remove this functionality for now since I can't import from Commander legacy'''
         pc = get_pc()
         reset_gunzerk_and_weapons()
         restore_commander_position()
         pc.Pawn.Velocity: Object.Vector = make_struct("Vector", X=0, Y=0, Z=0)
         if self.options.incite.value:
-            set_skill_stacks(pc, 1, 'GD_Mercenary_Skills.Brawn.Incite_Active')
+            request_set_skill_stacks(pc, 1, 'GD_Mercenary_Skills.Brawn.Incite_Active')
         if self.options.locked_and_loaded.value:
-            set_skill_stacks(pc, 1, 'GD_Mercenary_Skills.Gun_Lust.LockedAndLoaded_Active')
+            request_set_skill_stacks(pc, 1, 'GD_Mercenary_Skills.Gun_Lust.LockedAndLoaded_Active')
         if self.options.kill_skills.value:
-            trigger_kill_skills(pc)
+            request_trigger_kill_skills(pc)
 
     def save_checkpoint(self):
-        if self.player_class and self.run_category:
-            text_input_checkpoint("Character Save Name", self.options.save_game_path.value, self.player_class, self.game_version)
-        else:
-            feedback(get_pc(), "Unable to save checkpoint for this character")
+        text_input_checkpoint("Character Save Name")
 
     def overwrite_save(self):
-        if self.game_version and self.run_category:
-            saver = CheckpointSaver(None, self.options.save_game_path.value, self.game_version, self.player_class)
-            saver.save_checkpoint(overwrite=True)
-            feedback(get_pc(), "Saved checkpoint")
-        else:
-            feedback(get_pc(), "Unable to save checkpoint for this character")
+        request_save_checkpoint('', True)
 
     def load_checkpoint(self):
-        if self.game_version and self.run_category:
-            saver = CheckpointSaver(None, self.options.save_game_path.value, self.game_version, self.player_class)
-            saver.load_game_state()
-        else:
-            feedback(get_pc(), "Unable to load checkpoint for this character")
+        saver = CheckpointSaver(None, self.options.save_game_path.value)
+        state_to_load = saver.get_player_stats()
+        request_load_checkpoint(asdict(state_to_load))
+
 
     def touch_file(self):
         saver = CheckpointSaver(None, self.options.save_game_path.value)
@@ -150,19 +144,19 @@ def merge_all_equipped_weapons() -> None:
         if weapon:
             weapon.ApplyAllExternalAttributeEffects()
             msg = msg + '\n' + weapon.GetShortHumanReadableName()
-    feedback(pc, f"Bonuses from the following weapons are applied: {msg}")
+    feedback(pc.PlayerReplicationInfo, f"Bonuses from the following weapons are applied: {msg}")
 
 
 def set_free_shot_stacks():
-    text_input_stacks(set_skill_stacks, "Set Free Shot Stacks", "GD_Weap_Launchers.Skills.Skill_VladofHalfAmmo")
+    text_input_stacks(request_set_skill_stacks, "Set Free Shot Stacks", "GD_Weap_Launchers.Skills.Skill_VladofHalfAmmo")
 
 
 def set_smasher_chance_stacks():
-    text_input_stacks(set_skill_stacks, "Set Smasher Chance Stacks", "GD_Weap_AssaultRifle.Skills.Skill_EvilSmasher")
+    text_input_stacks(request_set_skill_stacks, "Set Smasher Chance Stacks", "GD_Weap_AssaultRifle.Skills.Skill_EvilSmasher")
 
 
 def set_smasher_SMASH_stacks():
-    text_input_stacks(set_skill_stacks, "Set Smasher SMASH Stacks", "GD_Weap_AssaultRifle.Skills.Skill_EvilSmasher_SMASH")
+    text_input_stacks(request_set_skill_stacks, "Set Smasher SMASH Stacks", "GD_Weap_AssaultRifle.Skills.Skill_EvilSmasher_SMASH")
 
 
 def randomize_any_p_gear():
@@ -203,11 +197,11 @@ def reset_gunzerk_and_weapons():
 
 
 def set_buckup_stacks():
-    text_input_stacks(set_skill_stacks, "Set Buckup Stacks", "GD_Tulip_DeathTrap.Skills.Skill_ShieldBoost_Player")
+    text_input_stacks(request_set_skill_stacks, "Set Buckup Stacks", "GD_Tulip_DeathTrap.Skills.Skill_ShieldBoost_Player")
 
 
 def set_anarchy_stacks():
-    text_input_stacks(set_designer_attribute_value, "Set Anarchy Stacks",
+    text_input_stacks(request_set_designer_attribute_value, "Set Anarchy Stacks",
                       "GD_Tulip_Mechromancer_Skills.Misc.Att_Anarchy_NumberOfStacks")
 
 

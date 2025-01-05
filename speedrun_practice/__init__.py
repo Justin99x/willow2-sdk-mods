@@ -5,17 +5,20 @@ from typing import TYPE_CHECKING
 
 from mods_base import CoopSupport, Mod, SETTINGS_DIR, register_mod
 from mods_base.mod_factory import deregister_using_settings_file
+from networking import add_network_functions
 from speedrun_practice.hooks import SPHooks
 from speedrun_practice.keybinds import SPKeybinds
 from speedrun_practice.options import SPOptions
 from speedrun_practice.reloader import register_module
-from speedrun_practice.utilities import GameVersion, PlayerClass, RunCategory, enum_from_value, extract_user_save_path, get_game_version, \
-    get_pc, get_player_class, get_run_category
+from speedrun_practice.utilities import GameVersion, PlayerClass, RunCategory, extract_user_save_path, get_game_version, \
+    get_pc, get_player_class, get_run_category, feedback
+from speedrun_practice.skills import request_set_skill_stacks, request_trigger_kill_skills, request_get_designer_attribute_value, \
+    request_set_designer_attribute_value
+from speedrun_practice.checkpoints import request_load_checkpoint, request_save_checkpoint, client_save_checkpoint
 from unrealsdk.hooks import Type, add_hook, remove_hook
 from unrealsdk.unreal import BoundFunction
 from willow2_mod_menu.data_providers.mod_options import ModOptionsDataProvider
 from willow2_mod_menu.options_menu import data_provider_stack, push_mod_options
-
 
 if TYPE_CHECKING:
     from bl2 import WillowPlayerController, WillowScrollingListDataProviderOptionsBase
@@ -53,7 +56,6 @@ class SpeedrunPractice(Mod):
             self.handle_spinner_change)
 
         super().__post_init__()
-
 
     def enable_all(self, game_version: GameVersion, player_class: PlayerClass, run_category: RunCategory) -> None:
         self.sp_options.enable(game_version, run_category)
@@ -170,7 +172,6 @@ Options and keybinds are available depending on the current version of the game 
 keybind you are expecting, try loading a different character or changing to a different version of the game.
 """
 
-
 instance = SpeedrunPractice(
     name=NAME,
     settings_file=SETTINGS_DIR / (__package__ + ".json"),
@@ -182,5 +183,7 @@ instance = SpeedrunPractice(
 
 deregister_using_settings_file(instance.settings_file)
 register_mod(instance)
+
+add_network_functions(instance)
 
 register_module(__name__)

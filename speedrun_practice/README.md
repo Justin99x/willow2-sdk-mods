@@ -1,3 +1,8 @@
+Todo:
+- Weapon clip sizes aren't set correctly for off host. (might just skip that part for off host)
+- Add some logging for crit damage
+
+
 # Speedrun Practice Mod
 
 Borderlands 2 mod with various utilities to help in practicing speedruns. All solo speedruns are currently supported on

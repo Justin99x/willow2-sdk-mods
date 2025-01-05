@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 class SPOptions:
     def __init__(self):
         self.mod: SpeedrunPractice | None = None
+        self.host: bool = True
 
         self.save_game_path = HiddenOption(
             identifier="Save Game Filepath",
@@ -66,7 +67,6 @@ class SPOptions:
         ]
 
     def enable(self, game_version: GameVersion, run_category: RunCategory) -> None:
-        print(game_version in [GameVersion.vStack, GameVersion.vMerge])
         self.enable_options([self.travel_portal_disabled])
         handle_travel_portal(None, self.travel_portal_disabled.value)
 
@@ -74,7 +74,7 @@ class SPOptions:
             handle_jakobs_auto(None, self.jakobs_auto_fire.value)
             self.enable_options([self.jakobs_auto_fire])
 
-        if run_category == RunCategory.GearedSal:
+        if run_category == RunCategory.GearedSal and self.host:
             self.enable_options([self.kill_skills, self.incite, self.locked_and_loaded])
 
     def disable(self):

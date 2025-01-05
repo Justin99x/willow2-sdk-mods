@@ -5,19 +5,23 @@ import stat
 from pathlib import Path
 from typing import Dict, List, TYPE_CHECKING, Optional, Tuple, cast
 
+from networking import host, targeted
 from speedrun_practice.reloader import register_module
-from speedrun_practice.skills import get_designer_attribute_value, get_skill_stacks, set_designer_attribute_value, set_skill_stacks
+from speedrun_practice.skills import ExternalAttributeModifiers, HostSkillManager, Modifier
 from speedrun_practice.text_input import TextInputBoxSRP
-from speedrun_practice.utilities import PlayerClass, GameVersion
-from speedrun_practice.utilities import CONFIG_PATH, Position, apply_position, feedback, get_position, get_save_dir_from_config, get_pc
+from speedrun_practice.utilities import PlayerClass, GameVersion, get_game_version
+from speedrun_practice.utilities import Position, apply_position, feedback, get_position, get_pc
 from unrealsdk import find_object, make_struct
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 
 if TYPE_CHECKING:
-    from bl2 import AttributeDefinition, Object, WillowWeapon, WillowPlayerController
+    from bl2 import AttributeDefinition, Object, WillowPlayerReplicationInfo, WillowWeapon, WillowPlayerController
     from speedrun_practice import SpeedrunPractice
 
-SCALED_STATS = ("X", "Y", "Z", "Pitch", "Yaw")
+SCALED_STATS = (
+    "X", "Y", "Z", "Pitch", "Yaw", "acc_min_scale_pos", "acc_min_scale_neg", "acc_min_pre", "acc_max_scale_pos",
+    "acc_max_scale_neg", "acc_max_pre", "acc_idle_scale_pos", "acc_idle_scale_neg",
+    "acc_idle_pre", "crit_scale_pos", "crit_scale_neg", 'crit_pre')
 ROTATION_STATS = ("Pitch", "Yaw")
 
 PLAYER_STATS_MAP = {
@@ -25,7 +29,7 @@ PLAYER_STATS_MAP = {
     "STAT_PLAYER_ZRESERVED_DLC_INT_CA": "buckup_stacks",
     "STAT_PLAYER_ZRESERVED_DLC_INT_CB": "freeshot_stacks",
     "STAT_PLAYER_ZRESERVED_DLC_INT_CC": "weapons",
-    "STAT_PLAYER_ZRESERVED_DLC_INT_CD": None,  # Used to have active_weapon, but deprecated.
+    "STAT_PLAYER_ZRESERVED_DLC_INT_CD": "expertise_stacks",  # NEW
     "STAT_PLAYER_ZRESERVED_DLC_INT_CE": "smasher_stacks",
     "STAT_PLAYER_ZRESERVED_DLC_INT_CF": "X",
     "STAT_PLAYER_ZRESERVED_DLC_INT_CG": "Y",
@@ -37,18 +41,18 @@ PLAYER_STATS_MAP = {
     "STAT_PLAYER_ZRESERVED_DLC_INT_CM": "weapon3_clip",
     "STAT_PLAYER_ZRESERVED_DLC_INT_CN": "weapon4_clip",
     "STAT_PLAYER_ZRESERVED_DLC_INT_CO": "SMASH_stacks",
-    "STAT_PLAYER_ZRESERVED_DLC_INT_CP": None,
-    "STAT_PLAYER_ZRESERVED_DLC_INT_CQ": None,
-    "STAT_PLAYER_ZRESERVED_DLC_INT_CR": None,
-    "STAT_PLAYER_ZRESERVED_DLC_INT_CS": None,
-    "STAT_PLAYER_ZRESERVED_DLC_INT_CT": None,
-    "STAT_PLAYER_ZRESERVED_DLC_INT_CU": None,
-    "STAT_PLAYER_ZRESERVED_DLC_INT_CV": None,
-    "STAT_PLAYER_ZRESERVED_DLC_INT_CW": None,
-    "STAT_PLAYER_ZRESERVED_DLC_INT_CX": None,
-    "STAT_PLAYER_ZRESERVED_DLC_INT_CY": None,
-    "STAT_PLAYER_ZRESERVED_DLC_INT_CZ": None,
-    "STAT_PLAYER_ZRESERVED_DLC_INT_DA": None,
+    "STAT_PLAYER_ZRESERVED_DLC_INT_CP": "acc_min_scale_pos",
+    "STAT_PLAYER_ZRESERVED_DLC_INT_CQ": "acc_min_scale_neg",
+    "STAT_PLAYER_ZRESERVED_DLC_INT_CR": "acc_min_pre",
+    "STAT_PLAYER_ZRESERVED_DLC_INT_CS": "acc_max_scale_pos",
+    "STAT_PLAYER_ZRESERVED_DLC_INT_CT": "acc_max_scale_neg",
+    "STAT_PLAYER_ZRESERVED_DLC_INT_CU": "acc_max_pre",
+    "STAT_PLAYER_ZRESERVED_DLC_INT_CV": "acc_idle_scale_pos",
+    "STAT_PLAYER_ZRESERVED_DLC_INT_CW": "acc_idle_scale_neg",
+    "STAT_PLAYER_ZRESERVED_DLC_INT_CX": "acc_idle_pre",
+    "STAT_PLAYER_ZRESERVED_DLC_INT_CY": "crit_scale_pos",
+    "STAT_PLAYER_ZRESERVED_DLC_INT_CZ": "crit_scale_neg",
+    "STAT_PLAYER_ZRESERVED_DLC_INT_DA": "crit_pre",
     "STAT_PLAYER_ZRESERVED_DLC_INT_DB": None,
     "STAT_PLAYER_ZRESERVED_DLC_INT_DC": None,
     "STAT_PLAYER_ZRESERVED_DLC_INT_DD": None,
@@ -73,6 +77,7 @@ class GameState:
     buckup_stacks: int = 0
     freeshot_stacks: int = 0
     weapons: int = 0
+    expertise_stacks: int = 0
     smasher_stacks: int = 0
     X: float = 0
     Y: float = 0
@@ -84,6 +89,46 @@ class GameState:
     weapon3_clip: int = 0
     weapon4_clip: int = 0
     SMASH_stacks: int = 0
+    acc_min_scale_pos: float = 0
+    acc_min_scale_neg: float = 0
+    acc_min_pre: float = 0
+    acc_max_scale_pos: float = 0
+    acc_max_scale_neg: float = 0
+    acc_max_pre: float = 0
+    acc_idle_scale_pos: float = 0
+    acc_idle_scale_neg: float = 0
+    acc_idle_pre: float = 0
+    crit_scale_pos: float = 0
+    crit_scale_neg: float = 0
+    crit_pre: float = 0
+
+    @property
+    def external_modifiers(self) -> ExternalAttributeModifiers:
+        return ExternalAttributeModifiers(
+            MinValue=Modifier(self.acc_min_scale_pos, self.acc_min_scale_neg, self.acc_min_pre),
+            MaxValue=Modifier(self.acc_max_scale_pos, self.acc_max_scale_neg, self.acc_max_pre),
+            OnIdleRegenerationRate=Modifier(self.acc_idle_scale_pos, self.acc_idle_scale_neg,
+                                            self.acc_idle_pre),
+            CurrentInstantHitCriticalHitBonus=Modifier(self.crit_scale_pos, self.crit_scale_neg, self.crit_pre)
+        )
+
+    @external_modifiers.setter
+    def external_modifiers(self, ext_modifiers: ExternalAttributeModifiers) -> None:
+        self.acc_min_scale_pos = round(ext_modifiers.MinValue.scale_pos, 4)
+        self.acc_min_scale_neg = round(ext_modifiers.MinValue.scale_neg, 4)
+        self.acc_min_pre = round(ext_modifiers.MinValue.pre_add, 4)
+
+        self.acc_max_scale_pos = round(ext_modifiers.MaxValue.scale_pos, 4)
+        self.acc_max_scale_neg = round(ext_modifiers.MaxValue.scale_neg, 4)
+        self.acc_max_pre = round(ext_modifiers.MaxValue.pre_add, 4)
+
+        self.acc_idle_scale_pos = round(ext_modifiers.OnIdleRegenerationRate.scale_pos, 4)
+        self.acc_idle_scale_neg = round(ext_modifiers.OnIdleRegenerationRate.scale_neg, 4)
+        self.acc_idle_pre = round(ext_modifiers.OnIdleRegenerationRate.pre_add, 4)
+
+        self.crit_scale_pos = round(ext_modifiers.CurrentInstantHitCriticalHitBonus.scale_pos, 4)
+        self.crit_scale_neg = round(ext_modifiers.CurrentInstantHitCriticalHitBonus.scale_neg, 4)
+        self.crit_pre = round(ext_modifiers.CurrentInstantHitCriticalHitBonus.pre_add, 4)
 
     @property
     def position(self) -> Position:
@@ -97,20 +142,168 @@ class GameState:
 
     @position.setter
     def position(self, input: Position) -> None:
-        self.X = input.X
-        self.Y = input.Y
-        self.Z = input.Z
-        self.Pitch = input.Pitch
-        self.Yaw = input.Yaw
+        self.X = round(input.X, 4)
+        self.Y = round(input.Y, 4)
+        self.Z = round(input.Z, 4)
+        self.Pitch = round(input.Pitch, 4)
+        self.Yaw = round(input.Yaw, 4)
+
+
+class HostGameStateManager:
+    """
+    Class for getting or loading game states for target players. Can only be instantiated/executed by the host, which means this should
+    only be instantiated through a host.json_message network function.
+    """
+
+    def __init__(self,
+                 target_pri: WillowPlayerReplicationInfo,
+                 ):
+        self.target_pri = target_pri
+        self.target_pc = cast("WillowPlayerController", target_pri.Owner)
+        self.game_version = get_game_version()
+        self.player_class = PlayerClass.from_str(self.target_pc.PlayerClass.Name)
+        self.host_skill_manager = HostSkillManager(target_pri)
+
+    @property
+    def clipsize_attr(self) -> AttributeDefinition:
+        return cast("AttributeDefinition", find_object("AttributeDefinition", "D_Attributes.Weapon.WeaponClipSize"))
+
+    @property
+    def shotcost_attr(self) -> AttributeDefinition:
+        return cast("AttributeDefinition", find_object("AttributeDefinition", "D_Attributes.Weapon.WeaponShotCost"))
+
+    def get_game_state(self) -> GameState:
+        """Get various skill stacks and weapon states for saving as player stats."""
+
+        game_state = GameState()
+
+        # Buck up and anarchy
+        if self.player_class == PlayerClass.Gaige:
+            game_state.buckup_stacks = len(self.host_skill_manager.get_skill_definition_stacks(["Skill_ShieldBoost_Player"]))
+            game_state.anarchy_stacks = int(
+                self.host_skill_manager.get_designer_attribute_value("GD_Tulip_Mechromancer_Skills.Misc.Att_Anarchy_NumberOfStacks")
+            )
+
+        # Expertise
+        if self.player_class == PlayerClass.Axton:
+            game_state.expertise_stacks = len(self.host_skill_manager.get_skill_definition_stacks(["Expertise_MovementSpeed"]))
+
+        # Smasher stacks
+        game_state.smasher_stacks = len(self.host_skill_manager.get_skill_definition_stacks(["Skill_EvilSmasher"]))
+        game_state.SMASH_stacks = len(self.host_skill_manager.get_skill_definition_stacks(["Skill_EvilSmasher_SMASH"]))
+
+        # Free shots: -1 value implies equal to current mag whenever playing on patches that support it.
+        if (len(self.host_skill_manager.get_skill_definition_stacks(["Skill_VladofHalfAmmo"])) ==
+                int(self.shotcost_attr.GetBaseValue(self.target_pc.GetActiveOrBestWeapon())[0])
+                and self.game_version.in_group([GameVersion.vStack])):
+            game_state.freeshot_stacks = -1
+        else:
+            game_state.freeshot_stacks = len(self.host_skill_manager.get_skill_definition_stacks(["Skill_VladofHalfAmmo"]))
+
+        # Equipped weapons returned from GetEquippedWeapons as out params
+        equipped_weapons: Tuple[WillowWeapon] = self.target_pc.GetPawnInventoryManager().GetEquippedWeapons(None, None, None, None)[1:]
+
+        weapons_temp = [0, 0, 0, 0, 0]  # Active weapon slot followed by bools for merged weapons or not.
+        active_weapon = cast("WillowWeapon", self.target_pc.GetActiveOrBestWeapon())
+        weapons_temp[0] = active_weapon.QuickSelectSlot if active_weapon else 1
+        for weapon in equipped_weapons:
+            if weapon:
+                clip_size = int(self.clipsize_attr.GetValue(weapon)[0])
+                stored_clip_size = -1 if clip_size == int(weapon.ReloadCnt) else int(weapon.ReloadCnt)  # -1 is for full clip
+                setattr(game_state, f"weapon{weapon.QuickSelectSlot}_clip", stored_clip_size)
+                if len(weapon.ExternalAttributeModifiers) > 0:  # Is the weapon merged?
+                    weapons_temp[weapon.QuickSelectSlot] = 1
+        game_state.weapons = int("".join([str(val) for val in weapons_temp]))
+
+        game_state.position = get_position(self.target_pc)
+
+        # External modifiers (off host only)
+        # if not self.target_pri.bIsPartyLeader:
+        game_state.external_modifiers = self.host_skill_manager.get_external_attribute_modifier_totals(True)
+
+        return game_state
+
+    def load_game_state(self, load_state: GameState) -> None:
+        """Loads the game state by applying glitches and the saved map position."""
+        if load_state.X == 0 and load_state.Y == 0:
+            feedback(self.target_pri, "No speedrun practice data found in current save file")
+            return
+
+        gaige_msg, freeshot_msg, smasher_msg, merge_msg, expertise_msg, modifier_msg = '', '', '', '', '', ''
+
+        # Equipped weapon and clip sizes
+        inventory_manager = self.target_pc.GetPawnInventoryManager()
+        weapons: Tuple[WillowWeapon] = inventory_manager.GetEquippedWeapons(None, None, None, None)[1:]
+        for weapon in weapons:
+            # Use drop pickups to get our desired active weapon in place
+            if weapon and load_state.weapons > 0 and int(str(load_state.weapons).zfill(5)[0]) != weapon.QuickSelectSlot:
+                inventory_manager.RemoveFromInventory(weapon)
+                inventory_manager.AddInventory(weapon, False)
+                # Merge weapon maybe
+                if int(str(load_state.weapons).zfill(5)[weapon.QuickSelectSlot]) == 1:
+                    weapon.ApplyAllExternalAttributeEffects()
+                    if merge_msg == '':
+                        merge_msg = f"\nWeapons Merged:"
+                    merge_msg = merge_msg + '\n\t' + weapon.GetShortHumanReadableName()
+
+            # Set clip sizes
+            if weapon:
+                saved_clip = getattr(load_state, f'weapon{weapon.QuickSelectSlot}_clip')
+                if saved_clip <= 0:
+                    weapon.ReloadCnt = int(self.clipsize_attr.GetValue(weapon)[0])
+                else:
+                    weapon.ReloadCnt = saved_clip
+                weapon.LastReloadCnt = weapon.ReloadCnt
+
+        # Buck up, free shots, anarchy, smasher, and expertise. After weapon stuff so no issues with deactivations.
+        if load_state.freeshot_stacks < 0:
+            freeshot_stacks = int(self.shotcost_attr.GetBaseValue(self.target_pc.GetActiveOrBestWeapon())[0])
+        else:
+            freeshot_stacks = load_state.freeshot_stacks
+
+        self.host_skill_manager.set_skill_stacks(freeshot_stacks, 'GD_Weap_Launchers.Skills.Skill_VladofHalfAmmo')
+        if freeshot_stacks > 0:
+            freeshot_msg = f"\nFree Shot Stacks: {freeshot_stacks}"
+
+        self.host_skill_manager.set_skill_stacks(load_state.smasher_stacks, 'GD_Weap_AssaultRifle.Skills.Skill_EvilSmasher')
+        self.host_skill_manager.set_skill_stacks(load_state.SMASH_stacks, 'GD_Weap_AssaultRifle.Skills.Skill_EvilSmasher_SMASH')
+        if load_state.smasher_stacks > 0 or load_state.SMASH_stacks > 0:
+            smasher_msg = f"\nSmasher Chance Stacks: {load_state.smasher_stacks}"
+            smasher_msg += f"\nSmasher SMASH Stacks: {load_state.SMASH_stacks}"
+
+        if self.player_class == PlayerClass.Gaige:
+            self.host_skill_manager.set_skill_stacks(load_state.buckup_stacks, 'GD_Tulip_DeathTrap.Skills.Skill_ShieldBoost_Player')
+            self.host_skill_manager.set_designer_attribute_value(load_state.anarchy_stacks,
+                                                                 'GD_Tulip_Mechromancer_Skills.Misc.Att_Anarchy_NumberOfStacks')
+            if load_state.buckup_stacks > 0:
+                gaige_msg += f"\nBuck Up Stacks: {load_state.buckup_stacks}"
+            if load_state.anarchy_stacks > 0:
+                gaige_msg += f"\nAnarchy Stacks: {load_state.anarchy_stacks}"
+
+        self.host_skill_manager.set_skill_stacks(load_state.expertise_stacks, 'GD_Soldier_Skills.Gunpowder.Expertise_MovementSpeed')
+        if load_state.expertise_stacks > 0:
+            expertise_msg += f"\nExpertise Stacks: {load_state.expertise_stacks}"
+
+        # External attribute modifiers
+        self.host_skill_manager.set_external_attribute_modifiers(load_state.external_modifiers)
+        if (load_state.external_modifiers.CurrentInstantHitCriticalHitBonus.pre_add > 0 or
+            load_state.external_modifiers.CurrentInstantHitCriticalHitBonus.scale_pos > 0):
+            modifier_msg += f"\nMass duping bonus:{load_state.external_modifiers.msg()}"
+
+        apply_position(self.target_pc, load_state.position)
+        self.target_pc.MyWillowPawn.Velocity = make_struct("Vector", X=0, Y=0, Z=0)
+
+        msg = f"Game State Loaded\n" + gaige_msg + freeshot_msg + smasher_msg + merge_msg + expertise_msg + modifier_msg
+        feedback(self.target_pri, msg)
 
 
 class CheckpointSaver:
-    """Class for saving read only copy of the current game and saving key values as player stats"""
+    """Class for saving read only copy of the current game and saving key values as player stats. """
 
-    def __init__(self, new_save_name: str | None,
+    def __init__(self,
+                 new_save_name: str | None,
                  save_dir: str,
-                 game_version: Optional[GameVersion] = None,
-                 player_class: Optional[PlayerClass] = None
+                 game_state: GameState | None = None
                  ):
         self.pc = get_pc()
         self.new_save_name = new_save_name
@@ -118,19 +311,15 @@ class CheckpointSaver:
         self.current_file_name = self.pc.GetWillowGlobals().GetWillowSaveGameManager().LastLoadedFilePath
         self.current_file_path = self.get_current_file_path()
         self.new_filename = self.get_next_open_filename()
-        self.player_class = player_class
-        self.game_version = game_version
-        self.clipsize_attr: AttributeDefinition = cast("AttributeDefinition",
-                                                       find_object("AttributeDefinition", "D_Attributes.Weapon.WeaponClipSize"))
-        self.shotcost_attr: AttributeDefinition = cast("AttributeDefinition",
-                                                       find_object("AttributeDefinition", "D_Attributes.Weapon.WeaponShotCost"))
+
+        self.game_state = game_state
 
     def get_current_file_path(self) -> str:
         """Current file path based on save directory and game provided filename. Will fail if config.json not
         set correctly."""
         current_file_path = os.path.join(self.save_dir, self.current_file_name)
         if not (os.path.exists(current_file_path) and os.path.isfile(current_file_path)):
-            feedback(self.pc, "Error finding current filepath")
+            feedback(self.pc.PlayerReplicationInfo, "Error finding current filepath")
             raise FileNotFoundError("Error finding current filepath")
         return current_file_path
 
@@ -166,13 +355,13 @@ class CheckpointSaver:
         self.pc.SaveGame(self.current_file_name)
         os.chmod(self.current_file_path, stat.S_IREAD)
 
-    def set_player_stats(self, game_state: GameState) -> None:
+    def set_player_stats(self) -> None:
         """Sets the player stats on the pc, intent is to save game right after"""
         stats = self.pc.PlayerStats
         for stats_name, name in PLAYER_STATS_MAP.items():
             if not name:
                 continue
-            val = getattr(game_state, name)
+            val = getattr(self.game_state, name)
             if name in SCALED_STATS:
                 val = int(val * 100)
             stats.SetIntStat(stats_name, val)
@@ -190,116 +379,9 @@ class CheckpointSaver:
                 setattr(game_state, name, val)
         return game_state
 
-    def get_game_state(self) -> GameState:
-        """Get various skill stacks and weapon states for saving as player stats. No need to filter based on game version or character
-        since it will just return 0 for those stats anyway."""
-
-        game_state = GameState()
-
-        # Buck up and anarchy
-        if self.player_class == PlayerClass.Gaige:
-            game_state.buckup_stacks = len(get_skill_stacks(self.pc, ["Skill_ShieldBoost_Player"]))
-            game_state.anarchy_stacks = int(
-                get_designer_attribute_value(self.pc, "GD_Tulip_Mechromancer_Skills.Misc.Att_Anarchy_NumberOfStacks")
-            )
-
-        # Smasher stacks
-        game_state.smasher_stacks = len(get_skill_stacks(self.pc, ["Skill_EvilSmasher"]))
-        game_state.SMASH_stacks = len(get_skill_stacks(self.pc, ["Skill_EvilSmasher_SMASH"]))
-
-        # Free shots: -1 value implies equal to current mag whenever playing on patches that support it.
-        if (len(get_skill_stacks(self.pc, ["Skill_VladofHalfAmmo"])) ==
-                int(self.shotcost_attr.GetBaseValue(self.pc.GetActiveOrBestWeapon())[0])
-                and self.game_version.in_group([GameVersion.vStack])):
-            game_state.freeshot_stacks = -1
-        else:
-            game_state.freeshot_stacks = len(get_skill_stacks(self.pc, ["Skill_VladofHalfAmmo"]))
-
-        # Equipped weapons returned from GetEquippedWeapons as out params
-        equipped_weapons: Tuple[WillowWeapon] = self.pc.GetPawnInventoryManager().GetEquippedWeapons(None, None, None, None)[1:]
-
-        weapons_temp = [0, 0, 0, 0, 0]  # Active weapon slot followed by bools for merged weapons or not.
-        active_weapon = cast("WillowWeapon", self.pc.GetActiveOrBestWeapon())
-        weapons_temp[0] = active_weapon.QuickSelectSlot if active_weapon else 1
-        for weapon in equipped_weapons:
-            if weapon:
-                clip_size = int(self.clipsize_attr.GetValue(weapon)[0])
-                stored_clip_size = -1 if clip_size == int(weapon.ReloadCnt) else int(weapon.ReloadCnt)  # -1 is for full clip
-                setattr(game_state, f"weapon{weapon.QuickSelectSlot}_clip", stored_clip_size)
-                if len(weapon.ExternalAttributeModifiers) > 0:  # Is the weapon merged?
-                    weapons_temp[weapon.QuickSelectSlot] = 1
-        game_state.weapons = int("".join([str(val) for val in weapons_temp]))
-
-        game_state.position = get_position(self.pc)
-        return game_state
-
-    def load_game_state(self) -> None:
-        """Loads the game state by applying glitches and the saved map position."""
-        load_state = self.get_player_stats()
-        if load_state.X == 0 and load_state.Y == 0:
-            feedback(self.pc, "No game state data found for this save file")
-            return
-
-        gaige_msg, freeshot_msg, smasher_msg, merge_msg = '', '', '', ''
-
-        # Equipped weapon and clip sizes
-        inventory_manager = self.pc.GetPawnInventoryManager()
-        weapons: Tuple[WillowWeapon] = inventory_manager.GetEquippedWeapons(None, None, None, None)[1:]
-        for weapon in weapons:
-            # Use drop pickups to get our desired active weapon in place
-            #TODO: Str conversion needs to pad 0s
-            if weapon and load_state.weapons > 0 and int(str(load_state.weapons).zfill(5)[0]) != weapon.QuickSelectSlot:
-                inventory_manager.RemoveFromInventory(weapon)
-                inventory_manager.AddInventory(weapon, False)
-                # Merge weapon maybe
-                if int(str(load_state.weapons).zfill(5)[weapon.QuickSelectSlot]) == 1:
-                    weapon.ApplyAllExternalAttributeEffects()
-                    if merge_msg == '':
-                        merge_msg = f"\nWeapons Merged:"
-                    merge_msg = merge_msg + '\n\t' + weapon.GetShortHumanReadableName()
-
-            # Set clip sizes
-            if weapon:
-                saved_clip = getattr(load_state, f'weapon{weapon.QuickSelectSlot}_clip')
-                if saved_clip <= 0:
-                    weapon.ReloadCnt = int(self.clipsize_attr.GetValue(weapon)[0])
-                else:
-                    weapon.ReloadCnt = saved_clip
-                weapon.LastReloadCnt = weapon.ReloadCnt
-
-        # Buck up, free shots, anarchy, and smasher. After weapon stuff so no issues with deactivations.
-        if load_state.freeshot_stacks < 0:
-            freeshot_stacks = int(self.shotcost_attr.GetBaseValue(self.pc.GetActiveOrBestWeapon())[0])
-        else:
-            freeshot_stacks = load_state.freeshot_stacks
-
-        set_skill_stacks(self.pc, freeshot_stacks, 'GD_Weap_Launchers.Skills.Skill_VladofHalfAmmo')
-        if freeshot_stacks > 0:
-            freeshot_msg = f"\nFree Shot Stacks: {freeshot_stacks}"
-
-        set_skill_stacks(self.pc, load_state.smasher_stacks, 'GD_Weap_AssaultRifle.Skills.Skill_EvilSmasher')
-        set_skill_stacks(self.pc, load_state.SMASH_stacks, 'GD_Weap_AssaultRifle.Skills.Skill_EvilSmasher_SMASH')
-        if load_state.smasher_stacks > 0 or load_state.SMASH_stacks > 0:
-            smasher_msg = f"\nSmasher Chance Stacks: {load_state.smasher_stacks}"
-            smasher_msg += f"\nSmasher SMASH Stacks: {load_state.SMASH_stacks}"
-
-        if self.player_class == PlayerClass.Gaige:
-            set_skill_stacks(self.pc, load_state.buckup_stacks, 'GD_Tulip_DeathTrap.Skills.Skill_ShieldBoost_Player')
-            set_designer_attribute_value(self.pc, load_state.anarchy_stacks,
-                                         'GD_Tulip_Mechromancer_Skills.Misc.Att_Anarchy_NumberOfStacks')
-            gaige_msg += f"\nBuck Up Stacks: {load_state.buckup_stacks}"
-            gaige_msg += f"\nAnarchy Stacks: {load_state.anarchy_stacks}"
-
-        apply_position(self.pc, load_state.position)
-        self.pc.MyWillowPawn.Velocity = make_struct("Vector", X=0, Y=0, Z=0)
-
-        msg = f"Game State Loaded" + gaige_msg + freeshot_msg + smasher_msg + merge_msg
-        feedback(self.pc, msg)
-
     def save_checkpoint(self, overwrite=False):
         """Saves game and game state"""
-        state = self.get_game_state()
-        self.set_player_stats(state)
+        self.set_player_stats()
         if not overwrite:
             self.save_game_copy()
         else:
@@ -309,16 +391,42 @@ class CheckpointSaver:
         Path(self.get_current_file_path()).touch(exist_ok=True)
 
 
+@targeted.json_message
+def client_save_checkpoint(save_name: str, overwrite: bool, game_state_dict: Dict[str, int | float]) -> None:
+    """Host now sends request back to client to complete the save and provides the requested information."""
+    game_state = GameState(**game_state_dict)
+    from speedrun_practice import instance  # Avoid circular import
+    save_dir: str = instance.sp_options.save_game_path.value
+    saver = CheckpointSaver(save_name, save_dir, game_state)
+    saver.save_checkpoint(overwrite)
 
 
-def text_input_checkpoint(title: str, save_dir: str, player_class: PlayerClass, game_version: GameVersion) -> None:
-    """Handle input box creation for various actions"""
+@host.json_message
+def request_save_checkpoint(save_name: str, overwrite: bool) -> None:
+    """Sending a request to host to get game state. Also sending requested save name, but this is only as a passthrough."""
+    sender_pri = cast("WillowPlayerReplicationInfo", request_save_checkpoint.sender)
+    host_game_state_manager = HostGameStateManager(sender_pri)
+    game_state = host_game_state_manager.get_game_state()
+    client_save_checkpoint(sender_pri, save_name, overwrite, asdict(game_state))
+
+
+@host.json_message
+def request_load_checkpoint(game_state_dict: Dict[str, int | float]) -> None:
+    """Sending a request to host to load game state. No need for return trip here."""
+    sender_pri = cast("WillowPlayerReplicationInfo", request_load_checkpoint.sender)
+    game_state = GameState(**game_state_dict)
+    host_game_state_manager = HostGameStateManager(sender_pri)
+    host_game_state_manager.load_game_state(game_state)
+
+
+def text_input_checkpoint(title: str) -> None:
+    """Handle input box creation for saving a checkpoint.
+    Result then triggers network methods to gather information and complete the save."""
     input_box = TextInputBoxSRP(title)
 
     def on_submit(msg: str) -> None:
         if msg:
-            saver = CheckpointSaver(msg, save_dir, game_version, player_class)
-            saver.save_checkpoint()
+            request_save_checkpoint(msg, False)
 
     input_box.on_submit = on_submit
     input_box.show()

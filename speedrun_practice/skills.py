@@ -1,25 +1,58 @@
 from __future__ import annotations
 
-from typing import Callable, List, Optional, TYPE_CHECKING, cast
+from collections import defaultdict
+from dataclasses import dataclass, field
+from typing import Callable, List, Literal, Optional, TYPE_CHECKING, cast
 
 from networking import host
 from speedrun_practice.reloader import register_module
 from speedrun_practice.text_input import TextInputBoxSRP
 from speedrun_practice.utilities import get_pc, try_parse_int
-from unrealsdk import find_enum, find_object
+from unrealsdk import construct_object, find_enum, find_object
 
 if TYPE_CHECKING:
-    from bl2 import AttributeDefinition, DesignerAttributeDefinition, WillowPlayerController, SkillDefinition, PlayerReplicationInfo
+    from bl2 import AttributeDefinition, AttributeModifier, DesignerAttributeDefinition, Object, WillowPlayerController, SkillDefinition, \
+        WillowPlayerReplicationInfo, WillowWeapon
 
-""" notes for co-op
-Everything in this file needs to be executed on the host. So that's a clear boundary. How do we make sure a client never calls this?
-Basically these methods should only be called once we've crossed a network method boundary (even if host calls a host.message function).
 
-The clients of this file are checkpoints and keybinds. Maybe all host request methods should go here too? And all functions become private?
+# class Modifier(defaultdict):
+#     """Setting up a dict to store our MT_PreAdd and MT_Scale values. We can safely ignore MT_PostAdd because they don't get used
+#     on the weapons we're interested in for mass duping. Doing it this way so I can directly access these values with the enum value for
+#     EModifierType"""
+#
+#     def __init__(self, zero: float = 0, one: float = 0):
+#         super().__init__(float)
+#         self[0] = zero
+#         self[1] = one
 
-another option would be put all these in a class that gets instantiated through a network method, so the sender pri becomes an instance
-attribute. Basically the methods can't be used without an instance created by that.
-"""
+@dataclass
+class Modifier:
+    """We have to keep positive and negative scale values separate from each other."""
+    scale_pos: float = 0
+    scale_neg: float = 0
+    pre_add: float = 0
+
+    def add_modifier_value(self, attr_modifier: AttributeModifier) -> None:
+        if attr_modifier.Type.value == 0:
+            if attr_modifier.Value > 0:
+                self.scale_pos += attr_modifier.Value
+            elif attr_modifier.Value < 0:
+                self.scale_neg += attr_modifier.Value
+        elif attr_modifier.Type.value == 1:
+            self.pre_add += attr_modifier.Value
+
+
+@dataclass
+class ExternalAttributeModifiers:
+    MinValue: Modifier = field(default_factory=Modifier)
+    MaxValue: Modifier = field(default_factory=Modifier)
+    OnIdleRegenerationRate: Modifier = field(default_factory=Modifier)
+    CurrentInstantHitCriticalHitBonus: Modifier = field(default_factory=Modifier)
+
+    def msg(self):
+        msg = f"\n\tCrit PreAdd: {self.CurrentInstantHitCriticalHitBonus.pre_add}"
+        msg += f"\n\tCrit Scale: {self.CurrentInstantHitCriticalHitBonus.scale_pos}"
+        return msg
 
 
 class HostSkillManager:
@@ -27,7 +60,7 @@ class HostSkillManager:
     Class for which instances gets created through a network method. Only the host can run these functions.
     """
 
-    def __init__(self, sender_pri: PlayerReplicationInfo):
+    def __init__(self, sender_pri: WillowPlayerReplicationInfo):
         self.sender_pri = sender_pri
         self.sender_pc = cast("WillowPlayerController", self.sender_pri.Owner)
         self.pc = get_pc()
@@ -57,37 +90,95 @@ class HostSkillManager:
             self.remove_skill_definition_instance(skill_path_name)
         for i in range(target_stacks):
             self.add_skill_definition_instance(skill_path_name)
-        print(f"Set {skill_path_name.split('.')[-1]} stacks to {target_stacks} for {self.sender_pri.GetHumanReadableName}")
+        print(f"Set {skill_path_name.split('.')[-1]} stacks to {target_stacks} for {self.sender_pri.GetHumanReadableName()}")
 
-    def trigger_kill_skills(self, pc: WillowPlayerController):
+    def trigger_kill_skills(self) -> None:
         e_instinct_skill_actions: WillowPlayerController.EInstinctSkillActions = find_enum("EInstinctSkillActions")
-        pc.NotifyInstinctSkillAction(e_instinct_skill_actions.ISA_KilledEnemy)
-
+        self.sender_pc.NotifyInstinctSkillAction(e_instinct_skill_actions.ISA_KilledEnemy)
 
     def get_attribute_value(self, attr_str: str) -> float:
         attribute_def = cast("AttributeDefinition", find_object("AttributeDefinition", attr_str))
         return attribute_def.GetValue(self.sender_pc)[0]  # SDK returns tuples for out params
 
-    def get_designer_attribute_value(self, designer_attr_str: str):
+    def get_designer_attribute_value(self, designer_attr_str: str) -> float:
         attribute_def: Optional[DesignerAttributeDefinition] = cast("DesignerAttributeDefinition",
                                                                     find_object("DesignerAttributeDefinition", designer_attr_str))
         return attribute_def.GetValue(self.sender_pc)[0]  # SDK returns tuples for out params
 
-    def set_designer_attribute_value(self, target_value: int, designer_attr_str: str):
+    def set_designer_attribute_value(self, target_value: int, designer_attr_str: str) -> None:
         attribute_def = cast("DesignerAttributeDefinition", find_object("DesignerAttributeDefinition", designer_attr_str))
         attribute_def.SetAttributeBaseValue(self.sender_pc, target_value)
 
+    def get_external_attribute_modifier_totals(self, include_srp: bool) -> ExternalAttributeModifiers:
+        """Get values for each of accuracy min/max, idle regen rate, and crit bonus"""
+        ext_mods = ExternalAttributeModifiers()
+        equipped_weapons = cast(List["WillowWeapon"], self.sender_pc.GetPawnInventoryManager().GetEquippedWeapons(
+            None, None, None, None)[1:])
+
+        # We're going to exclude any modifiers that the PC's equipped weapons think are applied. We really only want orphaned modifiers.
+        exclude_modifiers = []
+        for weap in equipped_weapons:
+            if weap:
+                for applied_attribute_effect in weap.ExternalAttributeModifiers:
+                    exclude_modifiers.append(applied_attribute_effect.Modifier)
+
+        def sum_modifiers(stack: List[AttributeModifier], target: Modifier):
+            for modifier in stack:
+                if modifier.Type.value in [0, 1] and (include_srp or 'SRP_' not in modifier.Name) and modifier not in exclude_modifiers:
+                    target.add_modifier_value(modifier)
+
+        sum_modifiers(self.sender_pc.AccuracyPool.Data.MinValueModifierStack, ext_mods.MinValue)
+        sum_modifiers(self.sender_pc.AccuracyPool.Data.MaxValueModifierStack, ext_mods.MaxValue)
+        sum_modifiers(self.sender_pc.AccuracyPool.Data.OnIdleRegenerationRateModifierStack, ext_mods.OnIdleRegenerationRate)
+        sum_modifiers(self.sender_pc.CurrentInstantHitCriticalHitBonusModifierStack, ext_mods.CurrentInstantHitCriticalHitBonus)
+        return ext_mods
+
+    def set_external_attribute_modifiers(self, target_modifiers: ExternalAttributeModifiers) -> None:
+        """We have current modifier totals and target modifier totals. We're going to get the difference and add a modifier to the stack"""
+        # Remove any existing modifiers that we put in
+        current_modifiers = self.get_external_attribute_modifier_totals(False)
+
+        def add_trueup_modifiers(target_obj: Object, attr_name: str) -> None:
+            """Need two separate modifiers for scale pos and scale neg"""
+            for modifier_type, type_name in [(0, 'scale_pos'), (0, 'scale_neg'), (1, 'pre_add')]:
+                attr_modifier = cast("AttributeModifier",
+                                      construct_object(cls="AttributeModifier", outer=self.sender_pc, name=f"SRP_{attr_name}_{type_name}"))
+                attr_modifier.Type = modifier_type
+                attr_modifier.Value = getattr(getattr(target_modifiers, attr_name), type_name) - getattr(getattr(current_modifiers, attr_name), type_name)
+                if abs(attr_modifier.Value) > 0.0001:
+                    target_obj.AddModifier(attr_modifier, attr_name)
+
+        add_trueup_modifiers(self.sender_pc.AccuracyPool.Data, "MinValue")
+        add_trueup_modifiers(self.sender_pc.AccuracyPool.Data, "MaxValue")
+        add_trueup_modifiers(self.sender_pc.AccuracyPool.Data, "OnIdleRegenerationRate")
+        add_trueup_modifiers(self.sender_pc, "CurrentInstantHitCriticalHitBonus")
+
 
 @host.json_message
-def set_stacks(<callback>, target_stacks, ):
-    host_skill_manager = HostSkillManager(sender_pri=set_stacks.sender)
-    # Could be
-    host_skill_manager.set_skill_stacks(target_stacks, "GD_Tulip_DeathTrap.Skills.Skill_ShieldBoost_Player")
-    # or
-    host_skill_manager.set_designer_attribute_value(target_stacks, "GD_Tulip_Mechromancer_Skills.Misc.Att_Anarchy_NumberOfStacks")
+def request_set_skill_stacks(target_stacks: int, skill_path: str) -> None:
+    host_skill_manager = HostSkillManager(sender_pri=request_set_skill_stacks.sender)
+    host_skill_manager.set_skill_stacks(target_stacks, skill_path)
 
 
-def text_input_stacks(func: Callable[[WillowPlayerController, int, str], None], title: str, ref: str = '') -> None:
+@host.json_message
+def request_set_designer_attribute_value(target_stacks: int, skill_path: str) -> None:
+    host_skill_manager = HostSkillManager(sender_pri=request_set_designer_attribute_value.sender)
+    host_skill_manager.set_designer_attribute_value(target_stacks, skill_path)
+
+
+@host.message
+def request_trigger_kill_skills() -> None:
+    host_skill_manager = HostSkillManager(sender_pri=request_trigger_kill_skills.sender)
+    host_skill_manager.trigger_kill_skills()
+
+
+@host.message
+def request_get_designer_attribute_value(designer_attr_str: str) -> None:
+    host_skill_manager = HostSkillManager(sender_pri=request_get_designer_attribute_value.sender)
+    value = host_skill_manager.get_designer_attribute_value(designer_attr_str)
+
+
+def text_input_stacks(func: Callable[[int, str], None], title: str, path: str = '') -> None:
     """Handle input box creation for various actions"""
     input_box = TextInputBoxSRP(title)
     pc = get_pc()
@@ -96,7 +187,7 @@ def text_input_stacks(func: Callable[[WillowPlayerController, int, str], None], 
         if msg:
             target_val = try_parse_int(msg)
             if target_val >= 0:
-                func(pc, target_val, ref)
+                func(target_val, path)
             else:
                 print("Value must be greater than 0")
 
