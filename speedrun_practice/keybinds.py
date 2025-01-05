@@ -4,13 +4,13 @@ from dataclasses import asdict, dataclass
 from typing import Callable, List, TYPE_CHECKING, cast
 
 from mods_base import KeybindType
-from speedrun_practice.checkpoints import CheckpointSaver, request_game_state, request_load_checkpoint, request_save_checkpoint, \
-    text_input_checkpoint
+from speedrun_practice.checkpoints import CheckpointSaver, text_input_checkpoint
+from speedrun_practice import request_game_state, request_load_checkpoint, request_save_checkpoint, request_set_designer_attribute_value, \
+    request_set_skill_stacks, request_trigger_kill_skills
 from speedrun_practice.gear import GearRandomizer
 from speedrun_practice.options import SPOptions
 from speedrun_practice.reloader import register_module
-from speedrun_practice.skills import request_set_designer_attribute_value, request_set_skill_stacks, \
-    request_trigger_kill_skills, text_input_stacks
+from speedrun_practice.skills import text_input_stacks
 from speedrun_practice.utilities import GameVersion, PlayerClass, RunCategory, feedback, get_pc, restore_commander_position
 from unrealsdk import find_all, find_enum, make_struct
 from unrealsdk.hooks import Block

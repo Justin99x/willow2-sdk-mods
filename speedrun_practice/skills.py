@@ -1,18 +1,16 @@
 from __future__ import annotations
 
-from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Callable, List, Literal, Optional, TYPE_CHECKING, cast
+from typing import Callable, List, Optional, TYPE_CHECKING, cast
 
-from networking import host
 from speedrun_practice.reloader import register_module
 from speedrun_practice.text_input import TextInputBoxSRP
 from speedrun_practice.utilities import get_pc, try_parse_int
 from unrealsdk import construct_object, find_enum, find_object
 
 if TYPE_CHECKING:
-    from bl2 import AttributeDefinition, AttributeModifier, DesignerAttributeDefinition, Object, WillowPlayerController, SkillDefinition, \
-        WillowPlayerReplicationInfo, WillowWeapon
+    from bl2 import AttributeModifier, DesignerAttributeDefinition, Object, WillowPlayerController, SkillDefinition, \
+        WillowPlayerReplicationInfo
 
 
 # class Modifier(defaultdict):
@@ -152,30 +150,6 @@ class HostSkillManager:
         add_trueup_modifiers(self.sender_pc.AccuracyPool.Data, "MaxValue")
         add_trueup_modifiers(self.sender_pc.AccuracyPool.Data, "OnIdleRegenerationRate")
         add_trueup_modifiers(self.sender_pc, "CurrentInstantHitCriticalHitBonus")
-
-
-@host.json_message
-def request_set_skill_stacks(target_stacks: int, skill_path: str) -> None:
-    host_skill_manager = HostSkillManager(sender_pri=request_set_skill_stacks.sender)
-    host_skill_manager.set_skill_stacks(target_stacks, skill_path)
-
-
-@host.json_message
-def request_set_designer_attribute_value(target_stacks: int, skill_path: str) -> None:
-    host_skill_manager = HostSkillManager(sender_pri=request_set_designer_attribute_value.sender)
-    host_skill_manager.set_designer_attribute_value(target_stacks, skill_path)
-
-
-@host.message
-def request_trigger_kill_skills() -> None:
-    host_skill_manager = HostSkillManager(sender_pri=request_trigger_kill_skills.sender)
-    host_skill_manager.trigger_kill_skills()
-
-
-@host.message
-def request_get_designer_attribute_value(designer_attr_str: str) -> None:
-    host_skill_manager = HostSkillManager(sender_pri=request_get_designer_attribute_value.sender)
-    value = host_skill_manager.get_designer_attribute_value(designer_attr_str)
 
 
 def text_input_stacks(func: Callable[[int, str], None], title: str, path: str = '') -> None:
