@@ -14,7 +14,7 @@ from speedrun_practice.utilities import GameVersion, PlayerClass, RunCategory, e
     get_pc, get_player_class, get_run_category, feedback
 from speedrun_practice.skills import request_set_skill_stacks, request_trigger_kill_skills, request_get_designer_attribute_value, \
     request_set_designer_attribute_value
-from speedrun_practice.checkpoints import request_load_checkpoint, request_save_checkpoint, client_save_checkpoint
+from speedrun_practice.checkpoints import request_load_checkpoint, request_save_checkpoint, client_save_checkpoint, request_game_state, client_log_game_state
 from unrealsdk.hooks import Type, add_hook, remove_hook
 from unrealsdk.unreal import BoundFunction
 from willow2_mod_menu.data_providers.mod_options import ModOptionsDataProvider

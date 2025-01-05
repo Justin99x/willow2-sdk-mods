@@ -4,7 +4,8 @@ from dataclasses import asdict, dataclass
 from typing import Callable, List, TYPE_CHECKING, cast
 
 from mods_base import KeybindType
-from speedrun_practice.checkpoints import CheckpointSaver, request_load_checkpoint, request_save_checkpoint, text_input_checkpoint
+from speedrun_practice.checkpoints import CheckpointSaver, request_game_state, request_load_checkpoint, request_save_checkpoint, \
+    text_input_checkpoint
 from speedrun_practice.gear import GearRandomizer
 from speedrun_practice.options import SPOptions
 from speedrun_practice.reloader import register_module
@@ -52,8 +53,10 @@ class SPKeybinds:
                                          sp_callback=self.reset_to_position_and_trigger_skills,
                                          is_hidden=True, order=31)
 
-        self.save_checkpoint = SPKeybind("Save New Checkpoint", "None", sp_callback=self.save_checkpoint, order=40)
-        self.overwrite_checkpoint = SPKeybind("Save Current Checkpoint", "None", sp_callback=self.overwrite_save, order=41)
+        self.log_current_state = SPKeybind("Log Current Stats", None, sp_callback=log_current_state, is_hidden=True, order=35)
+
+        self.save_checkpoint = SPKeybind("Save New Checkpoint", "None", sp_callback=save_checkpoint, order=40)
+        self.overwrite_checkpoint = SPKeybind("Save Current Checkpoint", "None", sp_callback=overwrite_save, order=41)
         self.load_checkpoint = SPKeybind("Load Checkpoint State", "None", sp_callback=self.load_checkpoint, order=42)
         self.touch_save = SPKeybind("Move Current Save to Top", "None", sp_callback=self.touch_file, order=43)
 
@@ -61,14 +64,14 @@ class SPKeybinds:
     def keybinds(self) -> List[SPKeybind]:
         return [self.buckup, self.anarchy, self.free_shot_stacks, self.smasher_chance_stacks, self.smasher_SMASH_stacks, self.merge_weapons,
                 self.randomize_gear, self.reset_gunzerk, self.reset_and_trigger, self.save_checkpoint, self.overwrite_checkpoint,
-                self.load_checkpoint, self.touch_save]
+                self.load_checkpoint, self.touch_save, self.log_current_state]
 
     def enable(self, game_version: GameVersion, player_class: PlayerClass, run_category: RunCategory):
         self.game_version = game_version
         self.player_class = player_class
         self.run_category = run_category
 
-        self._enable_keybinds([self.save_checkpoint,self.overwrite_checkpoint, self.load_checkpoint, self.touch_save])
+        self._enable_keybinds([self.save_checkpoint,self.overwrite_checkpoint, self.load_checkpoint, self.touch_save, self.log_current_state])
 
         if self.player_class == PlayerClass.Gaige:
             self._enable_keybinds([self.buckup, self.anarchy])
@@ -118,11 +121,7 @@ class SPKeybinds:
         if self.options.kill_skills.value:
             request_trigger_kill_skills(pc)
 
-    def save_checkpoint(self):
-        text_input_checkpoint("Character Save Name")
 
-    def overwrite_save(self):
-        request_save_checkpoint('', True)
 
     def load_checkpoint(self):
         saver = CheckpointSaver(None, self.options.save_game_path.value)
@@ -133,6 +132,12 @@ class SPKeybinds:
     def touch_file(self):
         saver = CheckpointSaver(None, self.options.save_game_path.value)
         saver.touch_current_save()
+
+def save_checkpoint():
+    text_input_checkpoint("Character Save Name")
+
+def overwrite_save():
+    request_save_checkpoint('', True)
 
 
 def merge_all_equipped_weapons() -> None:
@@ -145,6 +150,9 @@ def merge_all_equipped_weapons() -> None:
             weapon.ApplyAllExternalAttributeEffects()
             msg = msg + '\n' + weapon.GetShortHumanReadableName()
     feedback(pc.PlayerReplicationInfo, f"Bonuses from the following weapons are applied: {msg}")
+
+def log_current_state():
+    request_game_state()
 
 
 def set_free_shot_stacks():
@@ -162,6 +170,7 @@ def set_smasher_SMASH_stacks():
 def randomize_any_p_gear():
     gear_r = GearRandomizer()
     gear_r.randomize_gear()
+
 
 
 def reset_gunzerk_and_weapons():

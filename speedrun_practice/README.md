@@ -1,6 +1,5 @@
 Todo:
 - Weapon clip sizes aren't set correctly for off host. (might just skip that part for off host)
-- Add some logging for crit damage
 
 
 # Speedrun Practice Mod

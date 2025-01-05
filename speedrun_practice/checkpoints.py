@@ -12,7 +12,7 @@ from speedrun_practice.text_input import TextInputBoxSRP
 from speedrun_practice.utilities import PlayerClass, GameVersion, get_game_version
 from speedrun_practice.utilities import Position, apply_position, feedback, get_position, get_pc
 from unrealsdk import find_object, make_struct
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, fields
 
 if TYPE_CHECKING:
     from bl2 import AttributeDefinition, Object, WillowPlayerReplicationInfo, WillowWeapon, WillowPlayerController
@@ -101,6 +101,15 @@ class GameState:
     crit_scale_pos: float = 0
     crit_scale_neg: float = 0
     crit_pre: float = 0
+
+    def __str__(self):
+        result = f"{self.__class__.__name__}:\n"
+        for field in fields(self):
+            if field.name not in ['weapons','X', 'Y', 'Z', 'Pitch', 'Yaw', 'weapon1_clip', 'weapon2_clip', 'weapon3_clip', 'weapon4_clip']:
+                value = getattr(self, field.name)
+                result += f"  {field.name}: {value}\n"
+        return result
+
 
     @property
     def external_modifiers(self) -> ExternalAttributeModifiers:
@@ -417,6 +426,22 @@ def request_load_checkpoint(game_state_dict: Dict[str, int | float]) -> None:
     game_state = GameState(**game_state_dict)
     host_game_state_manager = HostGameStateManager(sender_pri)
     host_game_state_manager.load_game_state(game_state)
+
+@targeted.json_message
+def client_log_game_state(game_state_dict: Dict[str, int|float]) -> None:
+    """Request back to client to log the game state to console."""
+    game_state = GameState(**game_state_dict)
+    print(game_state)
+
+
+@host.message
+def request_game_state() -> None:
+    """Sending a request to host to send back a game state for logging to console"""
+    sender_pri = cast("WillowPlayerReplicationInfo", request_game_state.sender)
+    host_game_state_manager = HostGameStateManager(sender_pri)
+    game_state = host_game_state_manager.get_game_state()
+    client_log_game_state(sender_pri, asdict(game_state))
+
 
 
 def text_input_checkpoint(title: str) -> None:
