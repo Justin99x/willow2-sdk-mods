@@ -4,14 +4,14 @@ from dataclasses import asdict, dataclass
 from typing import Callable, List, TYPE_CHECKING, cast
 
 from mods_base import KeybindType
-from speedrun_practice.checkpoints import CheckpointSaver, text_input_checkpoint
-from speedrun_practice import request_game_state, request_load_checkpoint, request_save_checkpoint, request_set_designer_attribute_value, \
+from speedrun_practice.checkpoints import CheckpointSaver
+from speedrun_practice.network_funcs import request_game_state, request_load_checkpoint, request_save_checkpoint, request_set_designer_attribute_value, \
     request_set_skill_stacks, request_trigger_kill_skills
 from speedrun_practice.gear import GearRandomizer
 from speedrun_practice.options import SPOptions
 from speedrun_practice.reloader import register_module
-from speedrun_practice.skills import text_input_stacks
-from speedrun_practice.utilities import GameVersion, PlayerClass, RunCategory, feedback, get_pc, restore_commander_position
+from speedrun_practice.text_input import TextInputBoxSRP
+from speedrun_practice.utilities import GameVersion, PlayerClass, RunCategory, feedback, get_pc, restore_commander_position, try_parse_int
 from unrealsdk import find_all, find_enum, make_struct
 from unrealsdk.hooks import Block
 
@@ -134,7 +134,17 @@ class SPKeybinds:
         saver.touch_current_save()
 
 def save_checkpoint():
-    text_input_checkpoint("Character Save Name")
+    """Handle input box creation for saving a checkpoint.
+        Result then triggers network methods to gather information and complete the save."""
+    input_box = TextInputBoxSRP("Character Save Name")
+
+    def on_submit(msg: str) -> None:
+        if msg:
+            request_save_checkpoint(msg, False)
+
+    input_box.on_submit = on_submit
+    input_box.show()
+    # text_input_checkpoint("Character Save Name")
 
 def overwrite_save():
     request_save_checkpoint('', True)
@@ -215,6 +225,21 @@ def set_anarchy_stacks():
 
 
 
+def text_input_stacks(func: Callable[[int, str], None], title: str, path: str = '') -> None:
+    """Handle input box creation for various actions"""
+    input_box = TextInputBoxSRP(title)
+    pc = get_pc()
+
+    def on_submit(msg: str) -> None:
+        if msg:
+            target_val = try_parse_int(msg)
+            if target_val >= 0:
+                func(target_val, path)
+            else:
+                print("Value must be greater than 0")
+
+    input_box.on_submit = on_submit
+    input_box.show()
 
 
 register_module(__name__)

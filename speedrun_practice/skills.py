@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Callable, List, Optional, TYPE_CHECKING, cast
+from typing import List, Optional, TYPE_CHECKING, cast
 
 from speedrun_practice.reloader import register_module
-from speedrun_practice.text_input import TextInputBoxSRP
-from speedrun_practice.utilities import get_pc, try_parse_int
+from speedrun_practice.utilities import get_pc
 from unrealsdk import construct_object, find_enum, find_object
 
 if TYPE_CHECKING:
@@ -150,23 +149,6 @@ class HostSkillManager:
         add_trueup_modifiers(self.sender_pc.AccuracyPool.Data, "MaxValue")
         add_trueup_modifiers(self.sender_pc.AccuracyPool.Data, "OnIdleRegenerationRate")
         add_trueup_modifiers(self.sender_pc, "CurrentInstantHitCriticalHitBonus")
-
-
-def text_input_stacks(func: Callable[[int, str], None], title: str, path: str = '') -> None:
-    """Handle input box creation for various actions"""
-    input_box = TextInputBoxSRP(title)
-    pc = get_pc()
-
-    def on_submit(msg: str) -> None:
-        if msg:
-            target_val = try_parse_int(msg)
-            if target_val >= 0:
-                func(target_val, path)
-            else:
-                print("Value must be greater than 0")
-
-    input_box.on_submit = on_submit
-    input_box.show()
 
 
 register_module(__name__)

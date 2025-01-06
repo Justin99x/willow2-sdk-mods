@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, Tuple, cast
 
 from speedrun_practice.reloader import register_module
 from speedrun_practice.skills import ExternalAttributeModifiers, HostSkillManager, Modifier
-from speedrun_practice.text_input import TextInputBoxSRP
 from speedrun_practice.utilities import PlayerClass, GameVersion, get_game_version
 from speedrun_practice.utilities import Position, apply_position, feedback, get_position, get_pc
 from unrealsdk import find_object, make_struct
@@ -15,7 +14,6 @@ from dataclasses import dataclass, fields
 
 if TYPE_CHECKING:
     from bl2 import AttributeDefinition, WillowPlayerReplicationInfo, WillowWeapon
-    from speedrun_practice import request_save_checkpoint
 
 SCALED_STATS = (
     "X", "Y", "Z", "Pitch", "Yaw", "acc_min_scale_pos", "acc_min_scale_neg", "acc_min_pre", "acc_max_scale_pos",
@@ -399,17 +397,17 @@ class CheckpointSaver:
         Path(self.get_current_file_path()).touch(exist_ok=True)
 
 
-def text_input_checkpoint(title: str) -> None:
-    """Handle input box creation for saving a checkpoint.
-    Result then triggers network methods to gather information and complete the save."""
-    input_box = TextInputBoxSRP(title)
-
-    def on_submit(msg: str) -> None:
-        if msg:
-            request_save_checkpoint(msg, False)
-
-    input_box.on_submit = on_submit
-    input_box.show()
+# def text_input_checkpoint(title: str) -> None:
+#     """Handle input box creation for saving a checkpoint.
+#     Result then triggers network methods to gather information and complete the save."""
+#     input_box = TextInputBoxSRP(title)
+#
+#     def on_submit(msg: str) -> None:
+#         if msg:
+#             request_save_checkpoint(msg, False)
+#
+#     input_box.on_submit = on_submit
+#     input_box.show()
 
 
 register_module(__name__)

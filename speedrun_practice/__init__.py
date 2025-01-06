@@ -20,6 +20,7 @@ from willow2_mod_menu.options_menu import data_provider_stack, push_mod_options
 if TYPE_CHECKING:
     from bl2 import WillowPlayerController, WillowScrollingListDataProviderOptionsBase
 
+
 __version__: str
 __version_info__: tuple[int, ...]
 
