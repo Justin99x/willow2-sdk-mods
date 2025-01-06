@@ -16,6 +16,8 @@ def zip_dir(dir_name: str):
     finally:
         zip_file.close()
 
+    if os.path.exists(sdkmod_name):
+        os.remove(sdkmod_name)
     os.rename(zip_file_name, sdkmod_name)
 
 
