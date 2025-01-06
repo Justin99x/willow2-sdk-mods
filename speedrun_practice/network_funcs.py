@@ -44,6 +44,7 @@ def request_load_checkpoint(game_state_dict: Dict[str, int | float]) -> None:
     game_state = GameState(**game_state_dict)
     host_game_state_manager = HostGameStateManager(sender_pri)
     host_game_state_manager.load_game_state(game_state)
+    game_state.critical_bonus = round(host_game_state_manager.target_pc.CurrentInstantHitCriticalHitBonus, 2) # For info only
     client_log_game_state(sender_pri, asdict(game_state))
 
 

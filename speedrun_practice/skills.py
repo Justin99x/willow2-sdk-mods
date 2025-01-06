@@ -8,19 +8,9 @@ from speedrun_practice.utilities import get_pc
 from unrealsdk import construct_object, find_enum, find_object
 
 if TYPE_CHECKING:
-    from bl2 import AttributeModifier, DesignerAttributeDefinition, Object, WillowPlayerController, SkillDefinition, \
-        WillowPlayerReplicationInfo
+    from bl2 import AttributeModifier, DesignerAttributeDefinition, Inventory, Object, WillowPlayerController, SkillDefinition, \
+    WillowPlayerReplicationInfo, WillowInventory, WillowEquipableItem, WillowWeapon
 
-
-# class Modifier(defaultdict):
-#     """Setting up a dict to store our MT_PreAdd and MT_Scale values. We can safely ignore MT_PostAdd because they don't get used
-#     on the weapons we're interested in for mass duping. Doing it this way so I can directly access these values with the enum value for
-#     EModifierType"""
-#
-#     def __init__(self, zero: float = 0, one: float = 0):
-#         super().__init__(float)
-#         self[0] = zero
-#         self[1] = one
 
 @dataclass
 class Modifier:
@@ -87,7 +77,7 @@ class HostSkillManager:
             self.remove_skill_definition_instance(skill_path_name)
         for i in range(target_stacks):
             self.add_skill_definition_instance(skill_path_name)
-        print(f"Set {skill_path_name.split('.')[-1]} stacks to {target_stacks} for {self.sender_pri.GetHumanReadableName()}")
+        # print(f"Set {skill_path_name.split('.')[-1]} stacks to {target_stacks} for {self.sender_pri.GetHumanReadableName()}")
 
     def trigger_kill_skills(self) -> None:
         e_instinct_skill_actions: WillowPlayerController.EInstinctSkillActions = find_enum("EInstinctSkillActions")
@@ -109,21 +99,39 @@ class HostSkillManager:
     def get_external_attribute_modifier_totals(self, include_srp: bool) -> ExternalAttributeModifiers:
         """Get values for each of accuracy min/max, idle regen rate, and crit bonus"""
         ext_mods = ExternalAttributeModifiers()
-        equipped_weapons = cast(List["WillowWeapon"], self.sender_pc.GetPawnInventoryManager().GetEquippedWeapons(
-            None, None, None, None)[1:])
 
-        # We're going to exclude any modifiers that the PC's equipped weapons think are applied. We really only want orphaned modifiers.
-        exclude_modifiers = []
-        for weap in equipped_weapons:
-            if weap:
-                for applied_attribute_effect in weap.ExternalAttributeModifiers:
+
+        # We're going to exclude any modifiers that are applied from known sources (equipped inventory, active skills, and sprinting)
+        # First grab objects we need to check
+        equipped_inv: List[Inventory] = []
+        inv_chain = self.sender_pc.GetPawnInventoryManager().InventoryChain
+        while inv_chain:
+            equipped_inv.append(inv_chain)
+            inv_chain = inv_chain.Inventory
+        item_chain = self.sender_pc.GetPawnInventoryManager().ItemChain
+        while item_chain:
+            equipped_inv.append(item_chain)
+            item_chain = item_chain.Inventory
+        active_skills = self.sender_pc.GetSkillManager().ActiveSkills
+
+        # Create the list of modifiers to exclude
+        exclude_modifiers: List[AttributeModifier] = []
+        for inv in equipped_inv:
+            if inv:
+                for applied_attribute_effect in inv.ExternalAttributeModifiers:
                     exclude_modifiers.append(applied_attribute_effect.Modifier)
+        for skill in active_skills:
+            for applied_skill_effect in skill.SkillEffects:
+                exclude_modifiers.append(applied_skill_effect.Modifier)
+        for applied_attribute_effect in self.sender_pc.SprintModifiers:
+            exclude_modifiers.append(applied_attribute_effect.Modifier)
 
         def sum_modifiers(stack: List[AttributeModifier], target: Modifier):
             for modifier in stack:
                 if modifier.Type.value in [0, 1] and (include_srp or 'SRP_' not in modifier.Name) and modifier not in exclude_modifiers:
                     target.add_modifier_value(modifier)
 
+        # Get all the "orphaned" modifiers. These are assumed to be due to mass duping.
         sum_modifiers(self.sender_pc.AccuracyPool.Data.MinValueModifierStack, ext_mods.MinValue)
         sum_modifiers(self.sender_pc.AccuracyPool.Data.MaxValueModifierStack, ext_mods.MaxValue)
         sum_modifiers(self.sender_pc.AccuracyPool.Data.OnIdleRegenerationRateModifierStack, ext_mods.OnIdleRegenerationRate)
@@ -132,8 +140,7 @@ class HostSkillManager:
 
     def set_external_attribute_modifiers(self, target_modifiers: ExternalAttributeModifiers) -> None:
         """We have current modifier totals and target modifier totals. We're going to get the difference and add a modifier to the stack"""
-        # Remove any existing modifiers that we put in
-        current_modifiers = self.get_external_attribute_modifier_totals(False)
+        # current_modifiers = self.get_external_attribute_modifier_totals(False)
 
         def add_trueup_modifiers(target_obj: Object, attr_name: str) -> None:
             """Need two separate modifiers for scale pos and scale neg"""
@@ -141,7 +148,7 @@ class HostSkillManager:
                 attr_modifier = cast("AttributeModifier",
                                       construct_object(cls="AttributeModifier", outer=self.sender_pc, name=f"SRP_{attr_name}_{type_name}"))
                 attr_modifier.Type = modifier_type
-                attr_modifier.Value = getattr(getattr(target_modifiers, attr_name), type_name) - getattr(getattr(current_modifiers, attr_name), type_name)
+                attr_modifier.Value = getattr(getattr(target_modifiers, attr_name), type_name)
                 if abs(attr_modifier.Value) > 0.0001:
                     target_obj.AddModifier(attr_modifier, attr_name)
 

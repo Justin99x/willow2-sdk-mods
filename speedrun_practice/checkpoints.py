@@ -13,7 +13,7 @@ from unrealsdk import find_object, make_struct
 from dataclasses import dataclass, fields
 
 if TYPE_CHECKING:
-    from bl2 import AttributeDefinition, WillowPlayerReplicationInfo, WillowWeapon
+    from bl2 import AttributeDefinition, WillowPlayerReplicationInfo, WillowWeapon, WillowPlayerController
 
 SCALED_STATS = (
     "X", "Y", "Z", "Pitch", "Yaw", "acc_min_scale_pos", "acc_min_scale_neg", "acc_min_pre", "acc_max_scale_pos",
@@ -70,6 +70,7 @@ PLAYER_STATS_MAP = {
 
 @dataclass
 class GameState:
+    critical_bonus: float = 0  # Not needed for saving/loading, just for logging game state
     anarchy_stacks: int = 0
     buckup_stacks: int = 0
     freeshot_stacks: int = 0
@@ -86,6 +87,10 @@ class GameState:
     weapon3_clip: int = 0
     weapon4_clip: int = 0
     SMASH_stacks: int = 0
+    # Mass duping bonuses
+    crit_scale_pos: float = 0
+    crit_scale_neg: float = 0
+    crit_pre: float = 0
     acc_min_scale_pos: float = 0
     acc_min_scale_neg: float = 0
     acc_min_pre: float = 0
@@ -95,16 +100,30 @@ class GameState:
     acc_idle_scale_pos: float = 0
     acc_idle_scale_neg: float = 0
     acc_idle_pre: float = 0
-    crit_scale_pos: float = 0
-    crit_scale_neg: float = 0
-    crit_pre: float = 0
+
+
 
     def __str__(self):
+
         result = f"{self.__class__.__name__}:\n"
         for field in fields(self):
-            if field.name not in ['weapons','X', 'Y', 'Z', 'Pitch', 'Yaw', 'weapon1_clip', 'weapon2_clip', 'weapon3_clip', 'weapon4_clip']:
+            if field.name not in ['weapons','X', 'Y', 'Z', 'Pitch', 'Yaw', 'weapon1_clip', 'weapon2_clip', 'weapon3_clip', 'weapon4_clip']\
+                    and field.name[:4] != 'acc_' and field.name[:5] != 'crit_':
                 value = getattr(self, field.name)
+                if field.name == 'freeshot_stacks' and value == -1:
+                    weap = cast("WillowWeapon", get_pc().GetActiveOrBestWeapon())
+                    value = weap.ShotCost
                 result += f"  {field.name}: {value}\n"
+        mass_result = "\n  Mass duping bonuses (off host):\n"
+        include = False
+        for field in fields(self):
+            if field.name[:4] == 'acc_' or field.name[:5] == 'crit_':
+                value = getattr(self, field.name)
+                mass_result += f"    {field.name}: {value}\n"
+                if abs(value) > .0001:
+                    include = True
+        if include:
+            result += mass_result
         return result
 
 
@@ -182,6 +201,9 @@ class HostGameStateManager:
         """Get various skill stacks and weapon states for saving as player stats."""
 
         game_state = GameState()
+
+        # Crit - info only
+        game_state.critical_bonus = round(self.target_pc.CurrentInstantHitCriticalHitBonus, 2)
 
         # Buck up and anarchy
         if self.player_class == PlayerClass.Gaige:
