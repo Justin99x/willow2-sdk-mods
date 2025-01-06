@@ -5,7 +5,8 @@ from typing import Callable, List, TYPE_CHECKING, cast
 
 from mods_base import KeybindType
 from speedrun_practice.checkpoints import CheckpointSaver
-from speedrun_practice.network_funcs import request_game_state, request_load_checkpoint, request_save_checkpoint, request_set_designer_attribute_value, \
+from speedrun_practice.network_funcs import request_game_state, request_load_checkpoint, request_save_checkpoint, \
+    request_set_designer_attribute_value, \
     request_set_skill_stacks, request_trigger_kill_skills
 from speedrun_practice.gear import GearRandomizer
 from speedrun_practice.options import SPOptions
@@ -39,6 +40,7 @@ class SPKeybinds:
 
         self.buckup = SPKeybind("Set Buckup Stacks", "None", sp_callback=set_buckup_stacks, is_hidden=True, order=1)
         self.anarchy = SPKeybind("Set Anarchy Stacks", "None", sp_callback=set_anarchy_stacks, is_hidden=True, order=2)
+        self.expertise = SPKeybind("Set Expertise Stacks", None, sp_callback=set_expertise_stacks, is_hidden=True, order=5)
 
         self.free_shot_stacks = SPKeybind("Set Free Shot Stacks", "None", sp_callback=set_free_shot_stacks, is_hidden=True, order=10)
         self.smasher_chance_stacks = SPKeybind("Set Smasher Chance Stacks", "None", sp_callback=set_smasher_chance_stacks, is_hidden=True,
@@ -50,8 +52,8 @@ class SPKeybinds:
 
         self.reset_gunzerk = SPKeybind("Reset Gunzerk and Weapons", "None", sp_callback=reset_gunzerk_and_weapons, is_hidden=True, order=30)
         self.reset_and_trigger = SPKeybind("Reset to Commander Position and Trigger Skills", "None",
-                                         sp_callback=self.reset_to_position_and_trigger_skills,
-                                         is_hidden=True, order=31)
+                                           sp_callback=self.reset_to_position_and_trigger_skills,
+                                           is_hidden=True, order=31)
 
         self.log_current_state = SPKeybind("Log Current Stats", None, sp_callback=log_current_state, is_hidden=True, order=35)
 
@@ -62,7 +64,7 @@ class SPKeybinds:
 
     @property
     def keybinds(self) -> List[SPKeybind]:
-        return [self.buckup, self.anarchy, self.free_shot_stacks, self.smasher_chance_stacks, self.smasher_SMASH_stacks, self.merge_weapons,
+        return [self.buckup, self.anarchy, self.expertise, self.free_shot_stacks, self.smasher_chance_stacks, self.smasher_SMASH_stacks, self.merge_weapons,
                 self.randomize_gear, self.reset_gunzerk, self.reset_and_trigger, self.save_checkpoint, self.overwrite_checkpoint,
                 self.load_checkpoint, self.touch_save, self.log_current_state]
 
@@ -71,12 +73,16 @@ class SPKeybinds:
         self.player_class = player_class
         self.run_category = run_category
 
-        self._enable_keybinds([self.save_checkpoint,self.overwrite_checkpoint, self.load_checkpoint, self.touch_save, self.log_current_state])
+        self._enable_keybinds(
+            [self.save_checkpoint, self.overwrite_checkpoint, self.load_checkpoint, self.touch_save, self.log_current_state])
 
         if self.player_class == PlayerClass.Gaige:
             self._enable_keybinds([self.buckup, self.anarchy])
             if self.run_category == RunCategory.AnyPercentGaige and self.host:
                 self._enable_keybinds([self.randomize_gear])
+
+        if self.player_class == PlayerClass.Axton:
+            self._enable_keybinds([self.expertise])
 
         if self.game_version.in_group([GameVersion.vMerge]):
             self._enable_keybinds([self.free_shot_stacks])
@@ -121,17 +127,15 @@ class SPKeybinds:
         if self.options.kill_skills.value:
             request_trigger_kill_skills(pc)
 
-
-
     def load_checkpoint(self):
         saver = CheckpointSaver(None, self.options.save_game_path.value)
         state_to_load = saver.get_player_stats()
         request_load_checkpoint(asdict(state_to_load))
 
-
     def touch_file(self):
         saver = CheckpointSaver(None, self.options.save_game_path.value)
         saver.touch_current_save()
+
 
 def save_checkpoint():
     """Handle input box creation for saving a checkpoint.
@@ -145,6 +149,7 @@ def save_checkpoint():
     input_box.on_submit = on_submit
     input_box.show()
     # text_input_checkpoint("Character Save Name")
+
 
 def overwrite_save():
     request_save_checkpoint('', True)
@@ -161,8 +166,22 @@ def merge_all_equipped_weapons() -> None:
             msg = msg + '\n' + weapon.GetShortHumanReadableName()
     feedback(pc.PlayerReplicationInfo, f"Bonuses from the following weapons are applied: {msg}")
 
+
 def log_current_state():
     request_game_state()
+
+
+def set_buckup_stacks():
+    text_input_stacks(request_set_skill_stacks, "Set Buckup Stacks", "GD_Tulip_DeathTrap.Skills.Skill_ShieldBoost_Player")
+
+
+def set_anarchy_stacks():
+    text_input_stacks(request_set_designer_attribute_value, "Set Anarchy Stacks",
+                      "GD_Tulip_Mechromancer_Skills.Misc.Att_Anarchy_NumberOfStacks")
+
+
+def set_expertise_stacks():
+    text_input_stacks(request_set_skill_stacks, "Set Expertise Stacks", "GD_Soldier_Skills.Gunpowder.Expertise_MovementSpeed")
 
 
 def set_free_shot_stacks():
@@ -180,7 +199,6 @@ def set_smasher_SMASH_stacks():
 def randomize_any_p_gear():
     gear_r = GearRandomizer()
     gear_r.randomize_gear()
-
 
 
 def reset_gunzerk_and_weapons():
@@ -213,16 +231,6 @@ def reset_gunzerk_and_weapons():
             _drop_pickup_weapon(weapons_by_slot[slot])
     e_quick_weapon_slot: WillowDeclarations.EQuickWeaponSlot = find_enum('EQuickWeaponSlot')
     pc.EquipWeaponFromSlot(e_quick_weapon_slot.QuickSelectLeft)
-
-
-def set_buckup_stacks():
-    text_input_stacks(request_set_skill_stacks, "Set Buckup Stacks", "GD_Tulip_DeathTrap.Skills.Skill_ShieldBoost_Player")
-
-
-def set_anarchy_stacks():
-    text_input_stacks(request_set_designer_attribute_value, "Set Anarchy Stacks",
-                      "GD_Tulip_Mechromancer_Skills.Misc.Att_Anarchy_NumberOfStacks")
-
 
 
 def text_input_stacks(func: Callable[[int, str], None], title: str, path: str = '') -> None:
