@@ -57,16 +57,16 @@ class SPKeybinds:
 
         self.log_current_state = SPKeybind("Log Current Stats", None, sp_callback=log_current_state, is_hidden=True, order=35)
 
-        self.save_checkpoint = SPKeybind("Save New Checkpoint", "None", sp_callback=save_checkpoint, order=40)
+        self.save_checkpoint_kb = SPKeybind("Save New Checkpoint", "None", sp_callback=save_checkpoint, order=40)
         self.overwrite_checkpoint = SPKeybind("Save Current Checkpoint", "None", sp_callback=overwrite_save, order=41)
-        self.load_checkpoint = SPKeybind("Load Checkpoint State", "None", sp_callback=self.load_checkpoint, order=42)
+        self.load_checkpoint_kb = SPKeybind("Load Checkpoint State", "None", sp_callback=self.load_checkpoint, order=42)
         self.touch_save = SPKeybind("Move Current Save to Top", "None", sp_callback=self.touch_file, order=43)
 
     @property
     def keybinds(self) -> List[SPKeybind]:
         return [self.buckup, self.anarchy, self.expertise, self.free_shot_stacks, self.smasher_chance_stacks, self.smasher_SMASH_stacks, self.merge_weapons,
-                self.randomize_gear, self.reset_gunzerk, self.reset_and_trigger, self.save_checkpoint, self.overwrite_checkpoint,
-                self.load_checkpoint, self.touch_save, self.log_current_state]
+                self.randomize_gear, self.reset_gunzerk, self.reset_and_trigger, self.save_checkpoint_kb, self.overwrite_checkpoint,
+                self.load_checkpoint_kb, self.touch_save, self.log_current_state]
 
     def enable(self, game_version: GameVersion, player_class: PlayerClass, run_category: RunCategory):
         self.game_version = game_version
@@ -74,7 +74,7 @@ class SPKeybinds:
         self.run_category = run_category
 
         self._enable_keybinds(
-            [self.save_checkpoint, self.overwrite_checkpoint, self.load_checkpoint, self.touch_save, self.log_current_state])
+            [self.save_checkpoint_kb, self.overwrite_checkpoint, self.load_checkpoint_kb, self.touch_save, self.log_current_state])
 
         if self.player_class == PlayerClass.Gaige:
             self._enable_keybinds([self.buckup, self.anarchy])
