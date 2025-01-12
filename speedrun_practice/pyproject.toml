@@ -5,6 +5,10 @@ authors = [{ name = "Justin99" }]
 description = """
 Utility mod for practicing speedruns
 """
+dependencies = [
+  "Commander == 2.5",
+]
+
 
 [tool.sdkmod]
 name = "Speedrun Practice"
