@@ -4,7 +4,7 @@ import importlib
 import sys
 from collections import defaultdict
 
-from mods_base import command, deregister_mod, get_ordered_mod_list
+from mods_base import command
 
 import_order = defaultdict(list)
 
@@ -16,12 +16,9 @@ def register_module(module_name):
 
 
 @command
-def names(args: argparse.Namespace) -> None:
+def sfo(args: argparse.Namespace) -> None:
     """Utility to automatically reload modules in the correct order. Requires that they all implement register_module"""
-    mod_to_reload: str = 'named_saves'
-    # for mod in get_ordered_mod_list():
-    #     if mod.name == mod_to_reload:
-    #         deregister_mod(mod)
+    mod_to_reload: str = 'save_file_organizer'
 
     import_order_copy = copy.copy(import_order[mod_to_reload])
     import_order[mod_to_reload] = []
@@ -32,4 +29,4 @@ def names(args: argparse.Namespace) -> None:
             print(f'Reloaded module {module_name}')
 
 
-names.enable()
+sfo.enable()

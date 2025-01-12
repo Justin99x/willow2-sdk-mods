@@ -5,7 +5,7 @@ import re
 from typing import TYPE_CHECKING, cast
 
 import mods_base
-from named_saves.reloader import register_module
+from save_file_organizer.reloader import register_module
 
 if TYPE_CHECKING:
     from bl2 import WillowPlayerController

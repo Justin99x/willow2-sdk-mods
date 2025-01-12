@@ -1,0 +1,14 @@
+[project]
+name = "Speedrun Practice"
+version = "2.1"
+authors = [{ name = "Justin99" }]
+description = """
+Utility mod for practicing speedruns
+"""
+
+[tool.sdkmod]
+name = "Speedrun Practice"
+download = ""
+suppported_games = ["BL2"]
+mod_type = "Standard"
+coop_support = "RequiresAllPlayers"

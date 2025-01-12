@@ -5,9 +5,9 @@ import re
 from typing import Any, TYPE_CHECKING
 
 from mods_base import BoolOption, ButtonOption, HiddenOption, build_mod, hook
-from named_saves.actions import SaveListProcessor, get_all_save_data
-from named_saves.utils import extract_user_save_path, get_pc
-from named_saves.reloader import register_module
+from save_file_organizer.actions import SaveListProcessor, get_all_save_data
+from save_file_organizer.utils import extract_user_save_path, get_pc
+from save_file_organizer.reloader import register_module
 from unrealsdk.hooks import Block, Type, prevent_hooking_direct_calls
 from unrealsdk.unreal import BoundFunction, WrappedArray
 
@@ -58,10 +58,10 @@ def strip_save_path(obj: WillowGFxLobbyLoadCharacter,
 
 
 @hook("WillowGame.WillowPlayerController:FixUpLoadString")
-def fixup_load_string(obj: WillowPlayerController,
-                      args: WillowPlayerController.FixUpLoadString.args,
-                      ret: WillowPlayerController.FixUpLoadString.ret,
-                      func: BoundFunction):
+def fix_up_load_string(obj: WillowPlayerController,
+                       args: WillowPlayerController.FixUpLoadString.args,
+                       ret: WillowPlayerController.FixUpLoadString.ret,
+                       func: BoundFunction):
     """Here the game tries to pad the save name to match Save#### format. We just need to block it and return the input, but
      with spaces restored.
     NOTE: Relies on this function only being called to create an arg to LoadGame. Something to keep an eye on.
@@ -152,11 +152,18 @@ def load_game(obj: WillowPlayerController,
 
 
 save_path_hidden_option = HiddenOption(identifier="save_path_hidden_option", value='')
+auto_update_saves_option = BoolOption(identifier="Auto Update Saves",
+                                      value=False)
 update_saves_button = ButtonOption(identifier="Update All Save Names",
                                    description="Updates all saves to Save#### - CharacterName.sav format",
                                    on_press=SaveListProcessor.process_all_saves)
-auto_update_saves_option = BoolOption(identifier="Auto Update Saves",
-                                      value=False)
+restore_saves_button = ButtonOption(identifier="Restore All Save Names",
+                                   description="Restores all saves to Save####.sav format",
+                                   on_press=SaveListProcessor.process_all_saves)
+defrag_saves_button = ButtonOption(identifier="Defrag All Save Names [Advanced]",
+                                   description="Same as update saves, but also orders saves sequentially from 0",
+                                   on_press=SaveListProcessor.process_all_saves)
+
 
 def _on_enable():
     if not save_path_hidden_option.value:
@@ -166,7 +173,7 @@ def _on_enable():
 
 mod = build_mod(
     deregister_same_settings=True,
-    options=[save_path_hidden_option, auto_update_saves_option, update_saves_button],
+    options=[save_path_hidden_option, auto_update_saves_option, update_saves_button, restore_saves_button, defrag_saves_button],
     on_enable=_on_enable
 )
 

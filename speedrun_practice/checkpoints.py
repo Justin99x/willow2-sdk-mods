@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Tuple, cast
 
 from speedrun_practice.reloader import register_module
 from speedrun_practice.skills import ExternalAttributeModifiers, HostSkillManager, Modifier
-from speedrun_practice.utilities import PlayerClass, GameVersion, get_game_version
+from speedrun_practice.utilities import PlayerClass, GameVersion, RunCategory, get_game_version
 from speedrun_practice.utilities import Position, apply_position, feedback, get_position, get_pc
 from unrealsdk import find_object, make_struct
 from dataclasses import dataclass, fields
@@ -112,7 +112,8 @@ class GameState:
                 value = getattr(self, field.name)
                 if field.name == 'freeshot_stacks' and value == -1:
                     weap = cast("WillowWeapon", get_pc().GetActiveOrBestWeapon())
-                    value = weap.ShotCost
+                    value = weap.ShotCostBaseValue
+                    print(value)
                 result += f"  {field.name}: {value}\n"
         mass_result = "\n  Mass duping bonuses (off host):\n"
         include = False
@@ -222,8 +223,7 @@ class HostGameStateManager:
 
         # Free shots: -1 value implies equal to current mag whenever playing on patches that support it.
         if (len(self.host_skill_manager.get_skill_definition_stacks(["Skill_VladofHalfAmmo"])) ==
-                int(self.shotcost_attr.GetBaseValue(self.target_pc.GetActiveOrBestWeapon())[0])
-                and self.game_version.in_group([GameVersion.vStack])):
+                self.target_pc.GetActiveOrBestWeapon().ShotCostBaseValue and self.game_version.in_group([GameVersion.vStack])):
             game_state.freeshot_stacks = -1
         else:
             game_state.freeshot_stacks = len(self.host_skill_manager.get_skill_definition_stacks(["Skill_VladofHalfAmmo"]))
@@ -253,8 +253,17 @@ class HostGameStateManager:
 
     def load_game_state(self, load_state: GameState) -> None:
         """Loads the game state by applying glitches and the saved map position."""
+
         if load_state.X == 0 and load_state.Y == 0:
             feedback(self.target_pri, "No speedrun practice data found in current save file")
+            return
+
+        from speedrun_practice import run_category
+        if run_category == RunCategory.GearedSal:
+            from speedrun_practice.keybinds import _reset_gunzerk_and_weapons
+            apply_position(self.target_pc, load_state.position)
+            self.target_pc.MyWillowPawn.Velocity = make_struct("Vector", X=0, Y=0, Z=0)
+            _reset_gunzerk_and_weapons()
             return
 
         gaige_msg, freeshot_msg, smasher_msg, merge_msg, expertise_msg, modifier_msg = '', '', '', '', '', ''
@@ -352,13 +361,19 @@ class CheckpointSaver:
         return current_file_path
 
     def get_next_open_filename(self) -> str:
-        """Finds next available save number based on files in the save directory. Increments by 1."""
+        """Finds next available save number based on files in the save directory. Increments by 1.
+        Updated to support non Save####.sav formats."""
         try:
             path_num = int(self.current_file_name[4:8])
             decimal = True
         except:
-            path_num = int(self.current_file_name[4:8], 16)
-            decimal = False
+            try:
+                path_num = int(self.current_file_name[4:8], 16)
+                decimal = False
+            except:     # Adding this for compatibility with saves mod.
+                path_num = 0
+                decimal = True
+
         while True:
             path_num = path_num + 1
             if decimal:
@@ -417,19 +432,6 @@ class CheckpointSaver:
 
     def touch_current_save(self):
         Path(self.get_current_file_path()).touch(exist_ok=True)
-
-
-# def text_input_checkpoint(title: str) -> None:
-#     """Handle input box creation for saving a checkpoint.
-#     Result then triggers network methods to gather information and complete the save."""
-#     input_box = TextInputBoxSRP(title)
-#
-#     def on_submit(msg: str) -> None:
-#         if msg:
-#             request_save_checkpoint(msg, False)
-#
-#     input_box.on_submit = on_submit
-#     input_box.show()
 
 
 register_module(__name__)

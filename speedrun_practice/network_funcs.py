@@ -4,6 +4,7 @@ from dataclasses import asdict
 from typing import Dict, TYPE_CHECKING, cast
 
 from networking import host, targeted
+from speedrun_practice.options import save_game_path
 from speedrun_practice.reloader import register_module
 from speedrun_practice.checkpoints import CheckpointSaver, GameState, HostGameStateManager
 from speedrun_practice.skills import HostSkillManager
@@ -17,9 +18,8 @@ if TYPE_CHECKING:
 @targeted.json_message
 def client_save_checkpoint(save_name: str, overwrite: bool, game_state_dict: Dict[str, int | float]) -> None:
     """Host now sends request back to client to complete the save and provides the requested information."""
-    from speedrun_practice import instance   # Avoid circular imports
     game_state = GameState(**game_state_dict)
-    save_dir: str = instance.sp_options.save_game_path.value
+    save_dir: str = save_game_path.value
     saver = CheckpointSaver(save_name, save_dir, game_state)
     saver.save_checkpoint(overwrite)
     feedback(get_pc().PlayerReplicationInfo, f"Saved checkpoint with name {save_name}. See console for details")

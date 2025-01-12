@@ -1,0 +1,28 @@
+#"""
+#Features:
+#- Read and write any save files that end in .sav
+#- Button to rename all saves to a format of "Save#### - <UICharacterName>.sav"
+#- Option to auto rename saves in the above format any time you enter the main menu (useful if you often move saves around between folders).
+#- Button to "defrag" your saves. Make them start at "Save0000 - <UICharacterName>.sav" and increase by 1 from there.
+#  WARNING: this option loads and resaves your save files. If the save has unloaded items, such as from a mod overhaul,
+#  you may lose those items.
+#- Button to restore save names to the standard format based on their save file ID.
+#"""
+
+[project]
+name = "Save File Organizer"
+version = "1.0"
+authors = [{ name = "Justin99" }]
+description = """
+This mod allows save files to be named anything you want, instead of the usual Save####.sav format. Includes various features to bulk rename files in your save folder.
+
+WARNING: The defrag button loads and resaves your save files. If the save has unloaded items, such as from a mod overhaul, you may lose those items.
+"""
+
+[tool.sdkmod]
+name = "Save File Organizer"
+download = ""
+suppported_games = ["BL2", "TPS"]
+mod_type = "Standard"
+
+
