@@ -2,9 +2,7 @@
 pyproject_url: https://raw.githubusercontent.com/Justin99x/willow2-sdk-mods/refs/heads/main/speedrun_practice/pyproject.toml
 ---
 
-# Speedrun Practice Mod
-
-Borderlands 2 mod with various utilities to help in practicing speedruns. All solo speedruns are currently supported on
+Borderlands 2 mod with various utilities to help in practicing speedruns. All speedruns are currently supported on
 some level, although many runs (e.g. current patch) don't need much help other than an easy way to make practice saves.
 
 Co-op is now supported!
@@ -119,7 +117,9 @@ options menu:
 ## Changelog
 
 ### Version 2.1
-
+- Added co-op support. Off-host players can now use keybinds and save game states. Additionally added support for two important co-op run items:
+  - Expertise stacks (saving and keybind)
+  - Crit and accuracy bonuses from mass duping (saving only)
 
 ### Version 2.0
 

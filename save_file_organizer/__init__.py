@@ -155,7 +155,7 @@ update_saves_button = ButtonOption(identifier="Rename All Saves",
 restore_saves_button = ButtonOption(identifier="Restore All Save Names",
                                     description="Restores all saves to Save####.sav format",
                                     on_press=SaveListProcessor.process_all_saves)
-defrag_saves_button = ButtonOption(identifier="Defrag and All Saves [Advanced]",
+defrag_saves_button = ButtonOption(identifier="Defrag All Saves [Advanced]",
                                    description="Same as update saves, but also orders saves sequentially from 0",
                                    on_press=SaveListProcessor.process_all_saves)
 
