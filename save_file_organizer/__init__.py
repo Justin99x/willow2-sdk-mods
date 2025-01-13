@@ -33,7 +33,11 @@ def get_save_game_list(obj: WillowSaveGameManager,
 
     gbx_save_root: str = get_pc().OnlineSub.ProfileDataDirectory
     save_path = save_path_hidden_option.value
-    saves = [os.path.join(gbx_save_root, file) for file in os.listdir(save_path) if file[-4:] == '.sav']
+    saves = sorted(
+        [file for file in os.listdir(save_path) if file.endswith('.sav')],
+        key=lambda file: os.path.getmtime(os.path.join(save_path, file)),
+        reverse=True  # Sorts from newest to oldest
+    )
     for save in saves:
         new_ret.append(save)
 
