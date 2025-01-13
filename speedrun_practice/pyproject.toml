@@ -9,10 +9,13 @@ dependencies = [
   "Commander == 2.5",
 ]
 
+[project.urls]
+"Source Code" = "https://github.com/Justin99x/willow2-sdk-mods/tree/main/speedrun_practice"
+
 
 [tool.sdkmod]
 name = "Speedrun Practice"
-download = ""
+download = "https://github.com/Justin99x/willow2-sdk-mods/raw/refs/heads/main/speedrun_practice/speedrun_practice.sdkmod"
 suppported_games = ["BL2"]
 mod_type = "Standard"
 coop_support = "RequiresAllPlayers"

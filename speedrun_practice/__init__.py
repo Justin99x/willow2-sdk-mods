@@ -67,7 +67,7 @@ add_network_functions(mod_instance)
 if srp_options.save_game_path.value == '':
     print('Attempting to find game saves folder...')
     save_path = extract_user_save_path()
-    srp_options.save_game_path.value = save_path
+    srp_options.save_game_path.value = extract_user_save_path()
     print(f'Successfully found game saves folder at {save_path}')
 
 register_module(__name__)

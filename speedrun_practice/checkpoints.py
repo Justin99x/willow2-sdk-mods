@@ -113,7 +113,6 @@ class GameState:
                 if field.name == 'freeshot_stacks' and value == -1:
                     weap = cast("WillowWeapon", get_pc().GetActiveOrBestWeapon())
                     value = weap.ShotCostBaseValue
-                    print(value)
                 result += f"  {field.name}: {value}\n"
         mass_result = "\n  Mass duping bonuses (off host):\n"
         include = False

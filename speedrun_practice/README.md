@@ -1,9 +1,13 @@
+---
+pyproject_url: https://raw.githubusercontent.com/Justin99x/willow2-sdk-mods/refs/heads/main/speedrun_practice/pyproject.toml
+---
+
 # Speedrun Practice Mod
 
 Borderlands 2 mod with various utilities to help in practicing speedruns. All solo speedruns are currently supported on
 some level, although many runs (e.g. current patch) don't need much help other than an easy way to make practice saves.
 
-Co-op support is in active developement as of January 1, 2025
+Co-op is now supported!
 
 ## Installation
 
@@ -36,10 +40,20 @@ the following actions occur:
 
 - The user is asked for the name of the new file.
 - A new save file is created with the current state of the game and set to read only.
-- Non-savable game states of Anarchy, Buck Up, Free Shots, Smasher stacks, active weapon, current ammo in clips,
-  Crit Merges, and map position are stored in the actual save file using some unused player stat values. Whenever using
-  this save in the future, a second key bind can be used to load those game states, allowing for continuation
+- Non-savable game states are stored in the actual save file using some unused player stat values. Whenever using this
+  save in the future, a second key bind can be used to load those game states, allowing for continuation
   of game play with the same number of stacks and merges applied. Useful for practicing the same late game segments.
+  - Anarchy stacks
+  - Buck Up stacks
+  - Free Shots
+  - Smasher/SMASH stacks
+  - Active weapon
+  - Current ammo in clips
+  - Weapon merges
+  - Map position 
+  - NEW: Expertise stacks
+  - NEW: Crit/accuracy bonuses from mass duping in co-op
+- All items are now co-op compatible! Both users need to be running the mod.
 
 It's best to leave the checkpoint files as read only. The player stats are not rewritten when saving regularly, only
 when using the checkpoint feature.
@@ -52,9 +66,10 @@ and later.
 
 - Anarchy stacks (Gaige only)
 - Buck up stacks (Gaige only)
+- New: Expertise stacks (Axton only)
 - Free shot stacks (from Vladof launcher)
-- Evil Smasher chance stacks (All Quests only)
-- Evil Smasher SMASH stacks (All Quests only)
+- Evil Smasher chance stacks
+- Evil Smasher SMASH stacks
 - Merge all equipped weapons
 
 ### Jakobs shotgun auto-fire
@@ -102,6 +117,9 @@ options menu:
 - All kill skills
 
 ## Changelog
+
+### Version 2.1
+
 
 ### Version 2.0
 

@@ -8,11 +8,11 @@ def zip_dir(dir_name: str):
     zip_file = zipfile.ZipFile(zip_file_name, mode='w')
 
     try:
-        for root, dirs, files in os.walk(dir_name):
-            for file in files:
-                if ".zip" not in file:
-                    file_path = os.path.join(root, file)
-                    zip_file.write(file_path)
+        for item in os.listdir(dir_name):
+            if item.endswith((".py", ".toml", ".md")):
+                print(item)
+                file_path = os.path.join(dir_name, item)
+                zip_file.write(file_path)
     finally:
         zip_file.close()
 
@@ -25,6 +25,3 @@ def zip_dir(dir_name: str):
 if __name__ == '__main__':
     zip_dir("save_file_organizer")
     zip_dir("speedrun_practice")
-
-
-

@@ -19,9 +19,6 @@ NAME = "Named Saves"
 SPACE_REPLACE = "@~"
 
 
-
-
-
 @hook("WillowGame.WillowSaveGameManager:GetSaveGameList")
 def get_save_game_list(obj: WillowSaveGameManager,
                        args: WillowSaveGameManager.GetSaveGameList.args,
@@ -149,25 +146,21 @@ def load_game(obj: WillowPlayerController,
         return Block, obj.LoadGame(new_file_name, args.SaveGame, args.bUpdatePRI, args.bLoadPlayer, args.LoadPlayerBehavior)[0]
 
 
-
-
 save_path_hidden_option = HiddenOption(identifier="save_path_hidden_option", value='')
-auto_update_saves_option = BoolOption(identifier="Auto Update Saves",
+auto_update_saves_option = BoolOption(identifier="Auto Rename Saves",
                                       value=False)
-update_saves_button = ButtonOption(identifier="Update All Save Names",
+update_saves_button = ButtonOption(identifier="Rename All Saves",
                                    description="Updates all saves to Save#### - CharacterName.sav format",
                                    on_press=SaveListProcessor.process_all_saves)
 restore_saves_button = ButtonOption(identifier="Restore All Save Names",
-                                   description="Restores all saves to Save####.sav format",
-                                   on_press=SaveListProcessor.process_all_saves)
-defrag_saves_button = ButtonOption(identifier="Defrag All Save Names [Advanced]",
+                                    description="Restores all saves to Save####.sav format",
+                                    on_press=SaveListProcessor.process_all_saves)
+defrag_saves_button = ButtonOption(identifier="Defrag and All Saves [Advanced]",
                                    description="Same as update saves, but also orders saves sequentially from 0",
                                    on_press=SaveListProcessor.process_all_saves)
 
 
 def _on_enable():
-    if not save_path_hidden_option.value:
-        save_path_hidden_option.value = extract_user_save_path()
     get_all_save_data(lambda x: None)  # Just need save manager to have this handy.
 
 
@@ -176,5 +169,11 @@ mod = build_mod(
     options=[save_path_hidden_option, auto_update_saves_option, update_saves_button, restore_saves_button, defrag_saves_button],
     on_enable=_on_enable
 )
+
+if not save_path_hidden_option.value:
+    print('Attempting to find game saves folder...')
+    save_path = extract_user_save_path()
+    save_path_hidden_option.value = save_path
+    print(f'Successfully found game saves folder at {save_path}')
 
 register_module(__name__)
