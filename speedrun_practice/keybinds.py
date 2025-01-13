@@ -183,11 +183,11 @@ def reset_to_position_and_trigger_skills() -> None:
     restore_commander_position()
     pc.Pawn.Velocity: Object.Vector = make_struct("Vector", X=0, Y=0, Z=0)
     if incite.value:
-        request_set_skill_stacks(pc, 1, 'GD_Mercenary_Skills.Brawn.Incite_Active')
+        request_set_skill_stacks(1, 'GD_Mercenary_Skills.Brawn.Incite_Active')
     if locked_and_loaded.value:
-        request_set_skill_stacks(pc, 1, 'GD_Mercenary_Skills.Gun_Lust.LockedAndLoaded_Active')
+        request_set_skill_stacks(1, 'GD_Mercenary_Skills.Gun_Lust.LockedAndLoaded_Active')
     if kill_skills.value:
-        request_trigger_kill_skills(pc)
+        request_trigger_kill_skills()
 
 
 @keybind("Log Current Stats")
