@@ -1,6 +1,6 @@
 [project]
 name = "Speedrun Practice"
-version = "2.1"
+version = "2.2"
 authors = [{ name = "Justin99" }]
 description = """
 Utility mod for practicing speedruns
