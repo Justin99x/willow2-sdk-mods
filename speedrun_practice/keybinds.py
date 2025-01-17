@@ -89,6 +89,9 @@ def text_input_stacks(func: Callable[[int, str], None], title: str, path: str = 
     input_box.on_submit = on_submit
     input_box.show()
 
+@keybind("Set Unstoppable Force Stacks")
+def set_uf_stacks():
+    text_input_stacks(request_set_skill_stacks, "Set Unstoppable Force Stacks", "GD_Tulip_Mechromancer_Skills.BestFriendsForever.UnstoppableForce")
 
 @keybind("Set Buckup Stacks")
 def set_buckup_stacks():
@@ -152,11 +155,10 @@ def _reset_gunzerk_and_weapons():
             if pool.Definition.Resource.ResourceName == 'Rockets':
                 pool.SetCurrentValue(pool.GetMaxValue())
 
+
     def _drop_pickup_weapon(weapon):
         inventory_manager.RemoveFromInventory(weapon)
         inventory_manager.AddInventory(weapon, True)
-
-    pc.ResetSkillCooldown()
 
     inventory_manager = pc.GetPawnInventoryManager()
     weapons: List[WillowWeapon] = inventory_manager.GetEquippedWeapons(None, None, None, None)[1:]
@@ -172,8 +174,12 @@ def _reset_gunzerk_and_weapons():
     for slot in [3, 4, 1, 2]:
         if weapons_by_slot.get(slot):
             _drop_pickup_weapon(weapons_by_slot[slot])
+
     e_quick_weapon_slot: WillowDeclarations.EQuickWeaponSlot = find_enum('EQuickWeaponSlot')
     pc.EquipWeaponFromSlot(e_quick_weapon_slot.QuickSelectLeft)
+
+    pc.ResetSkillCooldown()
+
 
 
 @keybind("Reset to Commander Position and Trigger Skills")
@@ -230,7 +236,7 @@ def touch_file():
 
 
 all_keybinds = [
-    set_buckup_stacks, set_anarchy_stacks, set_expertise_stacks,
+    set_buckup_stacks, set_anarchy_stacks, set_uf_stacks, set_expertise_stacks,
     set_free_shot_stacks, set_smasher_chance_stacks, set_smasher_SMASH_stacks,
     merge_all_equipped_weapons, randomize_any_p_gear,
     reset_gunzerk_and_weapons, reset_to_position_and_trigger_skills,

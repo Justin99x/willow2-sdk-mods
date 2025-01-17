@@ -1,45 +1,19 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import List, Optional, TYPE_CHECKING, cast
+from dataclasses import fields
+from typing import Any, List, Optional, TYPE_CHECKING, cast
+
+from mods_base import hook
+from speedrun_practice.game_state import ExternalAttributeModifiers, GradeStacks, Modifier
 
 from speedrun_practice.reloader import register_module
-from speedrun_practice.utilities import get_pc
-from unrealsdk import construct_object, find_enum, find_object
+from speedrun_practice.utilities import feedback, get_pc
+from unrealsdk import construct_object, find_enum, find_object, make_struct
+from unrealsdk.hooks import Block, Type
 
 if TYPE_CHECKING:
     from bl2 import AttributeModifier, DesignerAttributeDefinition, Inventory, Object, WillowPlayerController, SkillDefinition, \
-    WillowPlayerReplicationInfo, WillowInventory, WillowEquipableItem, WillowWeapon
-
-
-@dataclass
-class Modifier:
-    """We have to keep positive and negative scale values separate from each other."""
-    scale_pos: float = 0
-    scale_neg: float = 0
-    pre_add: float = 0
-
-    def add_modifier_value(self, attr_modifier: AttributeModifier) -> None:
-        if attr_modifier.Type.value == 0:
-            if attr_modifier.Value > 0:
-                self.scale_pos += attr_modifier.Value
-            elif attr_modifier.Value < 0:
-                self.scale_neg += attr_modifier.Value
-        elif attr_modifier.Type.value == 1:
-            self.pre_add += attr_modifier.Value
-
-
-@dataclass
-class ExternalAttributeModifiers:
-    MinValue: Modifier = field(default_factory=Modifier)
-    MaxValue: Modifier = field(default_factory=Modifier)
-    OnIdleRegenerationRate: Modifier = field(default_factory=Modifier)
-    CurrentInstantHitCriticalHitBonus: Modifier = field(default_factory=Modifier)
-
-    def msg(self):
-        msg = f"\n\tCrit PreAdd: {self.CurrentInstantHitCriticalHitBonus.pre_add}"
-        msg += f"\n\tCrit Scale: {self.CurrentInstantHitCriticalHitBonus.scale_pos}"
-        return msg
+    WillowPlayerReplicationInfo
 
 
 class HostSkillManager:
@@ -56,28 +30,58 @@ class HostSkillManager:
 
     def get_skill_definition_stacks(self, skill_names: List[str]) -> List[SkillDefinition]:
         """Get SkillDefinition objects for active skills matching the name, plus make sure it matches sender PlayerID"""
+        # return [
+        #     skill.Definition
+        #     for skill in self.skill_manager.ActiveSkills
+        #     if skill.Definition.Name in skill_names
+        #        and self.sender_pri.PlayerID == skill.SkillInstigator.PlayerReplicationInfo.PlayerID
+        #     for _ in range(skill.Grade)  # Add duplicates based on skill.Grade
+        # ]
         return [skill.Definition for skill in self.skill_manager.ActiveSkills if
                 skill.Definition.Name in skill_names and self.sender_pri.PlayerID == skill.SkillInstigator.PlayerReplicationInfo.PlayerID]
 
-    def add_skill_definition_instance(self, skill_path_name: str) -> None:
-        """Create new activated instance of skill definition"""
-        skill_def = cast("SkillDefinition", find_object('SkillDefinition', skill_path_name))
-        self.skill_manager.ActivateSkill(self.sender_pc, skill_def)
+    def get_skill_stacks_by_grade(self, skill_names: List[str]) -> GradeStacks:
+        grade_stacks = GradeStacks()
+        for skill in self.skill_manager.ActiveSkills:
+            if skill.Definition.Name in skill_names:
+                attr = f"G{skill.Grade}"
+                setattr(grade_stacks, attr, getattr(grade_stacks, attr) + 1)
+        return grade_stacks
 
-    def remove_skill_definition_instance(self, skill_path_name: str) -> None:
+    def add_skill_definition_instance(self, skill_path_name: str, grade: int | None = None) -> None:
+        """Create new activated instance of skill definition. For unstoppable force, we need to block execution of
+        RefreshSkillsForInstigator to keep the grades we saved."""
+        skill_def = cast("SkillDefinition", find_object('SkillDefinition', skill_path_name))
+        is_player_skill, skill_state = self.pc.PlayerSkillTree.GetSkillState(skill_def, make_struct("SkillTreeSkillStateData"))
+        if not grade:
+            grade = 1 if not is_player_skill else skill_state.SkillGrade
+        self.skill_manager.ActivateSkill(self.sender_pc, skill_def, None, grade)
+
+
+    def remove_all_skill_definition_instances(self, skill_path_name: str) -> None:
         """Remove one instance of skill definition"""
         skill_stacks = self.get_skill_definition_stacks([skill_path_name.split('.')[-1]])
         if skill_stacks:
-            self.skill_manager.DeactivateSkill(self.sender_pc, skill_stacks[0])
+            for stack in skill_stacks:
+                self.skill_manager.DeactivateSkill(self.sender_pc, stack)
 
     def set_skill_stacks(self, target_stacks: int, skill_path_name: str) -> None:
         """Set stacks of skill to desired value"""
-        current_stacks = len(self.get_skill_definition_stacks([skill_path_name.split('.')[-1]]))
-        for i in range(current_stacks):
-            self.remove_skill_definition_instance(skill_path_name)
+        self.remove_all_skill_definition_instances(skill_path_name)
+        if target_stacks > 1000:
+            self.add_skill_definition_instance(skill_path_name, target_stacks)
+            feedback(self.sender_pri, f"Target stacks > 1000, setting a single skill instance with grade of {target_stacks} to avoid crashing")
+            return
         for i in range(target_stacks):
             self.add_skill_definition_instance(skill_path_name)
-        # print(f"Set {skill_path_name.split('.')[-1]} stacks to {target_stacks} for {self.sender_pri.GetHumanReadableName()}")
+
+    def set_skill_stacks_by_grade(self, target_stacks: GradeStacks, skill_path_name: str):
+        """Set stacks individually by grade. This is needed just for Unstoppable Force for now."""
+        self.remove_all_skill_definition_instances(skill_path_name)
+        for field in fields(target_stacks):
+            grade = int(field.name[1])           # Seems dirty but I don't really want to specify each field
+            for i in range(getattr(target_stacks, field.name)):
+                self.add_skill_definition_instance(skill_path_name, grade)
 
     def trigger_kill_skills(self) -> None:
         e_instinct_skill_actions: WillowPlayerController.EInstinctSkillActions = find_enum("EInstinctSkillActions")
@@ -95,6 +99,7 @@ class HostSkillManager:
     def set_designer_attribute_value(self, target_value: int, designer_attr_str: str) -> None:
         attribute_def = cast("DesignerAttributeDefinition", find_object("DesignerAttributeDefinition", designer_attr_str))
         attribute_def.SetAttributeBaseValue(self.sender_pc, target_value)
+
 
     def get_external_attribute_modifier_totals(self, include_srp: bool) -> ExternalAttributeModifiers:
         """Get values for each of accuracy min/max, idle regen rate, and crit bonus"""

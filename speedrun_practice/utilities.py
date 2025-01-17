@@ -5,7 +5,7 @@ import os
 import re
 from dataclasses import dataclass
 from enum import Enum, Flag, auto
-from typing import Any, List, TYPE_CHECKING, Type, TypeVar, cast
+from typing import List, TYPE_CHECKING, cast
 
 from legacy_compat import legacy_compat
 from mods_base import MODS_DIR, get_pc as _get_pc
@@ -17,7 +17,7 @@ with (legacy_compat()):
     import Mods.Commander.Builtin as commander
 
 if TYPE_CHECKING:
-    from bl2 import LANServerBrowserGFxMovie, WillowCoopGameInfo, WillowPlayerController, Object, LocalTrainingMessage
+    from bl2 import LANServerBrowserGFxMovie, WillowCoopGameInfo, WillowPlayerController, Object
 
     make_struct_vector = Object.Vector._make_struct
     make_struct_rotator = Object.Rotator._make_struct
@@ -28,16 +28,6 @@ DefaultGameInfo: WillowCoopGameInfo = cast("WillowCoopGameInfo",
                                            find_object("WillowCoopGameInfo", "WillowGame.Default__WillowCoopGameInfo"))
 MODDIR = os.path.join(MODS_DIR, 'speedrun_practice')
 CONFIG_PATH = os.path.join(MODDIR, 'config.json')
-
-
-@dataclass
-class Position:
-    X: float = 0
-    Y: float = 0
-    Z: float = 0
-    Pitch: int = 0
-    Yaw: int = 0
-    Roll: int = 0
 
 
 class GameVersion(Flag):
@@ -170,6 +160,16 @@ def get_save_dir_from_config(config_path: str) -> str:
     return config["LocalGameSaves"]
 
 
+@dataclass
+class Position:
+    X: float = 0
+    Y: float = 0
+    Z: float = 0
+    Pitch: int = 0
+    Yaw: int = 0
+    Roll: int = 0
+
+
 def get_position(PC: WillowPlayerController) -> Position:
     location = PC.Pawn.Location
     rotation = PC.Rotation
@@ -215,8 +215,6 @@ def restore_commander_position():
     else:
         feedback(pc.PlayerReplicationInfo, f"No saved Commander position found")
 
-
-# TODO: Make this a network method so that host can send success messages to players
 @targeted.string_message
 def feedback(feedback: str) -> None:
     """Presents a "training" message to the user with the given string"""

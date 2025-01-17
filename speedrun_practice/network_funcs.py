@@ -4,9 +4,10 @@ from dataclasses import asdict
 from typing import Dict, TYPE_CHECKING, cast
 
 from networking import host, targeted
+from speedrun_practice.game_state import GameState
 from speedrun_practice.options import save_game_path
 from speedrun_practice.reloader import register_module
-from speedrun_practice.checkpoints import CheckpointSaver, GameState, HostGameStateManager
+from speedrun_practice.checkpoints import CheckpointSaver, HostGameStateManager
 from speedrun_practice.skills import HostSkillManager
 from speedrun_practice.utilities import feedback, get_pc
 
@@ -44,7 +45,7 @@ def request_load_checkpoint(game_state_dict: Dict[str, int | float]) -> None:
     game_state = GameState(**game_state_dict)
     host_game_state_manager = HostGameStateManager(sender_pri)
     host_game_state_manager.load_game_state(game_state)
-    game_state.critical_bonus = round(host_game_state_manager.target_pc.CurrentInstantHitCriticalHitBonus, 2) # For info only
+    game_state.crit = round(host_game_state_manager.target_pc.CurrentInstantHitCriticalHitBonus, 2) # For info only
     client_log_game_state(sender_pri, asdict(game_state))
 
 
