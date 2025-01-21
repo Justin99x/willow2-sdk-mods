@@ -1,5 +1,6 @@
 .idea/
 venv/
+dev/
 copy_source.sh
 __pycache__
 spawn_visualizer/
