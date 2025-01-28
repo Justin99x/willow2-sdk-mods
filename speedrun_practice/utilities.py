@@ -99,6 +99,14 @@ class RunCategory(Enum):
 def get_pc() -> WillowPlayerController:
     return cast("WillowPlayerController", _get_pc())
 
+def find_object_safe[T](cls: str, path: str) -> T | None:
+    try:
+        obj = find_object(cls, path)
+    except ValueError:
+        print(f"Could not find object {path}. Is the right character loaded?")
+        return
+    return obj
+
 
 def extract_user_save_path() -> str:
     """Search the user's home directory for our path. This takes a few seconds and

@@ -5,7 +5,6 @@ import stat
 from pathlib import Path
 from typing import Any, TYPE_CHECKING, Tuple, cast
 
-
 from mods_base import hook
 from speedrun_practice.game_state import GameState, PLAYER_STATS_MAP, ROTATION_STATS, SCALED_STATS
 from speedrun_practice.skills import HostSkillManager
@@ -50,16 +49,14 @@ class HostGameStateManager:
         game_state.crit = round(self.target_pc.CurrentInstantHitCriticalHitBonus, 2)
 
         # Buck up, anarchy, and unstoppable force
-        if self.player_class == PlayerClass.Gaige:
-            game_state.buckup = len(self.host_skill_manager.get_skill_definition_stacks(["Skill_ShieldBoost_Player"]))
-            game_state.anarchy = int(
-                self.host_skill_manager.get_designer_attribute_value("GD_Tulip_Mechromancer_Skills.Misc.Att_Anarchy_NumberOfStacks")
-            )
-            game_state.unstoppable_force = self.host_skill_manager.get_skill_stacks_by_grade(["UnstoppableForce"])
+
+        game_state.anarchy = int(
+            self.host_skill_manager.get_designer_attribute_value("GD_Tulip_Mechromancer_Skills.Misc.Att_Anarchy_NumberOfStacks"))
+        game_state.buckup = len(self.host_skill_manager.get_skill_definition_stacks(["Skill_ShieldBoost_Player"]))
+        game_state.unstoppable_force = self.host_skill_manager.get_skill_stacks_by_grade(["UnstoppableForce"])
 
         # Expertise
-        if self.player_class == PlayerClass.Axton:
-            game_state.expertise = len(self.host_skill_manager.get_skill_definition_stacks(["Expertise_MovementSpeed"]))
+        game_state.expertise = len(self.host_skill_manager.get_skill_definition_stacks(["Expertise_MovementSpeed"]))
 
         # Smasher stacks
         game_state.smasher = len(self.host_skill_manager.get_skill_definition_stacks(["Skill_EvilSmasher"]))
@@ -136,7 +133,7 @@ class HostGameStateManager:
             if i == 0:
                 inventory_manager.InventoryChain = weapons[i]
             else:
-                weapons[i-1].Inventory = weapons[i]
+                weapons[i - 1].Inventory = weapons[i]
                 weapons[i].Inventory = None
 
         # Remaining gunzerk duration
@@ -171,8 +168,6 @@ class HostGameStateManager:
                     merge_msg = f"\nWeapons Merged:"
                 merge_msg = merge_msg + '\n\t' + weapon.GetShortHumanReadableName()
 
-
-
         # Buck up, free shots, anarchy, smasher, and expertise. After weapon stuff so no issues with deactivations.
         if load_state.freeshot < 0:
             freeshot_stacks = int(self.shotcost_attr.GetBaseValue(self.target_pc.GetActiveOrBestWeapon())[0])
@@ -189,18 +184,18 @@ class HostGameStateManager:
             smasher_msg = f"\nSmasher Chance Stacks: {load_state.smasher}"
             smasher_msg += f"\nSmasher SMASH Stacks: {load_state.SMASH}"
 
-        if self.player_class == PlayerClass.Gaige:
-            self.host_skill_manager.set_skill_stacks(load_state.buckup, 'GD_Tulip_DeathTrap.Skills.Skill_ShieldBoost_Player')
-            self.host_skill_manager.set_designer_attribute_value(load_state.anarchy,
-                                                                 'GD_Tulip_Mechromancer_Skills.Misc.Att_Anarchy_NumberOfStacks')
-            self.host_skill_manager.set_skill_stacks_by_grade(load_state.unstoppable_force,
-                                                     "GD_Tulip_Mechromancer_Skills.BestFriendsForever.UnstoppableForce")
-            if load_state.buckup > 0:
-                gaige_msg += f"\nBuck Up Stacks: {load_state.buckup}"
-            if load_state.anarchy > 0:
-                gaige_msg += f"\nAnarchy Stacks: {load_state.anarchy}"
-            if load_state.un_force > 0:
-                gaige_msg += f"{load_state.unstoppable_force_str()}"
+        self.host_skill_manager.set_designer_attribute_value(load_state.anarchy,
+                                                             'GD_Tulip_Mechromancer_Skills.Misc.Att_Anarchy_NumberOfStacks')
+
+        self.host_skill_manager.set_skill_stacks(load_state.buckup, 'GD_Tulip_DeathTrap.Skills.Skill_ShieldBoost_Player')
+        self.host_skill_manager.set_skill_stacks_by_grade(load_state.unstoppable_force,
+                                                          "GD_Tulip_Mechromancer_Skills.BestFriendsForever.UnstoppableForce")
+        if load_state.buckup > 0:
+            gaige_msg += f"\nBuck Up Stacks: {load_state.buckup}"
+        if load_state.anarchy > 0:
+            gaige_msg += f"\nAnarchy Stacks: {load_state.anarchy}"
+        if load_state.un_force > 0:
+            gaige_msg += f"{load_state.unstoppable_force_str()}"
 
         self.host_skill_manager.set_skill_stacks(load_state.expertise, 'GD_Soldier_Skills.Gunpowder.Expertise_MovementSpeed')
         if load_state.expertise > 0:
@@ -223,6 +218,7 @@ class HostGameStateManager:
 
         msg = f"Game State Loaded\n" + gaige_msg + freeshot_msg + smasher_msg + expertise_msg + cooldown_msg + merge_msg + modifier_msg
         feedback(self.target_pri, msg)
+
 
 class CheckpointSaver:
     """Class for saving read only copy of the current game and saving key values as player stats. """
@@ -325,6 +321,3 @@ class CheckpointSaver:
 
 
 register_module(__name__)
-
-
-

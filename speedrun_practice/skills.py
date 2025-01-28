@@ -30,13 +30,6 @@ class HostSkillManager:
 
     def get_skill_definition_stacks(self, skill_names: List[str]) -> List[SkillDefinition]:
         """Get SkillDefinition objects for active skills matching the name, plus make sure it matches sender PlayerID"""
-        # return [
-        #     skill.Definition
-        #     for skill in self.skill_manager.ActiveSkills
-        #     if skill.Definition.Name in skill_names
-        #        and self.sender_pri.PlayerID == skill.SkillInstigator.PlayerReplicationInfo.PlayerID
-        #     for _ in range(skill.Grade)  # Add duplicates based on skill.Grade
-        # ]
         return [skill.Definition for skill in self.skill_manager.ActiveSkills if
                 skill.Definition.Name in skill_names and self.sender_pri.PlayerID == skill.SkillInstigator.PlayerReplicationInfo.PlayerID]
 
@@ -51,7 +44,11 @@ class HostSkillManager:
     def add_skill_definition_instance(self, skill_path_name: str, grade: int | None = None) -> None:
         """Create new activated instance of skill definition. For unstoppable force, we need to block execution of
         RefreshSkillsForInstigator to keep the grades we saved."""
-        skill_def = cast("SkillDefinition", find_object('SkillDefinition', skill_path_name))
+        try:
+            skill_def = cast("SkillDefinition", find_object('SkillDefinition', skill_path_name))
+        except ValueError:
+            print(f"Could not add instance of {skill_path_name}. Is the right character loaded?")
+            return
         is_player_skill, skill_state = self.pc.PlayerSkillTree.GetSkillState(skill_def, make_struct("SkillTreeSkillStateData"))
         if not grade:
             grade = 1 if not is_player_skill else skill_state.SkillGrade
@@ -88,16 +85,28 @@ class HostSkillManager:
         self.sender_pc.NotifyInstinctSkillAction(e_instinct_skill_actions.ISA_KilledEnemy)
 
     def get_attribute_value(self, attr_str: str) -> float:
-        attribute_def = cast("AttributeDefinition", find_object("AttributeDefinition", attr_str))
+        try:
+            attribute_def = cast("AttributeDefinition", find_object("AttributeDefinition", attr_str))
+        except ValueError:
+            print(f"Could not get attribute value for {attr_str}. Is the right character loaded?")
+            return 0
         return attribute_def.GetValue(self.sender_pc)[0]  # SDK returns tuples for out params
 
     def get_designer_attribute_value(self, designer_attr_str: str) -> float:
-        attribute_def: Optional[DesignerAttributeDefinition] = cast("DesignerAttributeDefinition",
+        try:
+            attribute_def: Optional[DesignerAttributeDefinition] = cast("DesignerAttributeDefinition",
                                                                     find_object("DesignerAttributeDefinition", designer_attr_str))
+        except ValueError:
+            print(f"Could not get attribute value for {designer_attr_str}. Is the right character loaded?")
+            return 0
         return attribute_def.GetValue(self.sender_pc)[0]  # SDK returns tuples for out params
 
     def set_designer_attribute_value(self, target_value: int, designer_attr_str: str) -> None:
-        attribute_def = cast("DesignerAttributeDefinition", find_object("DesignerAttributeDefinition", designer_attr_str))
+        try:
+            attribute_def = cast("DesignerAttributeDefinition", find_object("DesignerAttributeDefinition", designer_attr_str))
+        except ValueError:
+            print(f"Could not set attribute value for {designer_attr_str}. Is the right character loaded?")
+            return
         attribute_def.SetAttributeBaseValue(self.sender_pc, target_value)
 
 
