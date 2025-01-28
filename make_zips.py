@@ -23,5 +23,5 @@ def zip_dir(dir_name: str):
 
 
 if __name__ == '__main__':
-    # zip_dir("save_file_organizer")
+    zip_dir("save_file_organizer")
     zip_dir("speedrun_practice")

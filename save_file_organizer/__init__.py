@@ -70,15 +70,14 @@ def fix_up_load_string(obj: WillowPlayerController,
     return Block, args.InLoadString.replace(SPACE_REPLACE, " ")
 
 
-@hook("WillowGame.WillowPlayerController:BuildSaveGameNameFromId")
+@hook("WillowGame.WillowPlayerController:GetSaveGameNameFromid")
 def build_save_game_name(obj: WillowPlayerController,
                          args: WillowPlayerController.BuildSaveGameNameFromId.args,
                          ret: WillowPlayerController.BuildSaveGameNameFromId.ret,
                          func: BoundFunction):
     """When applying save game, this gets called to set pc.SaveGameName. We need to set our own instead."""
-    obj.SaveGameName = obj.GetWillowGlobals().GetWillowSaveGameManager().LastLoadedFilePath
-    obj.SaveGameFileId = args.SaveGameId
-    return Block
+    ret = obj.SaveGameName = obj.GetWillowGlobals().GetWillowSaveGameManager().LastLoadedFilePath
+    return Block, ret
 
 
 @hook("WillowGame.WillowSaveGameManager:GetHighestSaveIdFromFileList")
