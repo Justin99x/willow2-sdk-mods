@@ -12,7 +12,7 @@ from unrealsdk.hooks import Block, Type, prevent_hooking_direct_calls
 from unrealsdk.unreal import BoundFunction, WrappedArray
 
 if TYPE_CHECKING:
-    from bl2 import FrontendGFxMovie, WillowGFxLobbyLoadCharacter, WillowPlayerController, \
+    from common import FrontendGFxMovie, WillowGFxLobbyLoadCharacter, WillowPlayerController, \
         WillowSaveGameManager
 
 NAME = "Named Saves"
@@ -177,7 +177,8 @@ mod = build_mod(
 if not save_path_hidden_option.value:
     print('Attempting to find game saves folder...')
     save_path = extract_user_save_path()
-    save_path_hidden_option.value = save_path
-    print(f'Successfully found game saves folder at {save_path}')
+    if save_path:
+        save_path_hidden_option.value = save_path
+        print(f'Successfully found game saves folder at {save_path}')
 
 register_module(__name__)

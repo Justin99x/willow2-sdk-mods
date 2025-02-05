@@ -14,7 +14,7 @@ from unrealsdk import load_package, make_struct
 from unrealsdk.hooks import Type
 
 if TYPE_CHECKING:
-    from bl2 import PlayerSaveGame, WillowSaveGameManager
+    from common import PlayerSaveGame, WillowSaveGameManager
 
 
 def get_all_save_data(callback: Callable[[List[WillowSaveGameManager.PlayerSaveData]], None]) -> None:
