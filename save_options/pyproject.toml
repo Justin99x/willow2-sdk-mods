@@ -1,0 +1,16 @@
+[project]
+name = "Save Options"
+version = "1.0"
+authors = [{ name = "Justin99" }]
+description = """
+This library allows for any arbitrary JSON encodable data to be saved in the character's .sav file.
+"""
+
+[project.urls]
+"Source Code" = "https://github.com/Justin99x/willow2-sdk-mods/tree/main/save_options"
+
+[tool.sdkmod]
+name = "Save Options"
+download = "https://github.com/Justin99x/willow2-sdk-mods/raw/refs/heads/main/save_options/save_options.sdkmod"
+suppported_games = ["BL2", "TPS"]
+mod_type = "Library"
