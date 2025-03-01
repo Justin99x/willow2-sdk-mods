@@ -1,11 +1,11 @@
 [project]
 name = "Save File Organizer"
-version = "1.0"
+version = "1.1"
 authors = [{ name = "Justin99" }]
 description = """
 This mod allows save files to be named anything you want, instead of the usual Save####.sav format. Includes various features to bulk rename files in your save folder.
 
-WARNING: The defrag button loads and resaves your save files. If the save has unloaded items, such as from a mod overhaul, you may lose those items.
+WARNING: The defrag button loads and resaves your save files. You probably want to make a backup first.
 """
 
 [project.urls]

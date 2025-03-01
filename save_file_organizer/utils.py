@@ -26,6 +26,7 @@ def extract_user_save_path() -> str:
         print(f"Could not locate save folder for game {Game.get_current().name}")
         return ""
 
+
     pc = get_pc()
     save_path = pc.OnlineSub.ProfileDataDirectory
 
@@ -33,6 +34,7 @@ def extract_user_save_path() -> str:
     norm_path = save_path.replace("\\", "/")
     pattern = r"\d{12,}"
     match = re.search(pattern, norm_path)
+    
     if not match:
         raise ValueError(f"{pattern} pattern not found in save game path")
     save_dir_id = match.group(0)

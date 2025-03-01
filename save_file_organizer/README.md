@@ -30,3 +30,15 @@ Save0000 and move up sequentially. Hex characters are skipped so that only digit
 
 WARNING: The defrag button loads and resaves your save files. If the save has unloaded items, such as from a mod
 overhaul, you may lose those items.
+
+
+## Changelog
+
+### Version 1.1
+Numerous bug fixes
+- Fixed issue with new characters using an existing save file
+- Fixed unsyncing of main menu loaded character and the save file used when hitting "Continue"
+- Fixed issue where a copy of save was created when switching playthroughs
+- Character is now completely unloaded from main menu after using the "Defrag" option
+- Character names are sanitized for valid file names before renaming files
+- Fixed edge case where attempted rename conflicts with an existing file
