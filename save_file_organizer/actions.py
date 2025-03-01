@@ -218,7 +218,7 @@ class SaveListProcessor:
         if self.defrag:
             with prevent_hooking_direct_calls():
                 self.save_manager.LastLoadedFilePath = ""
-                self.save_manager.SetCachedPlayerSaveGame(self.pc.GetMyControllerId(), self.pc.GetWillowGlobals().GetDefaultPlayerSaveGame("Axton"))
+                self.save_manager.SetCachedPlayerSaveGame(self.pc.GetMyControllerId(), self.pc.GetWillowGlobals().GetDefaultPlayerSaveGame(""))
                 self.pc.LastLoadedSaveGame = None
                 self.pc.RefreshPlayerStandIn()
         # For name conflicts earlier we added a .temp, need to remove now.

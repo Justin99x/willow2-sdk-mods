@@ -8,11 +8,11 @@ from mods_base import BoolOption, ButtonOption, HiddenOption, build_mod, hook
 from save_file_organizer.actions import SaveListProcessor, get_all_save_data
 from save_file_organizer.utils import extract_user_save_path, get_pc
 from save_file_organizer.reloader import register_module
-from unrealsdk.hooks import Block, Type
+from unrealsdk.hooks import Block, Type, prevent_hooking_direct_calls
 from unrealsdk.unreal import BoundFunction
 
 if TYPE_CHECKING:
-    from common import FrontendGFxMovie, WillowGFxLobbyLoadCharacter, WillowGFxMenuHelperSaveGame, \
+    from common import FrontendGFxMovie, WillowGFxDialogBox, WillowGFxLobbyLoadCharacter, WillowGFxMenuHelperSaveGame, \
         WillowPlayerController, \
         WillowSaveGameManager
 
@@ -114,7 +114,6 @@ def get_save_game_name_from_id(obj: WillowPlayerController,
     # When id is -1, we want to go through normal process, and also set LastLoadedFilePath
     # to empty. This function gets called twice on new game load, so we need this here
     # to avoid overwriting another file on the second pass.
-    print(args)
     if args.SaveGameId < 0:
         obj.GetWillowGlobals().GetWillowSaveGameManager().LastLoadedFilePath = ""
         return
@@ -151,18 +150,16 @@ def get_highest_save_id(obj: WillowPlayerController,
                            func: BoundFunction):
         get_last_save_game.disable()
         last_save = max(save_data.SaveGameFileId for save_data in obj.SaveDataLoadedFromList)
-        print("last_save", last_save)
         return Block, last_save
 
 
-@hook("WillowGame.WillowSaveGameManager:SaveGame")
+@hook("WillowGame.WillowSaveGameManager:SaveGame", Type.POST)
 def sgm_save_game(obj: WillowSaveGameManager,
                   args: WillowSaveGameManager.SaveGame.args,
                   ret: WillowSaveGameManager.SaveGame.ret,
                   func: BoundFunction) -> None:
-    """Need to do a post hook to update the save manager save list. This is for when we programmatically
-    generate a new save and the save manager doesn't know about it yet (won't show up in the list).
-    Also relevant for new characters."""
+    """This is for when a save is generated programmatically, need to get the LastLoadedFilePath in sync."""
+
     if args.Filename.endswith('.sav'):
         obj.LastLoadedFilePath = args.Filename
 
@@ -206,34 +203,36 @@ def on_load_last_save_game(obj: WillowPlayerController,
                            args: WillowPlayerController.OnLoadLastSaveGame.args,
                            ret: WillowPlayerController.OnLoadLastSaveGame.ret,
                            func: BoundFunction):
-    """Function is only called on initial load into the main menu. Setting up a temporary hook
-    to load the last touched file instead of whatever the game thinks is cached (often default
-    when we're using our custom saves)."""
+    """Function is only called on initial load into the main menu. If the file trying to
+    be loaded isn't in our save list, we intercept and load most recent. This is to prevent
+    .bak files from being loaded or default character - happens in both cases because the
+    game doesn't recognize our saves when it tries to load the latest."""
+    save_manager = obj.GetWillowGlobals().GetWillowSaveGameManager()
+    last_path = save_manager.LastLoadedFilePath
+    if last_path in [save_data.FilePath for save_data in save_manager.SaveDataLoadedFromList]:
+        return
+    save_path = save_path_hidden_option.value
+    most_recent_save = max(
+        (file for file in os.listdir(save_path) if file.endswith('.sav')),
+        key=lambda file: os.path.getmtime(os.path.join(save_path, file)),
+        default=None
+    )
+    if most_recent_save:
+        obj.LoadGame(_strip_save_path(most_recent_save), None)
+    else:
+        func(obj.DefaultSaveGameString, None)
 
-    @hook("WillowGame.WillowPlayerController:LoadGame", immediately_enable=True)
-    def load_game(obj: WillowPlayerController,
-                  args: WillowPlayerController.LoadGame.args,
-                  ret: WillowPlayerController.LoadGame.ret,
-                  func: BoundFunction):
-        load_game.disable()
-        if not obj.GetNextString(args.args)[0] == 'default':
-            return
+    return Block
 
-        save_path = save_path_hidden_option.value
-        most_recent_save = max(
-            (file for file in os.listdir(save_path) if file.endswith('.sav')),
-            key=lambda file: os.path.getmtime(os.path.join(save_path, file)),
-            default=None
-        )
-        if most_recent_save:
-            func(_strip_save_path(most_recent_save), args.SaveGame, args.bUpdatePRI, args.bLoadPlayer, args.LoadPlayerBehavior)
-            return Block
-        # Otherwise execute as normal - will load default save
 
-    # When returning to main menu from game, we don't want our hook to run - it's only
-    # for coming to main menu from title screen.
-    if _from_in_game:
-        load_game.disable()
+@hook("WillowGame.WillowGFxDialogBox:DisplayOkBox", Type.POST)
+def display_ok_box(obj: WillowGFxDialogBox,
+                   args: WillowGFxDialogBox.DisplayOkBox.args,
+                   ret: WillowGFxDialogBox.DisplayOkBox.ret,
+                   func: BoundFunction):
+    """Really hate this, but I can't figure out another way to suppress the incorrect message that TPS loads."""
+    if args.File == "WillowMenu" and args.Section in ("dlgCorruptLastLoadedSaveData", "dlgLoadedFromBackupSave"):
+        obj.Close()
 
 
 save_path_hidden_option = HiddenOption(identifier="save_path_hidden_option", value='')
