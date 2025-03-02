@@ -250,7 +250,8 @@ defrag_saves_button = ButtonOption(identifier="Defrag All Saves [Advanced]",
 
 
 def _on_enable():
-    get_all_save_data(lambda x: None)  # Just need save manager to have this handy.
+    if save_path_hidden_option.value:
+        get_all_save_data(lambda x: None)  # Need save manager to have this handy otherwise the game won't load.
 
 
 mod = build_mod(
@@ -264,6 +265,8 @@ if not save_path_hidden_option.value:
     save_path = extract_user_save_path()
     if save_path:
         save_path_hidden_option.value = save_path
+        mod.save_settings()
+        get_all_save_data(lambda x: None)  # Need save manager to have this handy otherwise the game won't load.
         print(f'Successfully found game saves folder at {save_path}')
 
 register_module(__name__)
