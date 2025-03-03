@@ -17,13 +17,7 @@ if TYPE_CHECKING:
         WillowPlayerController, \
         WillowSaveGameManager
 
-NAME = "Named Saves"
 SPACE_REPLACE = "@~"
-
-# TODO: Think we got the new game thing sorted out. Before releasing should probably should go through and make sure
-# we really need everything currently being done like setting cached save games and last loaded file paths. Game might
-# take care of it for us.
-
 
 
 @hook("WillowGame.WillowSaveGameManager:GetSaveGameList")
@@ -31,8 +25,6 @@ def get_save_game_list(obj: WillowSaveGameManager,
                        args: WillowSaveGameManager.GetSaveGameList.args,
                        ret: WillowSaveGameManager.GetSaveGameList.ret,
                        func: BoundFunction) -> None:
-    print(inspect.currentframe().f_code.co_name)
-    print(args)
     """Hooking this to intercept the save files it finds and fill it with our own that grabs all .sav files"""
     save_path = save_path_hidden_option.value
     saves = [file for file in os.listdir(save_path) if file.endswith('.sav')]
@@ -45,8 +37,6 @@ def gfx_menu_helper_save_game_sort_results(obj: WillowGFxMenuHelperSaveGame,
                                            args: WillowGFxMenuHelperSaveGame.SortResults.args,
                                            ret: WillowGFxMenuHelperSaveGame.SortResults.ret,
                                            func: BoundFunction) -> None:
-    print(inspect.currentframe().f_code.co_name)
-    print(args)
     """Reorder the save game list after the fact. How the game actually does this is hidden
     in native code, and not doing this results in odd and seemingly inconsistent behavior (i.e.
     entering the character list twice in a row produces different results)
@@ -97,8 +87,6 @@ def strip_save_path(obj: WillowGFxLobbyLoadCharacter,
                     args: WillowGFxLobbyLoadCharacter.StripSavePath.args,
                     ret: WillowGFxLobbyLoadCharacter.StripSavePath.ret,
                     func: BoundFunction):
-    print(inspect.currentframe().f_code.co_name)
-    print(args)
     """Game looks for 'Save' from the right and grabs everything after. We need to intercept to just grab the full filename.
     This is where we're also going to replace spaces with special characters to prevent problems with a later arg parse that looks for spaces."""
     return Block, _strip_save_path(args.Path)
@@ -109,8 +97,6 @@ def fix_up_load_string(obj: WillowPlayerController,
                        args: WillowPlayerController.FixUpLoadString.args,
                        ret: WillowPlayerController.FixUpLoadString.ret,
                        func: BoundFunction):
-    print(inspect.currentframe().f_code.co_name)
-    print(args)
     """Here the game tries to pad the save name to match Save#### format. We just need to block it and return the input, but
      with spaces restored.
     NOTE: Relies on this function only being called to create an arg to LoadGame. Something to keep an eye on.
@@ -128,43 +114,16 @@ def get_save_game_name_from_id(obj: WillowPlayerController,
     # When id is -1, we want to go through normal process, and also set LastLoadedFilePath
     # to empty. This function gets called twice on new game load, so we need this here
     # to avoid overwriting another file on the second pass.
-    print(inspect.currentframe().f_code.co_name)
-    print(args)
     if args.SaveGameId < 0:
         save_manager = obj.GetWillowGlobals().GetWillowSaveGameManager()
         save_manager.LastLoadedFilePath = ""
         return
     # Use LastLoadedFilePath if there is one
     save_name = obj.GetWillowGlobals().GetWillowSaveGameManager().LastLoadedFilePath
-    print(save_name)
     if not save_name:
         return
 
     return Block, save_name
-
-# @hook("WillowGame.WillowPlayerController:GetSaveGameNameFromid", Type.POST_UNCONDITIONAL)
-# def get_save_game_name_from_id_post(obj: WillowPlayerController,
-#                                args: WillowPlayerController.GetSaveGameNameFromid.args,
-#                                ret: WillowPlayerController.GetSaveGameNameFromid.ret,
-#                                func: BoundFunction):
-#     """Set a few values to default/empty when we've loaded a default character."""
-#     pass
-    # print(obj.SaveGameFileId, obj.SaveGameName)
-    # if args.SaveGameId < 0:
-    #     save_manager = obj.GetWillowGlobals().GetWillowSaveGameManager()
-    #     save_manager.LastLoadedFilePath = ""
-    #     # save_manager.SetCachedPlayerSaveGame(obj.GetMyControllerId(), None)
-
-
-
-# @hook("WillowGame.WillowPlayerController:BuildSaveGameNameFromId", Type.POST)
-# def BuildSaveGameNameFromId(obj: WillowPlayerController,
-#                             args: WillowPlayerController.GetSaveGameNameFromid.args,
-#                             ret: WillowPlayerController.GetSaveGameNameFromid.ret,
-#                             func: BoundFunction):
-#     """Game uses this a few times to figure out what file to save to. We want to intercept
-#      to set our own save game name"""
-#     pass
 
 
 @hook("WillowGame.WillowPlayerController:GetHighestSaveGameId")
@@ -172,8 +131,6 @@ def get_highest_save_id(obj: WillowPlayerController,
                         args: WillowPlayerController.GetHighestSaveGameId.args,
                         ret: WillowPlayerController.GetHighestSaveGameId.ret,
                         func: BoundFunction):
-    print(inspect.currentframe().f_code.co_name)
-    print(args)
     """On new games this is called to figure out what the new save ID should be. It won't
     recognize our saves and try to set an ID that's the same as one of ours."""
 
@@ -182,8 +139,6 @@ def get_highest_save_id(obj: WillowPlayerController,
                            args: WillowSaveGameManager.GetLastSaveGame.args,
                            ret: WillowSaveGameManager.GetLastSaveGame.ret,
                            func: BoundFunction):
-        print(inspect.currentframe().f_code.co_name)
-        print(args)
         get_last_save_game.disable()
         last_save = max(save_data.SaveGameFileId for save_data in obj.SaveDataLoadedFromList)
         return Block, last_save
@@ -194,13 +149,9 @@ def sgm_save_game(obj: WillowSaveGameManager,
                   args: WillowSaveGameManager.SaveGame.args,
                   ret: WillowSaveGameManager.SaveGame.ret,
                   func: BoundFunction) -> None:
-    """This is for when a save is generated programmatically, need to get the LastLoadedFilePath in sync.
-    Seems to also be needed for saving a brand new character."""
-    print(inspect.currentframe().f_code.co_name)
-    print(args)
+    """This is for when a save is generated programmatically, need to get the LastLoadedFilePath in sync."""
     if args.Filename.endswith('.sav'):
         obj.LastLoadedFilePath = args.Filename
-        # obj.SetCachedPlayerSaveGame(get_pc().GetMyControllerId(), args.SaveGame)
 
 
 _from_in_game: bool = False
@@ -213,8 +164,6 @@ def notify_at_main_menu(obj: FrontendGFxMovie,
                         func):
     """This is for our auto save option. Any time we enter main menu we run this.
     Adding in functionality to show our buttons again that are not in game"""
-    print(inspect.currentframe().f_code.co_name)
-    print(args)
     global _from_in_game
 
     if obj.MyFrontendDefinition.Name == "Frontend_DEF" and _from_in_game:
@@ -233,8 +182,6 @@ def notify_at_main_menu(obj: FrontendGFxMovie,
 @hook("WillowGame.WillowPlayerController:StartNewPlaySession")
 def start_new_play_session(obj, args, ret, func) -> None:
     """Auto rename logic can run next time in main menu"""
-    print(inspect.currentframe().f_code.co_name)
-    print(args)
     global _from_in_game
     _from_in_game = True
     update_saves_button.is_hidden = True
@@ -247,22 +194,18 @@ def on_load_last_save_game(obj: WillowPlayerController,
                            args: WillowPlayerController.OnLoadLastSaveGame.args,
                            ret: WillowPlayerController.OnLoadLastSaveGame.ret,
                            func: BoundFunction):
-    print(inspect.currentframe().f_code.co_name)
-    print(args)
     """Function is only called on initial load into the main menu. If the file trying to
     be loaded isn't in our save list, we intercept and load most recent. This is to prevent
     .bak files from being loaded or default character - happens in both cases because the
     game doesn't recognize our saves when it tries to load the latest."""
     save_manager = obj.GetWillowGlobals().GetWillowSaveGameManager()
     last_path = save_manager.LastLoadedFilePath
-    print(last_path)
-    print(save_manager.SaveDataLoadedFromList)
-    if last_path in save_manager.GetSaveGameList(obj.GetMyControllerId(), -1, ""):
+    if last_path in save_manager.GetSaveGameList(obj.GetMyControllerId(), -1, ""):  # Calls our hooked version
         return
 
     most_recent_save: WillowSaveGameManager.PlayerSaveData = max(save_manager.SaveDataLoadedFromList,
-                           key=lambda save_data: save_data.LastSaveDate,
-                           default=None)
+                                                                 key=lambda save_data: save_data.LastSaveDate,
+                                                                 default=None)
     if most_recent_save:
         obj.LoadGame(_strip_save_path(most_recent_save.FilePath), None)
     else:
@@ -276,8 +219,6 @@ def display_ok_box(obj: WillowGFxDialogBox,
                    args: WillowGFxDialogBox.DisplayOkBox.args,
                    ret: WillowGFxDialogBox.DisplayOkBox.ret,
                    func: BoundFunction):
-    print(inspect.currentframe().f_code.co_name)
-    print(args)
     """Really hate this, but I can't figure out another way to suppress the incorrect message that TPS loads."""
     if args.File == "WillowMenu" and args.Section in ("dlgCorruptLastLoadedSaveData", "dlgLoadedFromBackupSave"):
         obj.Close()

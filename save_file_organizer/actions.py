@@ -50,8 +50,6 @@ def get_all_save_data(callback: Callable[[List[WillowSaveGameManager.PlayerSaveD
 
     @hook("WillowGame.WillowSaveGameManager:OnListLoadComplete", Type.POST, immediately_enable=True)
     def on_load_list_complete(*_: Any) -> None:
-        from save_file_organizer import save_path_hidden_option  # Avoid circular import
-
         returned_saves = save_manager.EndGetSaveGameDataFromList(pc.GetMyControllerId())
         dedup = list({save.FilePath: save for save in returned_saves}.values())
         # Sort by save_id, keeps rename results consistent
