@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import os
-import re
+import ctypes
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
@@ -16,24 +15,27 @@ if TYPE_CHECKING:
 def get_pc() -> WillowPlayerController:
     return cast("WillowPlayerController", mods_base.get_pc())
 
+
 GAME_LOOKUP = {"BL2": "Borderlands 2", "TPS": "Borderlands The Pre-Sequel"}
 
 
 def extract_user_save_path() -> str:
-    """Search the user's home directory for our path. This takes a few seconds and
-     should only be used once, with result stored in a hidden option."""
     game_str = GAME_LOOKUP.get(Game.get_current().name)
     if not game_str:
         print(f"Could not locate save folder for game {Game.get_current().name}")
         return ""
 
+    # Game folder - stripped version is WillowGame/SaveData/<Steam/Epic Id>
     pc = get_pc()
     save_path = Path(pc.OnlineSub.ProfileDataDirectory)
+    save_path_stripped = Path(*[part for part in save_path.parts[-3:] if part != ".."])
 
-    home = Path.home()
-    saves = next(home.rglob(game_str))
+    # Get documents folder using ctypes
+    path_buf = ctypes.create_unicode_buffer(260)
+    ctypes.windll.shell32.SHGetFolderPathW(0, 5, 0, 0, path_buf)
 
-    return str(next(saves.rglob(save_path.parts[-1])))
+    final_path = Path(path_buf.value) / "My Games" / game_str / save_path_stripped
+    return str(final_path)
 
 
 register_module(__name__)
