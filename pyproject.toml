@@ -3,8 +3,9 @@ pythonVersion = "3.13"
 typeCheckingMode = "strict"
 pythonPlatform = "Windows"
 
-include = ["src"]
-stubPath = "libs/pyunrealsdk/stubs"
+include = ["speedrun_practice", "save_file_organizer"]
+extraPaths = ["C:/Program Files (x86)/Steam/steamapps/common/Borderlands 2 - New SDK/sdk_mods/.stubs",
+    "C:/Program Files (x86)/Steam/steamapps/common/Borderlands 2 - New SDK/sdk_mods"]
 reportMissingModuleSource = false
 
 [tool.ruff]

@@ -1,16 +1,17 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, cast
 
-from mods_base import get_pc
-from speedrun_practice.reloader import register_module
 from ui_utils import clipboard_copy, clipboard_paste
 from unrealsdk import find_enum
 from unrealsdk.hooks import Block, Type, add_hook, remove_hook
-from unrealsdk.unreal import BoundFunction
+
+from speedrun_practice.reloader import register_module
+from speedrun_practice.utilities import get_pc
 
 if TYPE_CHECKING:
-    from bl2 import WillowPlayerController, WillowGFxTrainingDialogBox, Object
+    from bl2 import Object, WillowGFxTrainingDialogBox, WillowPlayerController
+    from unrealsdk.hooks import _PreHookCallback  # type: ignore
 
 _SubmitKeys = (
     "Enter",
@@ -23,7 +24,7 @@ _ExitKeys = (
     "XboxTypeS_B",
 )
 _KeyMap = {
-    # UnrealKeycode: (ValueIfLower, ValueIfUpper)
+    # UnrealKeycode -> (ValueIfLower, ValueIfUpper)
     "Add": ("+", "+"),
     "Subtract": ("-", "-"),
     "Multiply": ("*", "*"),
@@ -54,7 +55,7 @@ _KeyMap = {
     "Equals": ("=", "+"),
     "LeftBracket": ("[", "{"),
     "Period": (".", "&gt;"),
-    "Quote": ("'", "\""),
+    "Quote": ("'", '"'),
     "RightBracket": ("]", "}"),
     "Semicolon": (";", ":"),
     "Slash": ("/", "?"),
@@ -64,51 +65,73 @@ _KeyMap = {
     "Underscore": ("-", "_"),
 }
 
-EBackButtonScreen = cast("WillowPlayerController.EBackButtonScreen", find_enum("EBackButtonScreen"))
-EInputEvent = cast("Object.EInputEvent", find_enum("EInputEvent"))
+e_back_button_screen = cast(
+    "WillowPlayerController.EBackButtonScreen",
+    find_enum("EBackButtonScreen"),
+)
+e_input_event = cast("Object.EInputEvent", find_enum("EInputEvent"))
 
 
 class TextInputBoxSRP:
-
-    def __init__(self, title: str):
+    def __init__(self, title: str) -> None:
         self.title = title
-        self.message = []
-        self.cursor_pos = 0
-        self.training_box = None
-        self.is_shift_pressed = False
-        self.is_control_pressed = False
+        self.message: list[str] = []
+        self.cursor_pos: int = 0
+        self.training_box: WillowGFxTrainingDialogBox | None = None
+        self.is_shift_pressed: bool = False
+        self.is_control_pressed: bool = False
 
     def show(self) -> None:
+        """Show the text input box for user input."""
         self.pc: WillowPlayerController = get_pc()
         self.training_box = self.pc.GFxUIManager.ShowTrainingDialog(
-            ''.join(self.message),
+            "".join(self.message),
             self.title,
             0,
-            EBackButtonScreen.CS_None,
-            False
+            e_back_button_screen.CS_None,
+            False,
         )
-        add_hook("WillowGame.WillowGFxTrainingDialogBox:HandleInputKey", Type.PRE, "handle_input_key", self.handle_input_key)
+        add_hook(
+            "WillowGame.WillowGFxTrainingDialogBox:HandleInputKey",
+            Type.PRE,
+            "handle_input_key",
+            cast("_PreHookCallback", self.handle_input_key),
+        )
 
-    def handle_input_key(self, obj: WillowGFxTrainingDialogBox, args: WillowGFxTrainingDialogBox.HandleInputKey.args,
-                         ret: WillowGFxTrainingDialogBox.HandleInputKey.ret, func: BoundFunction):
+    def handle_input_key(  # noqa: D102
+        self,
+        obj: WillowGFxTrainingDialogBox,
+        args: WillowGFxTrainingDialogBox.HandleInputKey.args,
+        *_: Any,
+    ) -> type[Block] | None:
         self.update_message(args.ukey, args.uevent)
 
         if args.uevent == 1:
             if args.ukey in _SubmitKeys:
-                remove_hook("WillowGame.WillowGFxTrainingDialogBox:HandleInputKey", Type.PRE, "handle_input_key")
+                remove_hook(
+                    "WillowGame.WillowGFxTrainingDialogBox:HandleInputKey",
+                    Type.PRE,
+                    "handle_input_key",
+                )
                 self.on_submit("".join(self.message))
 
             elif args.ukey in _ExitKeys:
-                remove_hook("WillowGame.WillowGFxTrainingDialogBox:HandleInputKey", Type.PRE, "handle_input_key")
+                remove_hook(
+                    "WillowGame.WillowGFxTrainingDialogBox:HandleInputKey",
+                    Type.PRE,
+                    "handle_input_key",
+                )
                 self.on_submit("")
 
         use_key = "FAKE"
-        if obj.GetPC().PlayerInput is not None:
+        if obj.GetPC().PlayerInput is not None:  # type: ignore Unreal properties can be null
             use_key = obj.GetPC().PlayerInput.GetKeyForAction("Use", True)
         if str(args.ukey) == use_key:
             return Block
+        return None
 
-    def update_message(self, ukey: str, event: EInputEvent):
+    def update_message(self, ukey: str, event: Object.EInputEvent | int) -> None:  # noqa: C901
+        """Updates the currently displayed message in the text box."""
         if ukey in ("LeftShift", "RightShift"):
             if event == 0:
                 self.is_shift_pressed = True
@@ -130,14 +153,14 @@ class TextInputBoxSRP:
             if ukey == "C":
                 clipboard_copy("".join(self.message))
                 return
-            elif ukey == "X":
+            if ukey == "X":
                 clipboard_copy("".join(self.message))
                 self.message = []
                 self.cursor_pos = 0
             elif ukey == "V":
-                clipboard = clipboard_paste().replace("\r\n", "\n")
-                if clipboard is None or clipboard == "":
+                if not (clipboard := clipboard_paste()):
                     return
+                clipboard = clipboard.replace("\r\n", "\n")
                 for character in clipboard:
                     self.message.insert(self.cursor_pos, character)
                     self.cursor_pos += 1
@@ -170,13 +193,15 @@ class TextInputBoxSRP:
             self.message.insert(self.cursor_pos, ukey)
             self.cursor_pos += 1
 
-        message = list(self.message) + ["  "]
+        message = [*list(self.message), "  "]
         message[self.cursor_pos] = "<u>" + message[self.cursor_pos] + "</u>"
 
-        self.training_box.SetText(self.title, ''.join(self.message))
+        assert self.training_box is not None
+        self.training_box.SetText(self.title, "".join(self.message))
         self.training_box.ApplyLayout()
 
     def on_submit(self, msg: str) -> None:
+        """Logic that occurs once the message is submitted when user finishes."""
         raise NotImplementedError("Need to overwrite to determine what happens on submit.")
 
 

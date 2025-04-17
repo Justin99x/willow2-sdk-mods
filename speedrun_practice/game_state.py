@@ -3,16 +3,35 @@ from __future__ import annotations
 from dataclasses import dataclass, field, fields
 from typing import TYPE_CHECKING, cast
 
-from speedrun_practice.utilities import Position, get_pc
 from speedrun_practice.reloader import register_module
+from speedrun_practice.utilities import Position, get_pc
 
 if TYPE_CHECKING:
-    from bl2 import AttributeModifier
+    from bl2 import AttributeModifier, WillowWeapon
+
+_MAX_UF_STACKS = 63  # Can't store more than this in our player stats.
 
 SCALED_STATS = (
-    "X", "Y", "Z", "Pitch", "Yaw", "a_min_sc_pos", "a_min_sc_neg", "a_min_pre", "a_max_sc_pos",
-    "a_max_sc_neg", "a_max_pre", "a_idle_sc_pos", "a_idle_sc_neg",
-    "a_idle_pre", "c_sc_pos", "c_sc_neg", 'c_pre', 'cooldown', 'gunzerk')
+    "X",
+    "Y",
+    "Z",
+    "Pitch",
+    "Yaw",
+    "a_min_sc_pos",
+    "a_min_sc_neg",
+    "a_min_pre",
+    "a_max_sc_pos",
+    "a_max_sc_neg",
+    "a_max_pre",
+    "a_idle_sc_pos",
+    "a_idle_sc_neg",
+    "a_idle_pre",
+    "c_sc_pos",
+    "c_sc_neg",
+    "c_pre",
+    "cooldown",
+    "gunzerk",
+)
 ROTATION_STATS = ("Pitch", "Yaw")
 PLAYER_STATS_MAP = {
     "STAT_PLAYER_ZRESERVED_DLC_INT_BZ": "anarchy",
@@ -63,9 +82,14 @@ PLAYER_STATS_MAP = {
 
 @dataclass
 class GradeStacks:
-    """Skill stacks tracked by grade. Needed for Unstoppable Force Glitch.
-    Not going past grade 5 since UF is only known current use, and we won't have a boosting class mod.
-    DON'T CHANGE NAMING SCHEME. A FUNCTION USES field.name[1] TO GET THE GRADE"""
+    """
+    Skill stacks tracked by grade.
+
+    Needed for Unstoppable Force Glitch. Not going past grade 5 since UF is only
+    known current use, and we won't have a boosting class mod.
+    """
+
+    # DON'T CHANGE NAMING SCHEME. A FUNCTION USES field.name[1] TO GET THE GRADE
     G1: int = 0
     G2: int = 0
     G3: int = 0
@@ -75,18 +99,20 @@ class GradeStacks:
 
 @dataclass
 class Modifier:
-    """We have to keep positive and negative scale values separate from each other."""
+    # We have to keep positive and negative scale values separate from each other.
+
     scale_pos: float = 0
     scale_neg: float = 0
     pre_add: float = 0
 
     def add_modifier_value(self, attr_modifier: AttributeModifier) -> None:
-        if attr_modifier.Type.value == 0:
+        """Add a modifier value to the correct category."""
+        if attr_modifier.Type == 0:
             if attr_modifier.Value > 0:
                 self.scale_pos += attr_modifier.Value
             elif attr_modifier.Value < 0:
                 self.scale_neg += attr_modifier.Value
-        elif attr_modifier.Type.value == 1:
+        elif attr_modifier.Type == 1:
             self.pre_add += attr_modifier.Value
 
 
@@ -97,7 +123,8 @@ class ExternalAttributeModifiers:
     OnIdleRegenerationRate: Modifier = field(default_factory=Modifier)
     CurrentInstantHitCriticalHitBonus: Modifier = field(default_factory=Modifier)
 
-    def msg(self):
+    def msg(self) -> str:
+        """Get string representation of crit modifiers."""
         msg = f"\n\tCrit PreAdd: {self.CurrentInstantHitCriticalHitBonus.pre_add}"
         msg += f"\n\tCrit Scale: {self.CurrentInstantHitCriticalHitBonus.scale_pos}"
         return msg
@@ -139,18 +166,28 @@ class GameState:
     a_idle_sc_neg: float = 0
     a_idle_pre: float = 0
 
-    def __str__(self):
-
+    def __str__(self) -> str:
         result = f"{self.__class__.__name__}:"
-        for field in fields(self):
+        for fld in fields(self):
             # Exclude stuff we really don't care about logging
-            if field.name not in ['weapons', 'X', 'Y', 'Z', 'Pitch', 'Yaw', 'w1_clip', 'w2_clip', 'w3_clip', 'w4_clip', 'un_force'] \
-                    and field.name[:2] not in ('a_', 'c_'):
-                value = getattr(self, field.name)
-                if field.name == 'freeshot' and value == -1:
+            if fld.name not in [
+                "weapons",
+                "X",
+                "Y",
+                "Z",
+                "Pitch",
+                "Yaw",
+                "w1_clip",
+                "w2_clip",
+                "w3_clip",
+                "w4_clip",
+                "un_force",
+            ] and fld.name[:2] not in ("a_", "c_"):
+                value = getattr(self, fld.name)
+                if fld.name == "freeshot" and value == -1:
                     weap = cast("WillowWeapon", get_pc().GetActiveOrBestWeapon())
                     value = weap.ShotCostBaseValue
-                result += f"\n  {field.name}: {value}"
+                result += f"\n  {fld.name}: {value}"
 
         # Unstoppable force
         result += self.unstoppable_force_str()
@@ -158,11 +195,11 @@ class GameState:
         mass_result = "\n  Mass duping bonuses (off host):\n"
         mass_include = False
         # Mass duping stuff, include if any values > 0
-        for field in fields(self):
-            if field.name[:2] in ('a_', 'c_'):
-                value = getattr(self, field.name)
-                mass_result += f"    {field.name}: {value}\n"
-                if abs(value) > .0001:
+        for fld in fields(self):
+            if fld.name[:2] in ("a_", "c_"):
+                value = getattr(self, fld.name)
+                mass_result += f"    {fld.name}: {value}\n"
+                if abs(value) > 0.0001:  # noqa: PLR2004 Avoiding floating point errors.
                     mass_include = True
         if mass_include:
             result += mass_result
@@ -170,7 +207,8 @@ class GameState:
         return result
 
     def unstoppable_force_str(self) -> str:
-        result = ''
+        """String message for UF stacks."""
+        result = ""
         if self.un_force > 0:
             result += "\nUF Stacks by Grade:"
             stacks = self.unstoppable_force
@@ -179,10 +217,10 @@ class GameState:
         return result
 
     @property
-    def unstoppable_force(self) -> GradeStacks:
+    def unstoppable_force(self) -> GradeStacks:  # noqa: D102
         packed = self.un_force
         un_force = GradeStacks()
-        un_force.G1 = (packed & 0b111111)
+        un_force.G1 = packed & 0b111111
         un_force.G2 = (packed >> 6) & 0b111111
         un_force.G3 = (packed >> 12) & 0b111111
         un_force.G4 = (packed >> 18) & 0b111111
@@ -191,12 +229,15 @@ class GameState:
 
     @unstoppable_force.setter
     def unstoppable_force(self, uf_stacks: GradeStacks) -> None:
-        for field in fields(uf_stacks):
-            value = getattr(uf_stacks, field.name)
-            if value > 63:
-                setattr(uf_stacks, field.name, 63)
-                print(f"Capping Unstoppable Force grade {field.name} at 63 stacks. Tried to set {value} stacks.")
-        packed = (uf_stacks.G1 & 0b111111)
+        for fld in fields(uf_stacks):
+            value = getattr(uf_stacks, fld.name)
+            if value > _MAX_UF_STACKS:
+                setattr(uf_stacks, fld.name, _MAX_UF_STACKS)
+                print(
+                    f"Capping Unstoppable Force grade {fld.name} at {_MAX_UF_STACKS} stacks. Tried "
+                    f"to set {value} stacks.",
+                )
+        packed = uf_stacks.G1 & 0b111111
         packed |= (uf_stacks.G2 & 0b111111) << 6
         packed |= (uf_stacks.G3 & 0b111111) << 12
         packed |= (uf_stacks.G4 & 0b111111) << 18
@@ -204,13 +245,14 @@ class GameState:
         self.un_force = packed
 
     @property
-    def external_modifiers(self) -> ExternalAttributeModifiers:
+    def external_modifiers(self) -> ExternalAttributeModifiers:  # noqa: D102
         return ExternalAttributeModifiers(
             MinValue=Modifier(self.a_min_sc_pos, self.a_min_sc_neg, self.a_min_pre),
             MaxValue=Modifier(self.a_max_sc_pos, self.a_max_sc_neg, self.a_max_pre),
-            OnIdleRegenerationRate=Modifier(self.a_idle_sc_pos, self.a_idle_sc_neg,
-                                            self.a_idle_pre),
-            CurrentInstantHitCriticalHitBonus=Modifier(self.c_sc_pos, self.c_sc_neg, self.c_pre)
+            OnIdleRegenerationRate=Modifier(
+                self.a_idle_sc_pos, self.a_idle_sc_neg, self.a_idle_pre,
+            ),
+            CurrentInstantHitCriticalHitBonus=Modifier(self.c_sc_pos, self.c_sc_neg, self.c_pre),
         )
 
     @external_modifiers.setter
@@ -232,7 +274,7 @@ class GameState:
         self.c_pre = round(ext_modifiers.CurrentInstantHitCriticalHitBonus.pre_add, 4)
 
     @property
-    def position(self) -> Position:
+    def position(self) -> Position:  # noqa: D102
         return Position(
             X=self.X,
             Y=self.Y,
@@ -242,11 +284,12 @@ class GameState:
         )
 
     @position.setter
-    def position(self, input: Position) -> None:
-        self.X = round(input.X, 4)
-        self.Y = round(input.Y, 4)
-        self.Z = round(input.Z, 4)
-        self.Pitch = round(input.Pitch, 4)
-        self.Yaw = round(input.Yaw, 4)
+    def position(self, value: Position) -> None:
+        self.X = round(value.X, 4) # type: ignore
+        self.Y = round(value.Y, 4) # type: ignore
+        self.Z = round(value.Z, 4) # type: ignore
+        self.Pitch = round(value.Pitch, 4)
+        self.Yaw = round(value.Yaw, 4)
+
 
 register_module(__name__)

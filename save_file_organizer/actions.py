@@ -215,7 +215,7 @@ class SaveListProcessor:
             on_load_complete.disable()
             player_save_game = self.save_manager.EndLoadGame(
                 self.pc.GetMyControllerId(),
-                make_struct_load_info("LoadInfo", False),
+                make_struct_load_info("LoadInfo"),
                 ELoadPlayerBehavior.ELPB_LoadOnly,
             )[0]
             setattr(self.save_manager, "__OnLoadComplete__Delegate", None)
