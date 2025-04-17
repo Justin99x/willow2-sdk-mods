@@ -46,4 +46,4 @@ def zip_dir(dir_name: str) -> None:
 
 if __name__ == "__main__":
     zip_dir("save_file_organizer")
-    # zip_dir("speedrun_practice")
+    zip_dir("speedrun_practice")
