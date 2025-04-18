@@ -50,8 +50,12 @@ def gfx_menu_helper_save_game_sort_results(  # noqa: D103
     # We're also setting the SaveGameFileId here to keep the game from thinking that two
     # files are active at the same time.
 
-    # Sort save games by last save date
-    obj.SaveGames = copy.deepcopy(sorted(obj.SaveGames, key=lambda x: x.LastSaveDate, reverse=True))
+    # Sort save games by system modified time.
+    def _sort_key(save_data: WillowSaveGameManager.PlayerSaveData) -> float:
+        path = Path(save_path_hidden_option.value) / save_data.FilePath
+        return path.stat().st_mtime
+
+    obj.SaveGames = copy.deepcopy(sorted(obj.SaveGames, key=_sort_key, reverse=True))
 
     # Fixup save_ids to help with which save is active.
     save_manager = get_pc().GetWillowGlobals().GetWillowSaveGameManager()
@@ -229,7 +233,8 @@ def on_load_last_save_game(  # noqa: D103
     if most_recent_save:
         obj.LoadGame(_strip_save_path(most_recent_save.FilePath), None)
     else:
-        obj.LoadGame(obj.DefaultSaveGameString, None)
+        # If we don't have a save, run function as normally to load default save.
+        return None
 
     return Block
 

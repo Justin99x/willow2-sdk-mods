@@ -73,10 +73,8 @@ def handle_travel_portal(option_ref: BoolOption, disable_portal: bool) -> None:
             pass
 
     if disable_portal:
-        print("enable!")
         disable_portal_hook.enable()
     else:
-        print("disable!")
         disable_portal_hook.disable()
 
 

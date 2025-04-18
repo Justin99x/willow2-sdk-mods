@@ -239,7 +239,7 @@ class HostGameStateManager:
             # Set clip sizes - only for host since it doesn't seem to work correctly on off-host.
             if weapon and self.target_pri.bIsPartyLeader:
                 saved_clip = getattr(load_state, f"w{weapon.QuickSelectSlot}_clip")
-                if saved_clip < 0:
+                if saved_clip <= 0:
                     weapon.ReloadCnt = int(self.clipsize_attr.GetValue(weapon)[0])
                 else:
                     weapon.ReloadCnt = saved_clip
