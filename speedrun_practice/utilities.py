@@ -224,9 +224,11 @@ def restore_commander_position() -> None:
     pc = get_pc()
 
     try:
-        from Commander import Position as CommanderPosition  # type: ignore
-        commander_current = CommanderPosition.current() # type: ignore
-        commander_current.apply() # type: ignore
+        from Commander import saved_positions
+        if position := saved_positions[10]:
+            position.teleport_player_pc()
+        else:
+            feedback(pc.PlayerReplicationInfo, "No saved Commander position found")
 
     except ImportError:
         with legacy_compat():

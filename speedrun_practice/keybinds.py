@@ -22,6 +22,7 @@ from speedrun_practice.options import incite, kill_skills, locked_and_loaded
 from speedrun_practice.reloader import register_module
 from speedrun_practice.text_input import TextInputBoxSRP
 from speedrun_practice.utilities import (
+    RunCategory,
     feedback,
     get_pc,
     restore_commander_position,
@@ -138,8 +139,10 @@ def merge_all_equipped_weapons() -> None:
 
 @keybind("Randomize Any% Gear")
 def randomize_any_p_gear() -> None:  # noqa: D103
-    gear_r = GearRandomizer()
-    gear_r.randomize_gear()
+    from speedrun_practice import run_category
+    if run_category == RunCategory.AnyPercentGaige:
+        gear_r = GearRandomizer()
+        gear_r.randomize_gear()
 
 
 @keybind("Reset Gunzerk and Weapons")
