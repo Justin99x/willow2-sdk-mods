@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 SPACE_REPLACE = "@~"
 
 
-@hook("WillowGame.WillowSaveGameManager:GetSaveGameList") # type: ignore
+@hook("WillowGame.WillowSaveGameManager:GetSaveGameList")  # type: ignore
 def get_save_game_list(  # noqa: D103
     *_: Any,
 ) -> tuple[type[Block], list[str]]:
@@ -38,7 +38,7 @@ def get_save_game_list(  # noqa: D103
     return Block, saves
 
 
-@hook("WillowGame.WillowGFxMenuHelperSaveGame:SortResults", Type.POST) # type: ignore
+@hook("WillowGame.WillowGFxMenuHelperSaveGame:SortResults", Type.POST)  # type: ignore
 def gfx_menu_helper_save_game_sort_results(  # noqa: D103
     obj: WillowGFxMenuHelperSaveGame,
     *_: Any,
@@ -89,7 +89,7 @@ def _strip_save_path(save_path: str) -> str:
     return os.path.split(save_path)[1].replace(" ", SPACE_REPLACE)
 
 
-@hook("WillowGame.WillowGFxLobbyLoadCharacter:StripSavePath") # type: ignore
+@hook("WillowGame.WillowGFxLobbyLoadCharacter:StripSavePath")  # type: ignore
 def strip_save_path(  # noqa: D103
     _1: Any,
     args: WillowGFxLobbyLoadCharacter.StripSavePath.args,
@@ -103,7 +103,7 @@ def strip_save_path(  # noqa: D103
     return Block, _strip_save_path(args.Path)
 
 
-@hook("WillowGame.WillowPlayerController:FixUpLoadString") # type: ignore
+@hook("WillowGame.WillowPlayerController:FixUpLoadString")  # type: ignore
 def fix_up_load_string(  # noqa: D103
     _1: Any,
     args: WillowPlayerController.FixUpLoadString.args,
@@ -117,7 +117,7 @@ def fix_up_load_string(  # noqa: D103
     return Block, args.InLoadString.replace(SPACE_REPLACE, " ")
 
 
-@hook("WillowGame.WillowPlayerController:GetSaveGameNameFromid") # type: ignore
+@hook("WillowGame.WillowPlayerController:GetSaveGameNameFromid")  # type: ignore
 def get_save_game_name_from_id(  # noqa: D103
     obj: WillowPlayerController,
     args: WillowPlayerController.GetSaveGameNameFromid.args,
@@ -155,7 +155,7 @@ def get_highest_save_id(*_: Any) -> None:  # noqa: D103
         return Block, last_save
 
 
-@hook("WillowGame.WillowSaveGameManager:SaveGame", Type.POST_UNCONDITIONAL) # type: ignore
+@hook("WillowGame.WillowSaveGameManager:SaveGame", Type.POST_UNCONDITIONAL)  # type: ignore
 def sgm_save_game(  # noqa: D103
     obj: WillowSaveGameManager,
     args: WillowSaveGameManager.SaveGame.args,
@@ -239,7 +239,7 @@ def on_load_last_save_game(  # noqa: D103
     return Block
 
 
-@hook("WillowGame.WillowGFxDialogBox:DisplayOkBox", Type.POST) # type: ignore
+@hook("WillowGame.WillowGFxDialogBox:DisplayOkBox", Type.POST)  # type: ignore
 def display_ok_box(  # noqa: D103
     obj: WillowGFxDialogBox,
     args: WillowGFxDialogBox.DisplayOkBox.args,

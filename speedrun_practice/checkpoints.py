@@ -29,6 +29,7 @@ if TYPE_CHECKING:
         WillowPlayerReplicationInfo,
         WillowWeapon,
     )
+
     make_struct_vector = Object.Vector.make_struct
 else:
     make_struct_vector = make_struct
@@ -115,7 +116,8 @@ class HostGameStateManager:
             )
 
         # Equipped weapons returned from GetEquippedWeapons as out params
-        equipped_weapons = cast(tuple["WillowWeapon"],
+        equipped_weapons = cast(
+            tuple["WillowWeapon"],
             self.target_pc.GetPawnInventoryManager().GetEquippedWeapons(None, None, None, None)[1:],
         )
 
@@ -152,7 +154,8 @@ class HostGameStateManager:
             gunzerk_def = self.target_pc.PlayerSkillTree.GetActionSkill()
             gunzerk_skill = (
                 self.host_skill_manager.skill_manager.GetActiveSkillForInstigatorByDefinition(
-                    self.target_pc, gunzerk_def,
+                    self.target_pc,
+                    gunzerk_def,
                 )
             )
             if gunzerk_skill:  # Adding 1 for user input lag on saving and loading
@@ -226,7 +229,8 @@ class HostGameStateManager:
                 gunzerk_def = self.target_pc.PlayerSkillTree.GetActionSkill()
                 gunzerk_skill = (
                     self.host_skill_manager.skill_manager.GetActiveSkillForInstigatorByDefinition(
-                        self.target_pc, gunzerk_def,
+                        self.target_pc,
+                        gunzerk_def,
                     )
                 )
                 gunzerk_skill.StartTime = self.target_pc.WorldInfo.TimeSeconds - (
@@ -262,27 +266,32 @@ class HostGameStateManager:
             freeshot_stacks = load_state.freeshot
 
         self.host_skill_manager.set_skill_stacks(
-            freeshot_stacks, "GD_Weap_Launchers.Skills.Skill_VladofHalfAmmo",
+            freeshot_stacks,
+            "GD_Weap_Launchers.Skills.Skill_VladofHalfAmmo",
         )
         if freeshot_stacks > 0:
             freeshot_msg = f"\nFree Shot Stacks: {freeshot_stacks}"
 
         self.host_skill_manager.set_skill_stacks(
-            load_state.smasher, "GD_Weap_AssaultRifle.Skills.Skill_EvilSmasher",
+            load_state.smasher,
+            "GD_Weap_AssaultRifle.Skills.Skill_EvilSmasher",
         )
         self.host_skill_manager.set_skill_stacks(
-            load_state.SMASH, "GD_Weap_AssaultRifle.Skills.Skill_EvilSmasher_SMASH",
+            load_state.SMASH,
+            "GD_Weap_AssaultRifle.Skills.Skill_EvilSmasher_SMASH",
         )
         if load_state.smasher > 0 or load_state.SMASH > 0:
             smasher_msg = f"\nSmasher Chance Stacks: {load_state.smasher}"
             smasher_msg += f"\nSmasher SMASH Stacks: {load_state.SMASH}"
 
         self.host_skill_manager.set_designer_attribute_value(
-            load_state.anarchy, "GD_Tulip_Mechromancer_Skills.Misc.Att_Anarchy_NumberOfStacks",
+            load_state.anarchy,
+            "GD_Tulip_Mechromancer_Skills.Misc.Att_Anarchy_NumberOfStacks",
         )
 
         self.host_skill_manager.set_skill_stacks(
-            load_state.buckup, "GD_Tulip_DeathTrap.Skills.Skill_ShieldBoost_Player",
+            load_state.buckup,
+            "GD_Tulip_DeathTrap.Skills.Skill_ShieldBoost_Player",
         )
         self.host_skill_manager.set_skill_stacks_by_grade(
             load_state.unstoppable_force,
@@ -296,7 +305,8 @@ class HostGameStateManager:
             gaige_msg += f"{load_state.unstoppable_force_str()}"
 
         self.host_skill_manager.set_skill_stacks(
-            load_state.expertise, "GD_Soldier_Skills.Gunpowder.Expertise_MovementSpeed",
+            load_state.expertise,
+            "GD_Soldier_Skills.Gunpowder.Expertise_MovementSpeed",
         )
         if load_state.expertise > 0:
             expertise_msg += f"\nExpertise Stacks: {load_state.expertise}"
@@ -335,7 +345,10 @@ class CheckpointSaver:
     """Class for saving read only copy of the current game and saving key values as player stats."""
 
     def __init__(
-        self, new_save_name: str | None, save_dir: str, game_state: GameState | None = None,
+        self,
+        new_save_name: str | None,
+        save_dir: str,
+        game_state: GameState | None = None,
     ) -> None:
         self.pc = get_pc()
         self.new_save_name = new_save_name
@@ -431,7 +444,7 @@ class CheckpointSaver:
                 setattr(game_state, name, val)
         return game_state
 
-    def save_checkpoint(self, overwrite: bool=False) -> None:
+    def save_checkpoint(self, overwrite: bool = False) -> None:
         """Saves game and game state."""
         self.set_player_stats()
         if not overwrite:

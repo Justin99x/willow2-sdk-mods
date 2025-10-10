@@ -140,6 +140,7 @@ def merge_all_equipped_weapons() -> None:
 @keybind("Randomize Any% Gear")
 def randomize_any_p_gear() -> None:  # noqa: D103
     from speedrun_practice import run_category
+
     if run_category == RunCategory.AnyPercentGaige:
         gear_r = GearRandomizer()
         gear_r.randomize_gear()
@@ -164,7 +165,8 @@ def reset_gunzerk_and_weapons() -> None:
 
     inventory_manager = pc.GetPawnInventoryManager()
     weapons = cast(
-        list["WillowWeapon"], inventory_manager.GetEquippedWeapons(None, None, None, None)[1:],
+        list["WillowWeapon"],
+        inventory_manager.GetEquippedWeapons(None, None, None, None)[1:],
     )
     weapons_by_slot = {int(weapon.QuickSelectSlot): weapon for weapon in weapons if weapon}
 

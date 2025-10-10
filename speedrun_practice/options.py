@@ -33,7 +33,8 @@ def handle_jakobs_auto(option_ref: BoolOption, jakobs_auto: bool) -> None:
         find_object("AttributeDefinition", "D_Attributes.Weapon.WeaponAutomaticBurstCount"),
     )
     jakobs_shotguns = [
-        weapon for weapon in weapons
+        weapon
+        for weapon in weapons
         if weapon.DefinitionData.WeaponTypeDefinition is not None  # type: ignore
         and weapon.DefinitionData.WeaponTypeDefinition.Name == "WT_Jakobs_Shotgun"
     ]
@@ -108,7 +109,8 @@ travel_portal_disabled = BoolOption(
 )
 
 geared_sal_options = GroupedOption(
-    identifier="Geared Sal", children=[kill_skills, incite, locked_and_loaded],
+    identifier="Geared Sal",
+    children=[kill_skills, incite, locked_and_loaded],
 )
 
 

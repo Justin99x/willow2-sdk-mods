@@ -25,6 +25,7 @@ if TYPE_CHECKING:
 
 MIN_AMP_DAMAGE = 100
 
+
 @dataclass
 class GearSource:
     map_req: str
@@ -223,7 +224,12 @@ SHIELD_SOURCES = [
 ]
 
 LASCAUX_SOURCE = GearSource(
-    "IceCanyon", 0, 8, True, "Frostburn", ["Env_IceCanyon.WeaponPools.Pool_Weapon_CaveGun"],
+    "IceCanyon",
+    0,
+    8,
+    True,
+    "Frostburn",
+    ["Env_IceCanyon.WeaponPools.Pool_Weapon_CaveGun"],
 )
 
 
@@ -251,20 +257,27 @@ class GearRandomizer:
     ) -> list[WillowWeapon | WillowShield]:
         """Spawn inventory from any ItemPoolDefinition."""
         default_item_pool = cast(
-            "ItemPool", find_object("ItemPool", "WillowGame.Default__ItemPool"),
+            "ItemPool",
+            find_object("ItemPool", "WillowGame.Default__ItemPool"),
         )
         spawned_items: list[WillowWeapon | WillowShield] = []
 
         def append_inv(
-            obj: WillowWeapon | WillowShield, *_: Any,
+            obj: WillowWeapon | WillowShield,
+            *_: Any,
         ) -> None:
             spawned_items.append(obj)
 
-        add_hook("WillowGame.WillowItem:OnCreate", Type.PRE, "append_inv", append_inv) # type: ignore
-        add_hook("WillowGame.WillowWeapon:OnCreate", Type.PRE, "append_inv", append_inv) # type: ignore
+        add_hook("WillowGame.WillowItem:OnCreate", Type.PRE, "append_inv", append_inv)  # type: ignore
+        add_hook("WillowGame.WillowWeapon:OnCreate", Type.PRE, "append_inv", append_inv)  # type: ignore
         with prevent_hooking_direct_calls():
             default_item_pool.SpawnBalancedInventoryFromPool(
-                pool, game_stage, game_stage, self.pc, [], game_stage_variance_def,
+                pool,
+                game_stage,
+                game_stage,
+                self.pc,
+                [],
+                game_stage_variance_def,
             )
         remove_hook("WillowGame.WillowItem:OnCreate", Type.PRE, "append_inv")
         remove_hook("WillowGame.WillowWeapon:OnCreate", Type.PRE, "append_inv")
@@ -303,7 +316,7 @@ class GearRandomizer:
         return (
             weapon.DefinitionData.BalanceDefinition
             == "GD_Weap_SMG.A_Weapons_Unique.SMG_Dahl_3_Lascaux"
-        ) # type: ignore
+        )  # type: ignore
 
     def throw_old_gear(self) -> None:
         """Tosses previous gear to the ground."""
@@ -329,7 +342,8 @@ class GearRandomizer:
                 self.pc.Pawn.TossInventory(shield)
 
     def filter_gear(
-        self, items: list[WillowWeapon | WillowShield | None],
+        self,
+        items: list[WillowWeapon | WillowShield | None],
     ) -> tuple[WillowWeapon | WillowShield | None, list[WillowWeapon | WillowShield]]:
         """
         Filters gear to only highest usable items plus any over-level gear.

@@ -186,7 +186,9 @@ class HostSkillManager:
         exclude_modifiers: list[AttributeModifier] = []
         for inv in equipped_inv:
             if inv:
-                exclude_modifiers.extend(inv.ExternalAttributeModifiers)
+                exclude_modifiers.extend(
+                    [ext_mod.Modifier for ext_mod in inv.ExternalAttributeModifiers],
+                )
         for skill in active_skills:
             exclude_modifiers.extend(
                 [applied_skill_effect.Modifier for applied_skill_effect in skill.SkillEffects],
@@ -205,6 +207,7 @@ class HostSkillManager:
                     and (include_srp or _SRP_MODIFIER_PREFIX not in modifier.Name)
                     and modifier not in exclude_modifiers
                 ):
+                    print(modifier)
                     target.add_modifier_value(modifier)
 
         # Get all the "orphaned" modifiers. These are assumed to be due to mass duping.
@@ -221,7 +224,8 @@ class HostSkillManager:
         return ext_mods
 
     def set_external_attribute_modifiers(
-        self, target_modifiers: ExternalAttributeModifiers,
+        self,
+        target_modifiers: ExternalAttributeModifiers,
     ) -> None:
         """Add appropriate external attribute modifiers according to saved totals."""
         # We have current modifier totals and target modifier totals.

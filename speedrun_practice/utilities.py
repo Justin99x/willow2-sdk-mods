@@ -202,10 +202,16 @@ def get_position(pc: WillowPlayerController) -> Position:
 def apply_position(pc: WillowPlayerController, position: Position) -> None:
     """Move a player to the desired map position."""
     location = make_struct_vector(
-        "Vector", X=position.X, Y=position.Y, Z=position.Z,
+        "Vector",
+        X=position.X,
+        Y=position.Y,
+        Z=position.Z,
     )
     rotation = make_struct_rotator(
-        "Rotator", Pitch=position.Pitch, Yaw=position.Yaw, Roll=0,
+        "Rotator",
+        Pitch=position.Pitch,
+        Yaw=position.Yaw,
+        Roll=0,
     )
 
     _, vehicle = pc.IsUsingVehicleEx(True, None)
@@ -224,9 +230,10 @@ def restore_commander_position() -> None:
     pc = get_pc()
 
     try:
-        from Commander import saved_positions
-        if position := saved_positions[10]:
-            position.teleport_player_pc()
+        from Commander import saved_positions  # type: ignore - no view into legacy mods
+
+        if position := saved_positions[10]:  # type: ignore
+            position.teleport_player_pc()  # type: ignore
         else:
             feedback(pc.PlayerReplicationInfo, "No saved Commander position found")
 
@@ -236,11 +243,11 @@ def restore_commander_position() -> None:
         map_name = pc.WorldInfo.GetMapName(True)
 
         try:
-            commander_position = Commander.Positions.CurrentValue.get(map_name)[Commander._Position] # type: ignore
+            commander_position = Commander.Positions.CurrentValue.get(map_name)[Commander._Position]  # type: ignore
         except TypeError:
             commander_position = None
         if commander_position:
-            commander_position = cast(dict[str,float], commander_position)
+            commander_position = cast(dict[str, float], commander_position)
             position = Position(
                 X=commander_position["X"],
                 Y=commander_position["Y"],
@@ -290,5 +297,6 @@ def try_parse_int(s: str) -> int:
     except ValueError:
         print(f"Unable to parse input {s}, setting value to 0")
         return 0
+
 
 register_module(__name__)

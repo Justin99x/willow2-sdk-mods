@@ -35,4 +35,5 @@ def sfo(args: argparse.Namespace) -> None:  # noqa: ARG001
             importlib.reload(module)
             print(f"Reloaded module {module_name}")
 
+
 sfo.enable()

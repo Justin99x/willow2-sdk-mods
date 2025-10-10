@@ -18,7 +18,9 @@ if TYPE_CHECKING:
 
 @targeted.json_message
 def client_save_checkpoint(
-    save_name: str, overwrite: bool, game_state_dict: dict[str, Any],
+    save_name: str,
+    overwrite: bool,
+    game_state_dict: dict[str, Any],
 ) -> None:
     """Send message to client to trigger save of game state info."""
     game_state = GameState(**game_state_dict)
@@ -49,7 +51,8 @@ def request_load_checkpoint(game_state_dict: dict[str, Any]) -> None:
     host_game_state_manager = HostGameStateManager(sender_pri)
     host_game_state_manager.load_game_state(game_state)
     game_state.crit = round(
-        host_game_state_manager.target_pc.CurrentInstantHitCriticalHitBonus, 2,
+        host_game_state_manager.target_pc.CurrentInstantHitCriticalHitBonus,
+        2,
     )  # For info only
     client_log_game_state(sender_pri, asdict(game_state))
 

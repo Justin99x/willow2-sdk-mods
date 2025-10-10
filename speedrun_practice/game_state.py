@@ -250,7 +250,9 @@ class GameState:
             MinValue=Modifier(self.a_min_sc_pos, self.a_min_sc_neg, self.a_min_pre),
             MaxValue=Modifier(self.a_max_sc_pos, self.a_max_sc_neg, self.a_max_pre),
             OnIdleRegenerationRate=Modifier(
-                self.a_idle_sc_pos, self.a_idle_sc_neg, self.a_idle_pre,
+                self.a_idle_sc_pos,
+                self.a_idle_sc_neg,
+                self.a_idle_pre,
             ),
             CurrentInstantHitCriticalHitBonus=Modifier(self.c_sc_pos, self.c_sc_neg, self.c_pre),
         )
@@ -285,9 +287,9 @@ class GameState:
 
     @position.setter
     def position(self, value: Position) -> None:
-        self.X = round(value.X, 4) # type: ignore
-        self.Y = round(value.Y, 4) # type: ignore
-        self.Z = round(value.Z, 4) # type: ignore
+        self.X = round(value.X, 4)  # type: ignore
+        self.Y = round(value.Y, 4)  # type: ignore
+        self.Z = round(value.Z, 4)  # type: ignore
         self.Pitch = round(value.Pitch, 4)
         self.Yaw = round(value.Yaw, 4)
 

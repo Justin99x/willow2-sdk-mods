@@ -46,10 +46,11 @@ def _on_enable() -> None:
 
     srp_options.handle_jakobs_auto(srp_options.jakobs_auto_fire, srp_options.jakobs_auto_fire.value)
     srp_options.handle_travel_portal(
-        srp_options.travel_portal_disabled, srp_options.travel_portal_disabled.value,
+        srp_options.travel_portal_disabled,
+        srp_options.travel_portal_disabled.value,
     )
     if run_category != RunCategory.AnyPercentGaige:
-        srp_hooks.set_catapult_priority.disable() # type: ignore
+        srp_hooks.set_catapult_priority.disable()  # type: ignore
     print(f"{NAME} enabled!")
 
 

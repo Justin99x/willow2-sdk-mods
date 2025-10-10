@@ -56,15 +56,15 @@ def get_all_save_data(
     later actions.
     """
 
-    #1. Load save games from the save manager in order to be able to get character names
-    #2. Once we have the save game list, execute the callback.
+    # 1. Load save games from the save manager in order to be able to get character names
+    # 2. Once we have the save game list, execute the callback.
 
     pc = get_pc()
     save_manager = pc.GetWillowGlobals().GetWillowSaveGameManager()
     # This only works because we overwrite it with a hook
     save_file_list = list(save_manager.GetSaveGameList(pc.GetMyControllerId(), -1, ""))
 
-    save_manager.__OnListLoadComplete__Delegate = save_manager.OnListLoadComplete # type: ignore
+    save_manager.__OnListLoadComplete__Delegate = save_manager.OnListLoadComplete  # type: ignore
     save_manager.BeginGetSaveGameDataFromList(pc.GetMyControllerId(), save_file_list, -1)
 
     @hook("WillowGame.WillowSaveGameManager:OnListLoadComplete", Type.POST, immediately_enable=True)
@@ -73,7 +73,7 @@ def get_all_save_data(
         dedup = list({save.FilePath: save for save in returned_saves}.values())
         # Sort by save_id, keeps rename results consistent
         saves = sorted(dedup, key=lambda x: x.SaveGameFileId)
-        save_manager.__OnListLoadComplete__Delegate = None # type: ignore
+        save_manager.__OnListLoadComplete__Delegate = None  # type: ignore
         on_load_list_complete.disable()
         callback(saves)
 
@@ -94,7 +94,7 @@ class FileInfo:
         self.st_mode = (Path(save_path_hidden_option.value) / self.old_file_name).stat().st_mode
 
     @property
-    def new_file_name(self) -> str: # noqa: D102
+    def new_file_name(self) -> str:  # noqa: D102
         # We want the real version of save game name from id here, not our hooked one.
         with prevent_hooking_direct_calls():
             if self.restore:
@@ -195,11 +195,11 @@ class SaveListProcessor:
         cfi = self.current_file_info
 
         if cfi.new_file_name != cfi.old_file_name:
-            Path(cfi.old_file_path).chmod(S_IWRITE) # pyright: ignore[reportArgumentType]
+            Path(cfi.old_file_path).chmod(S_IWRITE)  # pyright: ignore[reportArgumentType]
             try:
-                Path(cfi.old_file_path).rename(cfi.new_file_path) # pyright: ignore[reportArgumentType]
+                Path(cfi.old_file_path).rename(cfi.new_file_path)  # pyright: ignore[reportArgumentType]
             except FileExistsError:
-                Path(cfi.old_file_path).rename(f"{cfi.new_file_path}{_TEMP_STR}") # pyright: ignore[reportArgumentType]
+                Path(cfi.old_file_path).rename(f"{cfi.new_file_path}{_TEMP_STR}")  # pyright: ignore[reportArgumentType]
 
             # Tracking which file is currently loaded, we'll set on save manager at the end of the
             # process.
@@ -223,7 +223,9 @@ class SaveListProcessor:
             self._edit_player_save_game()
 
         self.save_manager.BeginLoadGame(
-            self.pc.GetMyControllerId(), self.current_file_info.new_file_name, -1, # pyright: ignore[reportArgumentType]
+            self.pc.GetMyControllerId(),
+            self.current_file_info.new_file_name,
+            -1,  # pyright: ignore[reportArgumentType]
         )
 
     def _edit_player_save_game(self) -> None:
@@ -231,7 +233,7 @@ class SaveListProcessor:
         self.save_manager.SaveGame(
             self.pc.GetMyControllerId(),
             self.current_player_save_game,
-            self.current_file_info.new_file_name, # pyright: ignore[reportArgumentType]
+            self.current_file_info.new_file_name,  # pyright: ignore[reportArgumentType]
             -1,
         )
         self._finish_save_processing()
@@ -248,15 +250,15 @@ class SaveListProcessor:
 
             wait_ticks.disable()
 
-            Path(self.current_file_info.new_file_path).chmod(self.current_file_info.st_mode) # pyright: ignore[reportArgumentType]
-            Path(self.current_file_info.new_file_path).touch(exist_ok=True) # pyright: ignore[reportArgumentType]
+            Path(self.current_file_info.new_file_path).chmod(self.current_file_info.st_mode)  # pyright: ignore[reportArgumentType]
+            Path(self.current_file_info.new_file_path).touch(exist_ok=True)  # pyright: ignore[reportArgumentType]
             self._process_next_save()
 
     def _finalize_processing(self) -> None:
         # Runs at very end of process.
         from save_file_organizer import save_path_hidden_option
 
-        self.save_manager.LastLoadedFilePath = self.loaded_path # pyright: ignore[reportAttributeAccessIssue]
+        self.save_manager.LastLoadedFilePath = self.loaded_path  # pyright: ignore[reportAttributeAccessIssue]
         # Unload character. Too many sync issues occur if we keep this where it was.
         if self.defrag:
             with prevent_hooking_direct_calls():
