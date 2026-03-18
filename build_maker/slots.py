@@ -74,3 +74,7 @@ class ArtifactSlot(Enum):
 
     body = SlotInfo("EtaPartData", "EtaItemPartDefinition", "Eta")
     upgrade = SlotInfo("ThetaPartData", "ThetaItemPartDefinition", "Theta")
+    first = SlotInfo("AlphaPartData", "AlphaItemPartDefinition", "Alpha")
+    second = SlotInfo("BetaPartData", "BetaItemPartDefinition", "Beta")
+    third = SlotInfo("GammaPartData", "GammaItemPartDefinition", "Gamma")
+    fourth = SlotInfo("DeltaPartData", "DeltaItemPartDefinition", "Delta")

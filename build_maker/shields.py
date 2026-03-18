@@ -1389,3 +1389,12 @@ class The_Rough_Rider_S_Bucklershield:
     capacitor: Capacitor_N | None = None
 
 
+@dataclass
+class Shield_Itemgrade_Gear_Shield_Enemy_Standard:
+    """GD_ItemGrades.Shields_Enemy.ItemGrade_Gear_Shield_Enemy_Standard."""
+
+    path: ClassVar[str] = "GD_ItemGrades.Shields_Enemy.ItemGrade_Gear_Shield_Enemy_Standard"
+    class_name: ClassVar[str] = "InventoryBalanceDefinition"
+    levels: list[int]
+
+

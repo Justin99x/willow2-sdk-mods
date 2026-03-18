@@ -1,15 +1,19 @@
 """Development script to spawn/edit items from loadouts."""
 
 from copy import copy
-from dataclasses import fields
+from dataclasses import Field, fields
 from enum import Enum, StrEnum
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, ClassVar, Protocol, cast
 
 from mods_base import get_pc
 from unrealsdk import find_object
 
+from build_maker.artifacts import *
+from build_maker.classmods import *
 from build_maker.common import spawn_item_from_balance
+from build_maker.grenades import *
 from build_maker.loadouts import krieg
+from build_maker.shields import *
 from build_maker.slots import (
     ArtifactSlot,
     ClassModSlot,
@@ -17,9 +21,10 @@ from build_maker.slots import (
     ShieldSlot,
     WeaponSlot,
 )
+from build_maker.weapons import *
 
 if TYPE_CHECKING:
-    from bl2 import InventoryBalanceDefinition, WillowItem, WillowWeapon
+    from bl2 import InventoryBalanceDefinition, WillowInventory, WillowItem, WillowWeapon
 
 
 # Map spawned item class names to their slot enums
@@ -32,16 +37,21 @@ INVENTORY_SLOT_ENUMS: dict[str, type[Enum]] = {
 }
 
 
-def spawn_and_edit_item(item_spec: Any) -> None:
+class ItemSpec(Protocol):
+    class_name: str
+    path: str
+    __dataclass_fields__: ClassVar[dict[str, Field[Any]]]
+
+
+def spawn_and_edit_item(item_spec: ItemSpec) -> None:
     """Spawn an item from a loadout spec and apply fixed parts."""
     balance = cast(
         "InventoryBalanceDefinition",
         find_object(item_spec.class_name, item_spec.path),
     )
 
-    # TODO: Handle levels properly later
     level = 80
-    spawned_item = spawn_item_from_balance(balance, level)
+    spawned_item = cast("WillowInventory", spawn_item_from_balance(balance, level))
     if not spawned_item:
         print(f"Failed to spawn {item_spec.path} at level {level}")
         return
@@ -106,4 +116,14 @@ def spawn_loadout(loadout: list[Any]) -> None:
 
 
 # Run it
+krieg = [
+    Pimpernel_Sniper_Maliwan_3_Pimpernel(levels=[27], element=Sr_Elemental_B.sr_elemental_slag, grip=Sr_Grip.sr_grip_maliwan),
+    Badaboom_Rl_Bandit_5_Badaboom(levels=[50, 80, 83, 86, 88, 90], element=Rl_Elemental_A.rl_elemental_none, grip=L_Grip.l_grip_bandit),
+    The_Rough_Rider_S_Bucklershield(levels=[50, 80, 83, 86, 90]),
+    The_Bee_Itemgrade_Gear_Shield_Impact_05_Legendary(levels=[50, 80, 82, 84, 86, 88, 90]),
+    Gm_Areaeffect_2_Uncommon(levels=[50, 80, 82, 84, 86, 88, 90]),
+    Blood_Of_The_Ancients_A_Vitalitystockpile_Veryrare(levels=[80], second=Enablesecond_Effect_E.enablesecond_effect5, third=Enablethird_Effect_C.enablethird_effect5),
+    Topneaa_Rl_Vladof_5_Alien(levels=[80, 82, 84, 86, 88, 90], element=Rl_Elemental_B.rl_elemental_corrosive),
+]
+
 spawn_loadout(krieg)

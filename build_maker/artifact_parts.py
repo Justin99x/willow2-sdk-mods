@@ -35,6 +35,109 @@ class Upgrade_Grade_B(StrEnum):
     _defdata_field = "ThetaItemPartDefinition"
 
 
+class Enablefirst_Effect_A(StrEnum):
+    enablefirst_effect1 = "GD_Artifacts.Enable1st.EnableFirst_Effect1"
+    enablefirst_effect2 = "GD_Artifacts.Enable1st.EnableFirst_Effect2"
+
+    _defdata_field = "AlphaItemPartDefinition"
+
+
+class Enablefirst_Effect_B(StrEnum):
+    enablefirst_effect1 = "GD_Artifacts.Enable1st.EnableFirst_Effect1"
+    enablefirst_effect2 = "GD_Artifacts.Enable1st.EnableFirst_Effect2"
+    enablefirst_effect3 = "GD_Artifacts.Enable1st.EnableFirst_Effect3"
+
+    _defdata_field = "AlphaItemPartDefinition"
+
+
+class Enablesecond_Effect_A(StrEnum):
+    enablesecond_effect4 = "GD_Artifacts.Enable2nd.EnableSecond_Effect4"
+    enablesecond_effect5 = "GD_Artifacts.Enable2nd.EnableSecond_Effect5"
+    enablesecond_effect6 = "GD_Artifacts.Enable2nd.EnableSecond_Effect6"
+
+    _defdata_field = "BetaItemPartDefinition"
+
+
+class Enablefirst_Effect_C(StrEnum):
+    enablefirst_effect1 = "GD_Artifacts.Enable1st.EnableFirst_Effect1"
+    enablefirst_effect2 = "GD_Artifacts.Enable1st.EnableFirst_Effect2"
+    enablefirst_effect3 = "GD_Artifacts.Enable1st.EnableFirst_Effect3"
+    enablefirst_effect4 = "GD_Artifacts.Enable1st.EnableFirst_Effect4"
+    enablefirst_effect5 = "GD_Artifacts.Enable1st.EnableFirst_Effect5"
+    enablefirst_effect6 = "GD_Artifacts.Enable1st.EnableFirst_Effect6"
+
+    _defdata_field = "AlphaItemPartDefinition"
+
+
+class Enablesecond_Effect_B(StrEnum):
+    enablesecond_effect1 = "GD_Artifacts.Enable2nd.EnableSecond_Effect1"
+    enablesecond_effect2 = "GD_Artifacts.Enable2nd.EnableSecond_Effect2"
+    enablesecond_effect3 = "GD_Artifacts.Enable2nd.EnableSecond_Effect3"
+    enablesecond_effect4 = "GD_Artifacts.Enable2nd.EnableSecond_Effect4"
+    enablesecond_effect5 = "GD_Artifacts.Enable2nd.EnableSecond_Effect5"
+    enablesecond_effect6 = "GD_Artifacts.Enable2nd.EnableSecond_Effect6"
+
+    _defdata_field = "BetaItemPartDefinition"
+
+
+class Enablethird_Effect_A(StrEnum):
+    enablethird_effect1 = "GD_Artifacts.Enable3rd.EnableThird_Effect1"
+    enablethird_effect2 = "GD_Artifacts.Enable3rd.EnableThird_Effect2"
+    enablethird_effect3 = "GD_Artifacts.Enable3rd.EnableThird_Effect3"
+    enablethird_effect4 = "GD_Artifacts.Enable3rd.EnableThird_Effect4"
+    enablethird_effect5 = "GD_Artifacts.Enable3rd.EnableThird_Effect5"
+    enablethird_effect6 = "GD_Artifacts.Enable3rd.EnableThird_Effect6"
+
+    _defdata_field = "GammaItemPartDefinition"
+
+
+class Enablefourth_Effect_A(StrEnum):
+    enablefourth_effect1 = "GD_Artifacts.Enable4th.EnableFourth_Effect1"
+    enablefourth_effect2 = "GD_Artifacts.Enable4th.EnableFourth_Effect2"
+    enablefourth_effect3 = "GD_Artifacts.Enable4th.EnableFourth_Effect3"
+    enablefourth_effect4 = "GD_Artifacts.Enable4th.EnableFourth_Effect4"
+    enablefourth_effect5 = "GD_Artifacts.Enable4th.EnableFourth_Effect5"
+    enablefourth_effect6 = "GD_Artifacts.Enable4th.EnableFourth_Effect6"
+
+    _defdata_field = "DeltaItemPartDefinition"
+
+
+class Enablefirst_Effect_D(StrEnum):
+    enablefirst_effect1 = "GD_Artifacts.Enable1st.EnableFirst_Effect1"
+    enablefirst_effect2 = "GD_Artifacts.Enable1st.EnableFirst_Effect2"
+    enablefirst_effect3 = "GD_Artifacts.Enable1st.EnableFirst_Effect3"
+    enablefirst_effect4 = "GD_Artifacts.Enable1st.EnableFirst_Effect4"
+    enablefirst_effect5 = "GD_Artifacts.Enable1st.EnableFirst_Effect5"
+    enablefirst_effect6 = "GD_Artifacts.Enable1st.EnableFirst_Effect6"
+    enablefirst_effect7 = "GD_Artifacts.Enable1st.EnableFirst_Effect7"
+
+    _defdata_field = "AlphaItemPartDefinition"
+
+
+class Enablesecond_Effect_C(StrEnum):
+    enablesecond_effect1 = "GD_Artifacts.Enable2nd.EnableSecond_Effect1"
+    enablesecond_effect2 = "GD_Artifacts.Enable2nd.EnableSecond_Effect2"
+    enablesecond_effect3 = "GD_Artifacts.Enable2nd.EnableSecond_Effect3"
+    enablesecond_effect4 = "GD_Artifacts.Enable2nd.EnableSecond_Effect4"
+    enablesecond_effect5 = "GD_Artifacts.Enable2nd.EnableSecond_Effect5"
+    enablesecond_effect6 = "GD_Artifacts.Enable2nd.EnableSecond_Effect6"
+    enablesecond_effect7 = "GD_Artifacts.Enable2nd.EnableSecond_Effect7"
+
+    _defdata_field = "BetaItemPartDefinition"
+
+
+class Enablethird_Effect_B(StrEnum):
+    enablethird_effect1 = "GD_Artifacts.Enable3rd.EnableThird_Effect1"
+    enablethird_effect2 = "GD_Artifacts.Enable3rd.EnableThird_Effect2"
+    enablethird_effect3 = "GD_Artifacts.Enable3rd.EnableThird_Effect3"
+    enablethird_effect4 = "GD_Artifacts.Enable3rd.EnableThird_Effect4"
+    enablethird_effect5 = "GD_Artifacts.Enable3rd.EnableThird_Effect5"
+    enablethird_effect6 = "GD_Artifacts.Enable3rd.EnableThird_Effect6"
+    enablethird_effect7 = "GD_Artifacts.Enable3rd.EnableThird_Effect7"
+
+    _defdata_field = "GammaItemPartDefinition"
+
+
 class Upgrade_Grade_C(StrEnum):
     upgrade_grade10 = "GD_Artifacts.Upgrade.Upgrade_Grade10"
     upgrade_grade11 = "GD_Artifacts.Upgrade.Upgrade_Grade11"
@@ -83,6 +186,57 @@ class Gladiolus_Upgrade_Grade(StrEnum):
     gladiolus_upgrade_grade9 = "GD_Gladiolus_Artifacts.Upgrade.Gladiolus_Upgrade_Grade9"
 
     _defdata_field = "ThetaItemPartDefinition"
+
+
+class Enablefirst_Effect_E(StrEnum):
+    enablefirst_effect1 = "GD_Artifacts.Enable1st.EnableFirst_Effect1"
+    enablefirst_effect2 = "GD_Artifacts.Enable1st.EnableFirst_Effect2"
+    enablefirst_effect3 = "GD_Artifacts.Enable1st.EnableFirst_Effect3"
+    enablefirst_effect4 = "GD_Artifacts.Enable1st.EnableFirst_Effect4"
+    enablefirst_effect5 = "GD_Artifacts.Enable1st.EnableFirst_Effect5"
+
+    _defdata_field = "AlphaItemPartDefinition"
+
+
+class Enablesecond_Effect_D(StrEnum):
+    enablesecond_effect6 = "GD_Artifacts.Enable2nd.EnableSecond_Effect6"
+    enablesecond_effect7 = "GD_Artifacts.Enable2nd.EnableSecond_Effect7"
+
+    _defdata_field = "BetaItemPartDefinition"
+
+
+class Enablefourth_Effect_B(StrEnum):
+    enablefourth_effect1 = "GD_Artifacts.Enable4th.EnableFourth_Effect1"
+    enablefourth_effect2 = "GD_Artifacts.Enable4th.EnableFourth_Effect2"
+    enablefourth_effect3 = "GD_Artifacts.Enable4th.EnableFourth_Effect3"
+    enablefourth_effect4 = "GD_Artifacts.Enable4th.EnableFourth_Effect4"
+    enablefourth_effect5 = "GD_Artifacts.Enable4th.EnableFourth_Effect5"
+    enablefourth_effect6 = "GD_Artifacts.Enable4th.EnableFourth_Effect6"
+    enablefourth_effect7 = "GD_Artifacts.Enable4th.EnableFourth_Effect7"
+
+    _defdata_field = "DeltaItemPartDefinition"
+
+
+class Enablesecond_Effect_E(StrEnum):
+    enablesecond_effect2 = "GD_Artifacts.Enable2nd.EnableSecond_Effect2"
+    enablesecond_effect3 = "GD_Artifacts.Enable2nd.EnableSecond_Effect3"
+    enablesecond_effect4 = "GD_Artifacts.Enable2nd.EnableSecond_Effect4"
+    enablesecond_effect5 = "GD_Artifacts.Enable2nd.EnableSecond_Effect5"
+    enablesecond_effect6 = "GD_Artifacts.Enable2nd.EnableSecond_Effect6"
+    enablesecond_effect7 = "GD_Artifacts.Enable2nd.EnableSecond_Effect7"
+
+    _defdata_field = "BetaItemPartDefinition"
+
+
+class Enablethird_Effect_C(StrEnum):
+    enablethird_effect2 = "GD_Artifacts.Enable3rd.EnableThird_Effect2"
+    enablethird_effect3 = "GD_Artifacts.Enable3rd.EnableThird_Effect3"
+    enablethird_effect4 = "GD_Artifacts.Enable3rd.EnableThird_Effect4"
+    enablethird_effect5 = "GD_Artifacts.Enable3rd.EnableThird_Effect5"
+    enablethird_effect6 = "GD_Artifacts.Enable3rd.EnableThird_Effect6"
+    enablethird_effect7 = "GD_Artifacts.Enable3rd.EnableThird_Effect7"
+
+    _defdata_field = "GammaItemPartDefinition"
 
 
 class Iris_Seraph_Artifact_Might_Part_Upgrade(StrEnum):

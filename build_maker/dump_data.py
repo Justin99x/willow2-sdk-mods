@@ -211,6 +211,11 @@ def dump_balance_type[  # noqa: C901
     class_output = "from dataclasses import dataclass\n"
     class_output += "from typing import ClassVar\n\n"
     class_output += config.class_import_line
+    rules = [
+        ("ClassMod", "CM"),
+        ("GrenadeMod", ""),
+    ]
+
     for balance in balances:
         slots_prefix: dict[TSlot, str] = {}
         slot_parts = config.get_balance_slot_parts(balance, config.slots)
@@ -222,10 +227,13 @@ def dump_balance_type[  # noqa: C901
 
         item = spawn_item_from_balance(balance, 80)
         if item:
-            name = get_inv_title(item) if "ClassMod" not in item.Class.Name else "CM"
+            name = next(
+                (label for key, label in rules if key in item.Class.Name),
+                get_inv_title(item),
+            )
 
             class_output += make_balance_class(
-                name + "_" + balance.Name,
+                name + "_" + balance.Name if name else balance.Name,
                 slots_prefix,
                 balance._path_name(),
                 balance.Class.Name,
@@ -297,7 +305,7 @@ def get_item_parts[TSlot: Enum](  # noqa: C901
         if part_list_collection:
             collection_part_data = getattr(part_list_collection, info.part_list_field, None)
 
-            if mode == mode_enum.EPRM_Complete: # pyright: ignore[reportOptionalMemberAccess]
+            if mode == mode_enum.EPRM_Complete:  # pyright: ignore[reportOptionalMemberAccess]
                 parts = set()
 
             if collection_part_data and collection_part_data.bEnabled:
@@ -306,7 +314,7 @@ def get_item_parts[TSlot: Enum](  # noqa: C901
                     {entry.Part for entry in collection_part_data.WeightedParts if entry.Part},
                 )
 
-                if mode == mode_enum.EPRM_Additive: # pyright: ignore[reportOptionalMemberAccess]
+                if mode == mode_enum.EPRM_Additive:  # pyright: ignore[reportOptionalMemberAccess]
                     parts |= new_parts
                 else:
                     parts = new_parts
@@ -367,8 +375,7 @@ shield_config = DumpConfig["ItemBalanceDefinition", "EquipableItemPartDefinition
     class_import_line="from build_maker.shield_parts import *\n\n\n",
     slots=ShieldSlot,
     should_skip_balance=lambda balance: (
-        "Default__" in balance.Name
-        or not (balance.InventoryDefinition and balance.InventoryDefinition.Class.Name == "ShieldDefinition")
+        "Default__" in balance.Name or not (balance.InventoryDefinition and balance.InventoryDefinition.Class.Name == "ShieldDefinition")
     ),
     get_balance_slot_parts=get_item_parts,
 )
@@ -380,8 +387,7 @@ artifact_config = DumpConfig["ItemBalanceDefinition", "EquipableItemPartDefiniti
     class_import_line="from build_maker.artifact_parts import *\n\n\n",
     slots=ArtifactSlot,
     should_skip_balance=lambda balance: (
-        "Default__" in balance.Name
-        or not (balance.InventoryDefinition and balance.InventoryDefinition.Class.Name == "ArtifactDefinition")
+        "Default__" in balance.Name or not (balance.InventoryDefinition and balance.InventoryDefinition.Class.Name == "ArtifactDefinition")
     ),
     get_balance_slot_parts=get_item_parts,
 )
@@ -393,12 +399,10 @@ grenade_config = DumpConfig["ItemBalanceDefinition", "EquipableItemPartDefinitio
     class_import_line="from build_maker.grenade_parts import *\n\n\n",
     slots=GrenadeSlot,
     should_skip_balance=lambda balance: (
-        "Default__" in balance.Name
-        or not (balance.InventoryDefinition and balance.InventoryDefinition.Class.Name == "GrenadeModDefinition")
+        "Default__" in balance.Name or not (balance.InventoryDefinition and balance.InventoryDefinition.Class.Name == "GrenadeModDefinition")
     ),
     get_balance_slot_parts=get_item_parts,
 )
-
 
 
 dump_balance_type(classmod_config)

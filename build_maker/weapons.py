@@ -65,7 +65,7 @@ class Good_Touch_Smg_Maliwan_3_Goodtouch:
 
 
 @dataclass
-class Coach_Gun_Sg_Jakobs:
+class Scattergun_Sg_Jakobs:
     """GD_Weap_Shotgun.A_Weapons.SG_Jakobs."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Jakobs"
@@ -77,7 +77,7 @@ class Coach_Gun_Sg_Jakobs:
 
 
 @dataclass
-class Revolver_Pistol_Jakobs:
+class Widow_Maker_Pistol_Jakobs:
     """GD_Weap_Pistol.A_Weapons.Pistol_Jakobs."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Jakobs"
@@ -663,7 +663,7 @@ class Logan_S_Gun_Pistol_Hyperion_5_Logansgun:
 
 
 @dataclass
-class Carbene_Ar_Bandit:
+class Mashine_Gun_Ar_Bandit:
     """GD_Weap_AssaultRifle.A_Weapons.AR_Bandit."""
 
     path: ClassVar[str] = "GD_Weap_AssaultRifle.A_Weapons.AR_Bandit"
@@ -687,7 +687,7 @@ class Rifle_Ar_Dahl:
 
 
 @dataclass
-class Rifle_Ar_Jakobs:
+class Scarab_Ar_Jakobs:
     """GD_Weap_AssaultRifle.A_Weapons.AR_Jakobs."""
 
     path: ClassVar[str] = "GD_Weap_AssaultRifle.A_Weapons.AR_Jakobs"
@@ -699,7 +699,7 @@ class Rifle_Ar_Jakobs:
 
 
 @dataclass
-class Rifle_Ar_Torgue:
+class Root_Ar_Torgue:
     """GD_Weap_AssaultRifle.A_Weapons.AR_Torgue."""
 
     path: ClassVar[str] = "GD_Weap_AssaultRifle.A_Weapons.AR_Torgue"
@@ -738,7 +738,7 @@ class Spinigun_Ar_Bandit_2_Uncommon:
 
 
 @dataclass
-class Rifle_Ar_Dahl_2_Uncommon:
+class Grenadier_Ar_Dahl_2_Uncommon:
     """GD_Weap_AssaultRifle.A_Weapons.AR_Dahl_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_AssaultRifle.A_Weapons.AR_Dahl_2_Uncommon"
@@ -753,7 +753,7 @@ class Rifle_Ar_Dahl_2_Uncommon:
 
 
 @dataclass
-class Rifle_Ar_Jakobs_2_Uncommon:
+class Gatling_Gun_Ar_Jakobs_2_Uncommon:
     """GD_Weap_AssaultRifle.A_Weapons.AR_Jakobs_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_AssaultRifle.A_Weapons.AR_Jakobs_2_Uncommon"
@@ -767,7 +767,7 @@ class Rifle_Ar_Jakobs_2_Uncommon:
 
 
 @dataclass
-class Rifle_Ar_Torgue_2_Uncommon:
+class Root_Ar_Torgue_2_Uncommon:
     """GD_Weap_AssaultRifle.A_Weapons.AR_Torgue_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_AssaultRifle.A_Weapons.AR_Torgue_2_Uncommon"
@@ -781,7 +781,7 @@ class Rifle_Ar_Torgue_2_Uncommon:
 
 
 @dataclass
-class Renegade_Ar_Vladof_2_Uncommon:
+class Guerrilla_Ar_Vladof_2_Uncommon:
     """GD_Weap_AssaultRifle.A_Weapons.AR_Vladof_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_AssaultRifle.A_Weapons.AR_Vladof_2_Uncommon"
@@ -796,7 +796,7 @@ class Renegade_Ar_Vladof_2_Uncommon:
 
 
 @dataclass
-class Mashine_Gun_Ar_Bandit_3_Rare:
+class Carbene_Ar_Bandit_3_Rare:
     """GD_Weap_AssaultRifle.A_Weapons.AR_Bandit_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_AssaultRifle.A_Weapons.AR_Bandit_3_Rare"
@@ -854,7 +854,7 @@ class Root_Ar_Torgue_3_Rare:
 
 
 @dataclass
-class Spinigun_Ar_Vladof_3_Rare:
+class Guerrilla_Ar_Vladof_3_Rare:
     """GD_Weap_AssaultRifle.A_Weapons.AR_Vladof_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_AssaultRifle.A_Weapons.AR_Vladof_3_Rare"
@@ -913,7 +913,7 @@ class Gatling_Gun_Ar_Jakobs_4_Veryrare:
 
 
 @dataclass
-class Rifle_Ar_Torgue_4_Veryrare:
+class Lance_Ar_Torgue_4_Veryrare:
     """GD_Weap_AssaultRifle.A_Weapons.AR_Torgue_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_AssaultRifle.A_Weapons.AR_Torgue_4_VeryRare"
@@ -927,7 +927,7 @@ class Rifle_Ar_Torgue_4_Veryrare:
 
 
 @dataclass
-class Spinigun_Ar_Vladof_4_Veryrare:
+class Guerrilla_Ar_Vladof_4_Veryrare:
     """GD_Weap_AssaultRifle.A_Weapons.AR_Vladof_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_AssaultRifle.A_Weapons.AR_Vladof_4_VeryRare"
@@ -998,7 +998,7 @@ class Shredifier_Ar_Vladof_5_Sherdifier:
 
 
 @dataclass
-class Bombabarbardeer_Rl_Bandit:
+class Zooka_Rl_Bandit:
     """GD_Weap_Launchers.A_Weapons.RL_Bandit."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Bandit"
@@ -1011,7 +1011,7 @@ class Bombabarbardeer_Rl_Bandit:
 
 
 @dataclass
-class Dispatch_Rl_Tediore:
+class Bazooka_Rl_Tediore:
     """GD_Weap_Launchers.A_Weapons.RL_Tediore."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Tediore"
@@ -1037,7 +1037,7 @@ class Rpg_Rl_Vladof:
 
 
 @dataclass
-class Panorama_Rl_Maliwan:
+class Prowler_Rl_Maliwan:
     """GD_Weap_Launchers.A_Weapons.RL_Maliwan."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Maliwan"
@@ -1051,7 +1051,7 @@ class Panorama_Rl_Maliwan:
 
 
 @dataclass
-class Deee_Rl_Torgue:
+class Boom_Rl_Torgue:
     """GD_Weap_Launchers.A_Weapons.RL_Torgue."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Torgue"
@@ -1064,7 +1064,7 @@ class Deee_Rl_Torgue:
 
 
 @dataclass
-class Zooka_Rl_Bandit_2_Uncommon:
+class Bombabarbardeer_Rl_Bandit_2_Uncommon:
     """GD_Weap_Launchers.A_Weapons.RL_Bandit_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Bandit_2_Uncommon"
@@ -1094,7 +1094,7 @@ class Launcher_Rl_Tediore_2_Uncommon:
 
 
 @dataclass
-class Hero_Rl_Vladof_2_Uncommon:
+class Rpg_Rl_Vladof_2_Uncommon:
     """GD_Weap_Launchers.A_Weapons.RL_Vladof_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Vladof_2_Uncommon"
@@ -1109,7 +1109,7 @@ class Hero_Rl_Vladof_2_Uncommon:
 
 
 @dataclass
-class Punishment_Rl_Maliwan_2_Uncommon:
+class Panorama_Rl_Maliwan_2_Uncommon:
     """GD_Weap_Launchers.A_Weapons.RL_Maliwan_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Maliwan_2_Uncommon"
@@ -1124,7 +1124,7 @@ class Punishment_Rl_Maliwan_2_Uncommon:
 
 
 @dataclass
-class Blaaa_Rl_Torgue_2_Uncommon:
+class Boom_Rl_Torgue_2_Uncommon:
     """GD_Weap_Launchers.A_Weapons.RL_Torgue_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Torgue_2_Uncommon"
@@ -1153,7 +1153,7 @@ class Zooka_Rl_Bandit_3_Rare:
 
 
 @dataclass
-class Spread_Rl_Tediore_3_Rare:
+class Launcher_Rl_Tediore_3_Rare:
     """GD_Weap_Launchers.A_Weapons.RL_Tediore_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Tediore_3_Rare"
@@ -1168,7 +1168,7 @@ class Spread_Rl_Tediore_3_Rare:
 
 
 @dataclass
-class Rpg_Rl_Vladof_3_Rare:
+class Glory_Rl_Vladof_3_Rare:
     """GD_Weap_Launchers.A_Weapons.RL_Vladof_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Vladof_3_Rare"
@@ -1183,7 +1183,7 @@ class Rpg_Rl_Vladof_3_Rare:
 
 
 @dataclass
-class Punishment_Rl_Maliwan_3_Rare:
+class Prowler_Rl_Maliwan_3_Rare:
     """GD_Weap_Launchers.A_Weapons.RL_Maliwan_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Maliwan_3_Rare"
@@ -1198,7 +1198,7 @@ class Punishment_Rl_Maliwan_3_Rare:
 
 
 @dataclass
-class Boom_Rl_Torgue_3_Rare:
+class Blaaa_Rl_Torgue_3_Rare:
     """GD_Weap_Launchers.A_Weapons.RL_Torgue_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Torgue_3_Rare"
@@ -1212,7 +1212,7 @@ class Boom_Rl_Torgue_3_Rare:
 
 
 @dataclass
-class Area_Efect_Rl_Bandit_4_Veryrare:
+class Zooka_Rl_Bandit_4_Veryrare:
     """GD_Weap_Launchers.A_Weapons.RL_Bandit_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Bandit_4_VeryRare"
@@ -1227,7 +1227,7 @@ class Area_Efect_Rl_Bandit_4_Veryrare:
 
 
 @dataclass
-class Bazooka_Rl_Tediore_4_Veryrare:
+class Dispatch_Rl_Tediore_4_Veryrare:
     """GD_Weap_Launchers.A_Weapons.RL_Tediore_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Tediore_4_VeryRare"
@@ -1242,7 +1242,7 @@ class Bazooka_Rl_Tediore_4_Veryrare:
 
 
 @dataclass
-class Glory_Rl_Vladof_4_Veryrare:
+class Rpg_Rl_Vladof_4_Veryrare:
     """GD_Weap_Launchers.A_Weapons.RL_Vladof_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Vladof_4_VeryRare"
@@ -1272,7 +1272,7 @@ class Prowler_Rl_Maliwan_4_Veryrare:
 
 
 @dataclass
-class Blaaa_Rl_Torgue_4_Veryrare:
+class Deee_Rl_Torgue_4_Veryrare:
     """GD_Weap_Launchers.A_Weapons.RL_Torgue_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_Launchers.A_Weapons.RL_Torgue_4_VeryRare"
@@ -1378,7 +1378,7 @@ class Pistal_Pistol_Bandit:
 
 
 @dataclass
-class Biggun_Pistol_Tediore:
+class Handgun_Pistol_Tediore:
     """GD_Weap_Pistol.A_Weapons.Pistol_Tediore."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Tediore"
@@ -1400,7 +1400,7 @@ class Hand_Cannon_Pistol_Torgue:
 
 
 @dataclass
-class Aegis_Pistol_Maliwan:
+class Animosity_Pistol_Maliwan:
     """GD_Weap_Pistol.A_Weapons.Pistol_Maliwan."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Maliwan"
@@ -1412,7 +1412,7 @@ class Aegis_Pistol_Maliwan:
 
 
 @dataclass
-class Apparatus_Pistol_Hyperion:
+class Impact_Pistol_Hyperion:
     """GD_Weap_Pistol.A_Weapons.Pistol_Hyperion."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Hyperion"
@@ -1423,7 +1423,7 @@ class Apparatus_Pistol_Hyperion:
 
 
 @dataclass
-class Pistal_Pistol_Bandit_2_Uncommon:
+class Ass_Beeter_Pistol_Bandit_2_Uncommon:
     """GD_Weap_Pistol.A_Weapons.Pistol_Bandit_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Bandit_2_Uncommon"
@@ -1437,7 +1437,7 @@ class Pistal_Pistol_Bandit_2_Uncommon:
 
 
 @dataclass
-class Biggun_Pistol_Tediore_2_Uncommon:
+class Handgun_Pistol_Tediore_2_Uncommon:
     """GD_Weap_Pistol.A_Weapons.Pistol_Tediore_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Tediore_2_Uncommon"
@@ -1451,7 +1451,7 @@ class Biggun_Pistol_Tediore_2_Uncommon:
 
 
 @dataclass
-class Magnum_Pistol_Dahl_2_Uncommon:
+class Negotiator_Pistol_Dahl_2_Uncommon:
     """GD_Weap_Pistol.A_Weapons.Pistol_Dahl_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Dahl_2_Uncommon"
@@ -1492,7 +1492,7 @@ class Hand_Cannon_Pistol_Torgue_2_Uncommon:
 
 
 @dataclass
-class Torment_Pistol_Maliwan_2_Uncommon:
+class Animosity_Pistol_Maliwan_2_Uncommon:
     """GD_Weap_Pistol.A_Weapons.Pistol_Maliwan_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Maliwan_2_Uncommon"
@@ -1519,7 +1519,7 @@ class Revolver_Pistol_Jakobs_2_Uncommon:
 
 
 @dataclass
-class Apparatus_Pistol_Hyperion_2_Uncommon:
+class Impact_Pistol_Hyperion_2_Uncommon:
     """GD_Weap_Pistol.A_Weapons.Pistol_Hyperion_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Hyperion_2_Uncommon"
@@ -1575,7 +1575,7 @@ class Repeater_Pistol_Dahl_3_Rare:
 
 
 @dataclass
-class Fighter_Pistol_Vladof_3_Rare:
+class Tmp_Pistol_Vladof_3_Rare:
     """GD_Weap_Pistol.A_Weapons.Pistol_Vladof_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Vladof_3_Rare"
@@ -1589,7 +1589,7 @@ class Fighter_Pistol_Vladof_3_Rare:
 
 
 @dataclass
-class Hand_Cannon_Pistol_Torgue_3_Rare:
+class Rod_Pistol_Torgue_3_Rare:
     """GD_Weap_Pistol.A_Weapons.Pistol_Torgue_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Torgue_3_Rare"
@@ -1602,7 +1602,7 @@ class Hand_Cannon_Pistol_Torgue_3_Rare:
 
 
 @dataclass
-class Aegis_Pistol_Maliwan_3_Rare:
+class Animosity_Pistol_Maliwan_3_Rare:
     """GD_Weap_Pistol.A_Weapons.Pistol_Maliwan_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Maliwan_3_Rare"
@@ -1643,7 +1643,7 @@ class Apparatus_Pistol_Hyperion_3_Rare:
 
 
 @dataclass
-class Pistal_Pistol_Bandit_4_Veryrare:
+class Ass_Beeter_Pistol_Bandit_4_Veryrare:
     """GD_Weap_Pistol.A_Weapons.Pistol_Bandit_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Bandit_4_VeryRare"
@@ -1712,7 +1712,7 @@ class Injector_Pistol_Torgue_4_Veryrare:
 
 
 @dataclass
-class Animosity_Pistol_Maliwan_4_Veryrare:
+class Aegis_Pistol_Maliwan_4_Veryrare:
     """GD_Weap_Pistol.A_Weapons.Pistol_Maliwan_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Maliwan_4_VeryRare"
@@ -1739,7 +1739,7 @@ class Revolver_Pistol_Jakobs_4_Veryrare:
 
 
 @dataclass
-class Dart_Pistol_Hyperion_4_Veryrare:
+class Apparatus_Pistol_Hyperion_4_Veryrare:
     """GD_Weap_Pistol.A_Weapons.Pistol_Hyperion_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons.Pistol_Hyperion_4_VeryRare"
@@ -1837,7 +1837,7 @@ class Dart_Pistol_Hyperion_5_Alien:
 
 
 @dataclass
-class Stret_Sweper_Sg_Bandit:
+class Longer_Ragne_Kilier_Sg_Bandit:
     """GD_Weap_Shotgun.A_Weapons.SG_Bandit."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Bandit"
@@ -1849,7 +1849,7 @@ class Stret_Sweper_Sg_Bandit:
 
 
 @dataclass
-class Sportsman_Sg_Tediore:
+class Double_Barrels_Sg_Tediore:
     """GD_Weap_Shotgun.A_Weapons.SG_Tediore."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Tediore"
@@ -1861,7 +1861,7 @@ class Sportsman_Sg_Tediore:
 
 
 @dataclass
-class Stalker_Sg_Torgue:
+class Pounder_Sg_Torgue:
     """GD_Weap_Shotgun.A_Weapons.SG_Torgue."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Torgue"
@@ -1873,7 +1873,7 @@ class Stalker_Sg_Torgue:
 
 
 @dataclass
-class Projectile_Diversification_Sg_Hyperion:
+class Face_Time_Sg_Hyperion:
     """GD_Weap_Shotgun.A_Weapons.SG_Hyperion."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Hyperion"
@@ -1885,7 +1885,7 @@ class Projectile_Diversification_Sg_Hyperion:
 
 
 @dataclass
-class Longer_Ragne_Kilier_Sg_Bandit_2_Uncommon:
+class Stret_Sweper_Sg_Bandit_2_Uncommon:
     """GD_Weap_Shotgun.A_Weapons.SG_Bandit_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Bandit_2_Uncommon"
@@ -1915,7 +1915,7 @@ class Home_Security_Sg_Tediore_2_Uncommon:
 
 
 @dataclass
-class Bangstick_Sg_Torgue_2_Uncommon:
+class Hulk_Sg_Torgue_2_Uncommon:
     """GD_Weap_Shotgun.A_Weapons.SG_Torgue_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Torgue_2_Uncommon"
@@ -1929,7 +1929,7 @@ class Bangstick_Sg_Torgue_2_Uncommon:
 
 
 @dataclass
-class Longrider_Sg_Jakobs_2_Uncommon:
+class Scattergun_Sg_Jakobs_2_Uncommon:
     """GD_Weap_Shotgun.A_Weapons.SG_Jakobs_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Jakobs_2_Uncommon"
@@ -1943,7 +1943,7 @@ class Longrider_Sg_Jakobs_2_Uncommon:
 
 
 @dataclass
-class Crowdsourcing_Sg_Hyperion_2_Uncommon:
+class Projectile_Diversification_Sg_Hyperion_2_Uncommon:
     """GD_Weap_Shotgun.A_Weapons.SG_Hyperion_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Hyperion_2_Uncommon"
@@ -1973,7 +1973,7 @@ class Stret_Sweper_Sg_Bandit_3_Rare:
 
 
 @dataclass
-class Shotgun_Supreme_Sg_Tediore_3_Rare:
+class Triple_Barrels_Sg_Tediore_3_Rare:
     """GD_Weap_Shotgun.A_Weapons.SG_Tediore_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Tediore_3_Rare"
@@ -1988,7 +1988,7 @@ class Shotgun_Supreme_Sg_Tediore_3_Rare:
 
 
 @dataclass
-class Stalker_Sg_Torgue_3_Rare:
+class Pounder_Sg_Torgue_3_Rare:
     """GD_Weap_Shotgun.A_Weapons.SG_Torgue_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Torgue_3_Rare"
@@ -2002,7 +2002,7 @@ class Stalker_Sg_Torgue_3_Rare:
 
 
 @dataclass
-class Scattergun_Sg_Jakobs_3_Rare:
+class Bushwack_Sg_Jakobs_3_Rare:
     """GD_Weap_Shotgun.A_Weapons.SG_Jakobs_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Jakobs_3_Rare"
@@ -2016,7 +2016,7 @@ class Scattergun_Sg_Jakobs_3_Rare:
 
 
 @dataclass
-class Thinking_Sg_Hyperion_3_Rare:
+class Crowdsourcing_Sg_Hyperion_3_Rare:
     """GD_Weap_Shotgun.A_Weapons.SG_Hyperion_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Hyperion_3_Rare"
@@ -2046,7 +2046,7 @@ class Longer_Ragne_Kilier_Sg_Bandit_4_Veryrare:
 
 
 @dataclass
-class Triple_Barrels_Sg_Tediore_4_Veryrare:
+class Sportsman_Sg_Tediore_4_Veryrare:
     """GD_Weap_Shotgun.A_Weapons.SG_Tediore_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Tediore_4_VeryRare"
@@ -2061,7 +2061,7 @@ class Triple_Barrels_Sg_Tediore_4_Veryrare:
 
 
 @dataclass
-class Ravager_Sg_Torgue_4_Veryrare:
+class Hulk_Sg_Torgue_4_Veryrare:
     """GD_Weap_Shotgun.A_Weapons.SG_Torgue_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Torgue_4_VeryRare"
@@ -2075,7 +2075,7 @@ class Ravager_Sg_Torgue_4_Veryrare:
 
 
 @dataclass
-class Bushwack_Sg_Jakobs_4_Veryrare:
+class Longrider_Sg_Jakobs_4_Veryrare:
     """GD_Weap_Shotgun.A_Weapons.SG_Jakobs_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Jakobs_4_VeryRare"
@@ -2089,7 +2089,7 @@ class Bushwack_Sg_Jakobs_4_Veryrare:
 
 
 @dataclass
-class Crowdsourcing_Sg_Hyperion_4_Veryrare:
+class Development_Sg_Hyperion_4_Veryrare:
     """GD_Weap_Shotgun.A_Weapons.SG_Hyperion_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_Shotgun.A_Weapons.SG_Hyperion_4_VeryRare"
@@ -2182,7 +2182,7 @@ class Smg_Smg_Dahl:
 
 
 @dataclass
-class Submalevolent_Grace_Smg_Maliwan:
+class Vexation_Smg_Maliwan:
     """GD_Weap_SMG.A_Weapons.SMG_Maliwan."""
 
     path: ClassVar[str] = "GD_Weap_SMG.A_Weapons.SMG_Maliwan"
@@ -2237,7 +2237,7 @@ class Special_Smg_Tediore_2_Uncommon:
 
 
 @dataclass
-class Smg_Smg_Dahl_2_Uncommon:
+class Fox_Smg_Dahl_2_Uncommon:
     """GD_Weap_SMG.A_Weapons.SMG_Dahl_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_SMG.A_Weapons.SMG_Dahl_2_Uncommon"
@@ -2252,7 +2252,7 @@ class Smg_Smg_Dahl_2_Uncommon:
 
 
 @dataclass
-class Gospel_Smg_Maliwan_2_Uncommon:
+class Submalevolent_Grace_Smg_Maliwan_2_Uncommon:
     """GD_Weap_SMG.A_Weapons.SMG_Maliwan_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_SMG.A_Weapons.SMG_Maliwan_2_Uncommon"
@@ -2267,7 +2267,7 @@ class Gospel_Smg_Maliwan_2_Uncommon:
 
 
 @dataclass
-class Presence_Smg_Hyperion_2_Uncommon:
+class Backburner_Smg_Hyperion_2_Uncommon:
     """GD_Weap_SMG.A_Weapons.SMG_Hyperion_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_SMG.A_Weapons.SMG_Hyperion_2_Uncommon"
@@ -2282,7 +2282,7 @@ class Presence_Smg_Hyperion_2_Uncommon:
 
 
 @dataclass
-class Acurate_Smgg_Smg_Bandit_3_Rare:
+class Smig_Smg_Bandit_3_Rare:
     """GD_Weap_SMG.A_Weapons.SMG_Bandit_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_SMG.A_Weapons.SMG_Bandit_3_Rare"
@@ -2327,7 +2327,7 @@ class Fox_Smg_Dahl_3_Rare:
 
 
 @dataclass
-class Gospel_Smg_Maliwan_3_Rare:
+class Provacateur_Smg_Maliwan_3_Rare:
     """GD_Weap_SMG.A_Weapons.SMG_Maliwan_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_SMG.A_Weapons.SMG_Maliwan_3_Rare"
@@ -2343,7 +2343,7 @@ class Gospel_Smg_Maliwan_3_Rare:
 
 
 @dataclass
-class Presence_Smg_Hyperion_3_Rare:
+class Transmurdera_Smg_Hyperion_3_Rare:
     """GD_Weap_SMG.A_Weapons.SMG_Hyperion_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_SMG.A_Weapons.SMG_Hyperion_3_Rare"
@@ -2358,7 +2358,7 @@ class Presence_Smg_Hyperion_3_Rare:
 
 
 @dataclass
-class Smig_Smg_Bandit_4_Veryrare:
+class Acurate_Smgg_Smg_Bandit_4_Veryrare:
     """GD_Weap_SMG.A_Weapons.SMG_Bandit_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_SMG.A_Weapons.SMG_Bandit_4_VeryRare"
@@ -2388,7 +2388,7 @@ class Subcompact_Mg_Smg_Tediore_4_Veryrare:
 
 
 @dataclass
-class Smg_Smg_Dahl_4_Veryrare:
+class Fox_Smg_Dahl_4_Veryrare:
     """GD_Weap_SMG.A_Weapons.SMG_Dahl_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_SMG.A_Weapons.SMG_Dahl_4_VeryRare"
@@ -2418,7 +2418,7 @@ class Submalevolent_Grace_Smg_Maliwan_4_Veryrare:
 
 
 @dataclass
-class Transmurdera_Smg_Hyperion_4_Veryrare:
+class Projectile_Convergence_Smg_Hyperion_4_Veryrare:
     """GD_Weap_SMG.A_Weapons.SMG_Hyperion_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_SMG.A_Weapons.SMG_Hyperion_4_VeryRare"
@@ -2516,7 +2516,7 @@ class Sniper_Sniper_Dahl:
 
 
 @dataclass
-class Bratchny_Sniper_Vladof:
+class Droog_Sniper_Vladof:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Vladof."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Vladof"
@@ -2529,7 +2529,7 @@ class Bratchny_Sniper_Vladof:
 
 
 @dataclass
-class Rakehell_Sniper_Maliwan:
+class Snider_Sniper_Maliwan:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Maliwan."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Maliwan"
@@ -2543,7 +2543,7 @@ class Rakehell_Sniper_Maliwan:
 
 
 @dataclass
-class Muckamuck_Sniper_Jakobs:
+class Chinook_Sniper_Jakobs:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Jakobs."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Jakobs"
@@ -2556,7 +2556,7 @@ class Muckamuck_Sniper_Jakobs:
 
 
 @dataclass
-class Transaction_Sniper_Hyperion:
+class Competition_Sniper_Hyperion:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Hyperion."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Hyperion"
@@ -2569,7 +2569,7 @@ class Transaction_Sniper_Hyperion:
 
 
 @dataclass
-class Scout_Sniper_Dahl_2_Uncommon:
+class Terror_Sniper_Dahl_2_Uncommon:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Dahl_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Dahl_2_Uncommon"
@@ -2584,7 +2584,7 @@ class Scout_Sniper_Dahl_2_Uncommon:
 
 
 @dataclass
-class Droog_Sniper_Vladof_2_Uncommon:
+class Bratchny_Sniper_Vladof_2_Uncommon:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Vladof_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Vladof_2_Uncommon"
@@ -2599,7 +2599,7 @@ class Droog_Sniper_Vladof_2_Uncommon:
 
 
 @dataclass
-class Corinthian_Sniper_Maliwan_2_Uncommon:
+class Snider_Sniper_Maliwan_2_Uncommon:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Maliwan_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Maliwan_2_Uncommon"
@@ -2614,7 +2614,7 @@ class Corinthian_Sniper_Maliwan_2_Uncommon:
 
 
 @dataclass
-class Muckamuck_Sniper_Jakobs_2_Uncommon:
+class Chinook_Sniper_Jakobs_2_Uncommon:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Jakobs_2_Uncommon."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Jakobs_2_Uncommon"
@@ -2643,7 +2643,7 @@ class Transaction_Sniper_Hyperion_2_Uncommon:
 
 
 @dataclass
-class Strike_Sniper_Dahl_3_Rare:
+class Scout_Sniper_Dahl_3_Rare:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Dahl_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Dahl_3_Rare"
@@ -2658,7 +2658,7 @@ class Strike_Sniper_Dahl_3_Rare:
 
 
 @dataclass
-class Droog_Sniper_Vladof_3_Rare:
+class Horrorshow_Sniper_Vladof_3_Rare:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Vladof_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Vladof_3_Rare"
@@ -2673,7 +2673,7 @@ class Droog_Sniper_Vladof_3_Rare:
 
 
 @dataclass
-class Jericho_Sniper_Maliwan_3_Rare:
+class Rakehell_Sniper_Maliwan_3_Rare:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Maliwan_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Maliwan_3_Rare"
@@ -2688,7 +2688,7 @@ class Jericho_Sniper_Maliwan_3_Rare:
 
 
 @dataclass
-class Chinook_Sniper_Jakobs_3_Rare:
+class Diaub_Sniper_Jakobs_3_Rare:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Jakobs_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Jakobs_3_Rare"
@@ -2702,7 +2702,7 @@ class Chinook_Sniper_Jakobs_3_Rare:
 
 
 @dataclass
-class Policy_Sniper_Hyperion_3_Rare:
+class Sniper_Rifle_Sniper_Hyperion_3_Rare:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Hyperion_3_Rare."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Hyperion_3_Rare"
@@ -2717,7 +2717,7 @@ class Policy_Sniper_Hyperion_3_Rare:
 
 
 @dataclass
-class Scout_Sniper_Dahl_4_Veryrare:
+class Sniper_Sniper_Dahl_4_Veryrare:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Dahl_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Dahl_4_VeryRare"
@@ -2732,7 +2732,7 @@ class Scout_Sniper_Dahl_4_Veryrare:
 
 
 @dataclass
-class Droog_Sniper_Vladof_4_Veryrare:
+class Bratchny_Sniper_Vladof_4_Veryrare:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Vladof_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Vladof_4_VeryRare"
@@ -2747,7 +2747,7 @@ class Droog_Sniper_Vladof_4_Veryrare:
 
 
 @dataclass
-class Snider_Sniper_Maliwan_4_Veryrare:
+class Corinthian_Sniper_Maliwan_4_Veryrare:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Maliwan_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Maliwan_4_VeryRare"
@@ -2762,7 +2762,7 @@ class Snider_Sniper_Maliwan_4_Veryrare:
 
 
 @dataclass
-class Callipeen_Sniper_Jakobs_4_Veryrare:
+class Muckamuck_Sniper_Jakobs_4_Veryrare:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Jakobs_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Jakobs_4_VeryRare"
@@ -2776,7 +2776,7 @@ class Callipeen_Sniper_Jakobs_4_Veryrare:
 
 
 @dataclass
-class Sniper_Rifle_Sniper_Hyperion_4_Veryrare:
+class Policy_Sniper_Hyperion_4_Veryrare:
     """GD_Weap_SniperRifles.A_Weapons.Sniper_Hyperion_4_VeryRare."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons.Sniper_Hyperion_4_VeryRare"
@@ -2847,7 +2847,7 @@ class Hybridfication_Sniper_Hyperion_5_Alien:
 
 
 @dataclass
-class Rifle_Ar_Dahl_1_Gbx:
+class Renegade_Ar_Dahl_1_Gbx:
     """GD_Weap_AssaultRifle.A_Weapons_Unique.AR_Dahl_1_GBX."""
 
     path: ClassVar[str] = "GD_Weap_AssaultRifle.A_Weapons_Unique.AR_Dahl_1_GBX"
@@ -2871,7 +2871,7 @@ class Projectile_Convergence_Smg_Gearbox_1:
 
 
 @dataclass
-class Callipeen_Sniper_Gearbox_1:
+class Chinook_Sniper_Gearbox_1:
     """GD_Weap_SniperRifles.A_Weapons_Unique.Sniper_Gearbox_1."""
 
     path: ClassVar[str] = "GD_Weap_SniperRifles.A_Weapons_Unique.Sniper_Gearbox_1"
@@ -2912,7 +2912,7 @@ class Scorpio_Ar_Dahl_3_Scorpio:
 
 
 @dataclass
-class Rokets_Ar_Bandit_2_Fire:
+class Mashine_Gun_Ar_Bandit_2_Fire:
     """GD_Weap_AssaultRifle.A_Weapons_Elemental.AR_Bandit_2_Fire."""
 
     path: ClassVar[str] = "GD_Weap_AssaultRifle.A_Weapons_Elemental.AR_Bandit_2_Fire"
@@ -3242,7 +3242,7 @@ class Tidal_Wave_Sg_Jakobs_3_Tidalwave:
 
 
 @dataclass
-class Animosity_Pistol_Maliwan_2_Corrosive:
+class Aegis_Pistol_Maliwan_2_Corrosive:
     """GD_Weap_Pistol.A_Weapons_Elemental.Pistol_Maliwan_2_Corrosive."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons_Elemental.Pistol_Maliwan_2_Corrosive"
@@ -3281,7 +3281,7 @@ class Aegis_Pistol_Maliwan_2_Shock:
 
 
 @dataclass
-class Torment_Pistol_Maliwan_2_Slag:
+class Phobia_Pistol_Maliwan_2_Slag:
     """GD_Weap_Pistol.A_Weapons_Elemental.Pistol_Maliwan_2_Slag."""
 
     path: ClassVar[str] = "GD_Weap_Pistol.A_Weapons_Elemental.Pistol_Maliwan_2_Slag"
@@ -3307,7 +3307,7 @@ class Blasster_Ar_Bandit_3_Rare_Alien:
 
 
 @dataclass
-class Phobia_Weapon_Jabberslagweapon:
+class Aegis_Weapon_Jabberslagweapon:
     """GD_Allium_TG_Plot_M01Data.Weapons.Weapon_JabberSlagWeapon."""
 
     path: ClassVar[str] = "GD_Allium_TG_Plot_M01Data.Weapons.Weapon_JabberSlagWeapon"
@@ -3489,7 +3489,7 @@ class World_Burn_Rl_Torgue_5_Worldburn:
 
 
 @dataclass
-class Ravager_Sg_Torgue_7_Effervecemt:
+class Bangstick_Sg_Torgue_7_Effervecemt:
     """GD_Anemone_Weapons.A_Weapons.SG_Torgue_7_Effervecemt."""
 
     path: ClassVar[str] = "GD_Anemone_Weapons.A_Weapons.SG_Torgue_7_Effervecemt"
@@ -3605,7 +3605,7 @@ class Florentine_Aster_Seraph_Florentine_Balance:
 
 
 @dataclass
-class Rod_Pistol_Torgue_4_Rock:
+class Slapper_Pistol_Torgue_4_Rock:
     """GD_Aster_Weapons.Pistols.Pistol_Torgue_4_Rock."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.Pistols.Pistol_Torgue_4_Rock"
@@ -3632,7 +3632,7 @@ class Pounder_Sg_Torgue_4_Rock:
 
 
 @dataclass
-class Spitter_Ar_Torgue_4_Rock:
+class Root_Ar_Torgue_4_Rock:
     """GD_Aster_Weapons.AssaultRifles.AR_Torgue_4_Rock."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.AssaultRifles.AR_Torgue_4_Rock"
@@ -3661,7 +3661,7 @@ class Mashine_Gun_Ar_Bandit_4_Quartz:
 
 
 @dataclass
-class Grenadier_Ar_Dahl_4_Emerald:
+class Defender_Ar_Dahl_4_Emerald:
     """GD_Aster_Weapons.AssaultRifles.AR_Dahl_4_Emerald."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.AssaultRifles.AR_Dahl_4_Emerald"
@@ -3691,7 +3691,7 @@ class Rifle_Ar_Vladof_4_Garnet:
 
 
 @dataclass
-class Gatling_Gun_Ar_Jakobs_4_Citrine:
+class Rifle_Ar_Jakobs_4_Citrine:
     """GD_Aster_Weapons.AssaultRifles.AR_Jakobs_4_Citrine."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.AssaultRifles.AR_Jakobs_4_Citrine"
@@ -3705,7 +3705,7 @@ class Gatling_Gun_Ar_Jakobs_4_Citrine:
 
 
 @dataclass
-class Ass_Beeter_Pistol_Bandit_4_Quartz:
+class Ratatater_Pistol_Bandit_4_Quartz:
     """GD_Aster_Weapons.Pistols.Pistol_Bandit_4_Quartz."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.Pistols.Pistol_Bandit_4_Quartz"
@@ -3719,7 +3719,7 @@ class Ass_Beeter_Pistol_Bandit_4_Quartz:
 
 
 @dataclass
-class Quickshot_Pistol_Tediore_4_Cubiczerconia:
+class Aimshot_Pistol_Tediore_4_Cubiczerconia:
     """GD_Aster_Weapons.Pistols.Pistol_Tediore_4_CubicZerconia."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.Pistols.Pistol_Tediore_4_CubicZerconia"
@@ -3733,7 +3733,7 @@ class Quickshot_Pistol_Tediore_4_Cubiczerconia:
 
 
 @dataclass
-class Peacemaker_Pistol_Dahl_4_Emerald:
+class Magnum_Pistol_Dahl_4_Emerald:
     """GD_Aster_Weapons.Pistols.Pistol_Dahl_4_Emerald."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.Pistols.Pistol_Dahl_4_Emerald"
@@ -3747,7 +3747,7 @@ class Peacemaker_Pistol_Dahl_4_Emerald:
 
 
 @dataclass
-class Troublemaker_Pistol_Vladof_4_Garnet:
+class Tmp_Pistol_Vladof_4_Garnet:
     """GD_Aster_Weapons.Pistols.Pistol_Vladof_4_Garnet."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.Pistols.Pistol_Vladof_4_Garnet"
@@ -3761,7 +3761,7 @@ class Troublemaker_Pistol_Vladof_4_Garnet:
 
 
 @dataclass
-class Animosity_Pistol_Maliwan_4_Aquamarine:
+class Aegis_Pistol_Maliwan_4_Aquamarine:
     """GD_Aster_Weapons.Pistols.Pistol_Maliwan_4_Aquamarine."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.Pistols.Pistol_Maliwan_4_Aquamarine"
@@ -3775,7 +3775,7 @@ class Animosity_Pistol_Maliwan_4_Aquamarine:
 
 
 @dataclass
-class Iron_Pistol_Jakobs_4_Citrine:
+class Revolver_Pistol_Jakobs_4_Citrine:
     """GD_Aster_Weapons.Pistols.Pistol_Jakobs_4_Citrine."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.Pistols.Pistol_Jakobs_4_Citrine"
@@ -3817,7 +3817,7 @@ class Longer_Ragne_Kilier_Sg_Bandit_4_Quartz:
 
 
 @dataclass
-class Home_Security_Sg_Tediore_4_Cubiczerconia:
+class Triple_Barrels_Sg_Tediore_4_Cubiczerconia:
     """GD_Aster_Weapons.Shotguns.SG_Tediore_4_CubicZerconia."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.Shotguns.SG_Tediore_4_CubicZerconia"
@@ -3832,7 +3832,7 @@ class Home_Security_Sg_Tediore_4_Cubiczerconia:
 
 
 @dataclass
-class Scattergun_Sg_Jakobs_4_Citrine:
+class Longrider_Sg_Jakobs_4_Citrine:
     """GD_Aster_Weapons.Shotguns.SG_Jakobs_4_Citrine."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.Shotguns.SG_Jakobs_4_Citrine"
@@ -3846,7 +3846,7 @@ class Scattergun_Sg_Jakobs_4_Citrine:
 
 
 @dataclass
-class Projectile_Diversification_Sg_Hyperion_4_Diamond:
+class Face_Time_Sg_Hyperion_4_Diamond:
     """GD_Aster_Weapons.Shotguns.SG_Hyperion_4_Diamond."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.Shotguns.SG_Hyperion_4_Diamond"
@@ -3891,7 +3891,7 @@ class Subcompact_Mg_Smg_Tediore_4_Cubiczerconia:
 
 
 @dataclass
-class Smg_Smg_Dahl_4_Emerald:
+class Fox_Smg_Dahl_4_Emerald:
     """GD_Aster_Weapons.SMGs.SMG_Dahl_4_Emerald."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.SMGs.SMG_Dahl_4_Emerald"
@@ -3906,7 +3906,7 @@ class Smg_Smg_Dahl_4_Emerald:
 
 
 @dataclass
-class Gospel_Smg_Maliwan_4_Aquamarine:
+class Revenant_Smg_Maliwan_4_Aquamarine:
     """GD_Aster_Weapons.SMGs.SMG_Maliwan_4_Aquamarine."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.SMGs.SMG_Maliwan_4_Aquamarine"
@@ -3921,7 +3921,7 @@ class Gospel_Smg_Maliwan_4_Aquamarine:
 
 
 @dataclass
-class Presence_Smg_Hyperion_4_Diamond:
+class Projectile_Convergence_Smg_Hyperion_4_Diamond:
     """GD_Aster_Weapons.SMGs.SMG_Hyperion_4_Diamond."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.SMGs.SMG_Hyperion_4_Diamond"
@@ -3936,7 +3936,7 @@ class Presence_Smg_Hyperion_4_Diamond:
 
 
 @dataclass
-class Scout_Sr_Dahl_4_Emerald:
+class Sniper_Sr_Dahl_4_Emerald:
     """GD_Aster_Weapons.Snipers.SR_Dahl_4_Emerald."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.Snipers.SR_Dahl_4_Emerald"
@@ -3966,22 +3966,22 @@ class Pooshka_Sr_Vladof_4_Garnet:
 
 
 @dataclass
-class Gospel_Sr_Maliwan_4_Aquamarine:
+class Corinthian_Sr_Maliwan_4_Aquamarine:
     """GD_Aster_Weapons.Snipers.SR_Maliwan_4_Aquamarine."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.Snipers.SR_Maliwan_4_Aquamarine"
     class_name: ClassVar[str] = "WeaponBalanceDefinition"
     levels: list[int]
-    grip: Smg_Grip | None = None
-    barrel: Smg_Barrel_B | None = None
-    sight: Smg_Sight_B | None = None
-    stock: Smg_Stock | None = None
-    element: Smg_Elemental_B | None = None
-    accessory1: Smg_Accessory_C | None = None
+    grip: Sr_Grip | None = None
+    barrel: Sr_Barrel | None = None
+    sight: Sniper_Sight | None = None
+    stock: Sr_Stock_A | None = None
+    element: Sr_Elemental_B | None = None
+    accessory1: Sniper_Accessory | None = None
 
 
 @dataclass
-class Chinook_Sr_Jakobs_4_Citrine:
+class Diaub_Sr_Jakobs_4_Citrine:
     """GD_Aster_Weapons.Snipers.SR_Jakobs_4_Citrine."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.Snipers.SR_Jakobs_4_Citrine"
@@ -3995,7 +3995,7 @@ class Chinook_Sr_Jakobs_4_Citrine:
 
 
 @dataclass
-class Sniper_Rifle_Sr_Hyperion_4_Diamond:
+class Transaction_Sr_Hyperion_4_Diamond:
     """GD_Aster_Weapons.Snipers.SR_Hyperion_4_Diamond."""
 
     path: ClassVar[str] = "GD_Aster_Weapons.Snipers.SR_Hyperion_4_Diamond"

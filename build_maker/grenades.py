@@ -5,7 +5,7 @@ from build_maker.grenade_parts import *
 
 
 @dataclass
-class Corrosive_Cloud_Gm_Areaeffect:
+class Gm_Areaeffect:
     """GD_GrenadeMods.A_Item.GM_AreaEffect."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_AreaEffect"
@@ -19,7 +19,7 @@ class Corrosive_Cloud_Gm_Areaeffect:
 
 
 @dataclass
-class Fire_Burst_Gm_Areaeffect_2_Uncommon:
+class Gm_Areaeffect_2_Uncommon:
     """GD_GrenadeMods.A_Item.GM_AreaEffect_2_Uncommon."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_AreaEffect_2_Uncommon"
@@ -34,7 +34,7 @@ class Fire_Burst_Gm_Areaeffect_2_Uncommon:
 
 
 @dataclass
-class Corrosive_Cloud_Gm_Areaeffect_3_Rare:
+class Gm_Areaeffect_3_Rare:
     """GD_GrenadeMods.A_Item.GM_AreaEffect_3_Rare."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_AreaEffect_3_Rare"
@@ -49,7 +49,7 @@ class Corrosive_Cloud_Gm_Areaeffect_3_Rare:
 
 
 @dataclass
-class Fire_Burst_Gm_Areaeffect_4_Veryrare:
+class Gm_Areaeffect_4_Veryrare:
     """GD_GrenadeMods.A_Item.GM_AreaEffect_4_VeryRare."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_AreaEffect_4_VeryRare"
@@ -64,7 +64,7 @@ class Fire_Burst_Gm_Areaeffect_4_Veryrare:
 
 
 @dataclass
-class Bouncing_Betty_Gm_Bouncingbetty:
+class Gm_Bouncingbetty:
     """GD_GrenadeMods.A_Item.GM_BouncingBetty."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_BouncingBetty"
@@ -79,7 +79,7 @@ class Bouncing_Betty_Gm_Bouncingbetty:
 
 
 @dataclass
-class Bouncing_Betty_Gm_Bouncingbetty_2_Uncommon:
+class Gm_Bouncingbetty_2_Uncommon:
     """GD_GrenadeMods.A_Item.GM_BouncingBetty_2_Uncommon."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_BouncingBetty_2_Uncommon"
@@ -94,7 +94,7 @@ class Bouncing_Betty_Gm_Bouncingbetty_2_Uncommon:
 
 
 @dataclass
-class Lectrik_Jumpin_Bitty_Gm_Bouncingbetty_3_Rare:
+class Gm_Bouncingbetty_3_Rare:
     """GD_GrenadeMods.A_Item.GM_BouncingBetty_3_Rare."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_BouncingBetty_3_Rare"
@@ -109,7 +109,7 @@ class Lectrik_Jumpin_Bitty_Gm_Bouncingbetty_3_Rare:
 
 
 @dataclass
-class Slag_Bouncing_Betty_Gm_Bouncingbetty_4_Veryrare:
+class Gm_Bouncingbetty_4_Veryrare:
     """GD_GrenadeMods.A_Item.GM_BouncingBetty_4_VeryRare."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_BouncingBetty_4_VeryRare"
@@ -124,7 +124,7 @@ class Slag_Bouncing_Betty_Gm_Bouncingbetty_4_Veryrare:
 
 
 @dataclass
-class Mirv_Gm_Mirv:
+class Gm_Mirv:
     """GD_GrenadeMods.A_Item.GM_Mirv."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Mirv"
@@ -140,7 +140,7 @@ class Mirv_Gm_Mirv:
 
 
 @dataclass
-class Burnin_Mrvur_Gm_Mirv_2_Uncommon:
+class Gm_Mirv_2_Uncommon:
     """GD_GrenadeMods.A_Item.GM_Mirv_2_Uncommon."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Mirv_2_Uncommon"
@@ -156,7 +156,7 @@ class Burnin_Mrvur_Gm_Mirv_2_Uncommon:
 
 
 @dataclass
-class Mirv_Gm_Mirv_3_Rare:
+class Gm_Mirv_3_Rare:
     """GD_GrenadeMods.A_Item.GM_Mirv_3_Rare."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Mirv_3_Rare"
@@ -172,7 +172,7 @@ class Mirv_Gm_Mirv_3_Rare:
 
 
 @dataclass
-class Mirv_Gm_Mirv_4_Veryrare:
+class Gm_Mirv_4_Veryrare:
     """GD_GrenadeMods.A_Item.GM_Mirv_4_VeryRare."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Mirv_4_VeryRare"
@@ -188,7 +188,7 @@ class Mirv_Gm_Mirv_4_Veryrare:
 
 
 @dataclass
-class Incendiary_Singularity_Gm_Singularity:
+class Gm_Singularity:
     """GD_GrenadeMods.A_Item.GM_Singularity."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Singularity"
@@ -203,7 +203,7 @@ class Incendiary_Singularity_Gm_Singularity:
 
 
 @dataclass
-class Singularity_Gm_Singularity_2_Uncommon:
+class Gm_Singularity_2_Uncommon:
     """GD_GrenadeMods.A_Item.GM_Singularity_2_Uncommon."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Singularity_2_Uncommon"
@@ -218,7 +218,7 @@ class Singularity_Gm_Singularity_2_Uncommon:
 
 
 @dataclass
-class Singularity_Gm_Singularity_3_Rare:
+class Gm_Singularity_3_Rare:
     """GD_GrenadeMods.A_Item.GM_Singularity_3_Rare."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Singularity_3_Rare"
@@ -233,7 +233,7 @@ class Singularity_Gm_Singularity_3_Rare:
 
 
 @dataclass
-class Slag_Singularity_Gm_Singularity_4_Veryrare:
+class Gm_Singularity_4_Veryrare:
     """GD_GrenadeMods.A_Item.GM_Singularity_4_VeryRare."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Singularity_4_VeryRare"
@@ -248,7 +248,7 @@ class Slag_Singularity_Gm_Singularity_4_Veryrare:
 
 
 @dataclass
-class Gurnade_Gm_Standard:
+class Gm_Standard:
     """GD_GrenadeMods.A_Item.GM_Standard."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Standard"
@@ -263,7 +263,7 @@ class Gurnade_Gm_Standard:
 
 
 @dataclass
-class Sluj_Gurnade_Gm_Standard_2_Uncommon:
+class Gm_Standard_2_Uncommon:
     """GD_GrenadeMods.A_Item.GM_Standard_2_Uncommon."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Standard_2_Uncommon"
@@ -278,7 +278,7 @@ class Sluj_Gurnade_Gm_Standard_2_Uncommon:
 
 
 @dataclass
-class Sluj_Gurnade_Gm_Standard_3_Rare:
+class Gm_Standard_3_Rare:
     """GD_GrenadeMods.A_Item.GM_Standard_3_Rare."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Standard_3_Rare"
@@ -293,7 +293,7 @@ class Sluj_Gurnade_Gm_Standard_3_Rare:
 
 
 @dataclass
-class Grenade_Gm_Standard_4_Veryrare:
+class Gm_Standard_4_Veryrare:
     """GD_GrenadeMods.A_Item.GM_Standard_4_VeryRare."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Standard_4_VeryRare"
@@ -308,7 +308,7 @@ class Grenade_Gm_Standard_4_Veryrare:
 
 
 @dataclass
-class Transfusion_Gm_Transfusion:
+class Gm_Transfusion:
     """GD_GrenadeMods.A_Item.GM_Transfusion."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Transfusion"
@@ -324,7 +324,7 @@ class Transfusion_Gm_Transfusion:
 
 
 @dataclass
-class Shock_Transfusion_Gm_Transfusion_2_Uncommon:
+class Gm_Transfusion_2_Uncommon:
     """GD_GrenadeMods.A_Item.GM_Transfusion_2_Uncommon."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Transfusion_2_Uncommon"
@@ -340,7 +340,7 @@ class Shock_Transfusion_Gm_Transfusion_2_Uncommon:
 
 
 @dataclass
-class Slag_Transfusion_Gm_Transfusion_3_Rare:
+class Gm_Transfusion_3_Rare:
     """GD_GrenadeMods.A_Item.GM_Transfusion_3_Rare."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Transfusion_3_Rare"
@@ -356,7 +356,7 @@ class Slag_Transfusion_Gm_Transfusion_3_Rare:
 
 
 @dataclass
-class Slag_Transfusion_Gm_Transfusion_4_Veryrare:
+class Gm_Transfusion_4_Veryrare:
     """GD_GrenadeMods.A_Item.GM_Transfusion_4_VeryRare."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item.GM_Transfusion_4_VeryRare"
@@ -372,7 +372,7 @@ class Slag_Transfusion_Gm_Transfusion_4_Veryrare:
 
 
 @dataclass
-class Jumpin_Bitty_Gm_Bouncingbetty_Uncommon_Bandit:
+class Gm_Bouncingbetty_Uncommon_Bandit:
     """GD_GrenadeMods.A_Item_Custom.GM_BouncingBetty_Uncommon_Bandit."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Custom.GM_BouncingBetty_Uncommon_Bandit"
@@ -387,7 +387,7 @@ class Jumpin_Bitty_Gm_Bouncingbetty_Uncommon_Bandit:
 
 
 @dataclass
-class Fuster_Cluck_Gm_Fustercluck:
+class Gm_Fustercluck:
     """GD_GrenadeMods.A_Item_Custom.GM_FusterCluck."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Custom.GM_FusterCluck"
@@ -402,7 +402,7 @@ class Fuster_Cluck_Gm_Fustercluck:
 
 
 @dataclass
-class Kiss_Of_Death_Gm_Kissofdeath:
+class Gm_Kissofdeath:
     """GD_GrenadeMods.A_Item_Custom.GM_KissOfDeath."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Custom.GM_KissOfDeath"
@@ -416,7 +416,7 @@ class Kiss_Of_Death_Gm_Kissofdeath:
 
 
 @dataclass
-class Murrv_Gm_Mirv_Uncommon_Bandit:
+class Gm_Mirv_Uncommon_Bandit:
     """GD_GrenadeMods.A_Item_Custom.GM_Mirv_Uncommon_Bandit."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Custom.GM_Mirv_Uncommon_Bandit"
@@ -432,7 +432,7 @@ class Murrv_Gm_Mirv_Uncommon_Bandit:
 
 
 @dataclass
-class Contraband_Sky_Rocket_Gm_Skyrocket:
+class Gm_Skyrocket:
     """GD_GrenadeMods.A_Item_Custom.GM_SkyRocket."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Custom.GM_SkyRocket"
@@ -441,7 +441,7 @@ class Contraband_Sky_Rocket_Gm_Skyrocket:
 
 
 @dataclass
-class Gurnade_Gm_Standard_Uncommon_Bandit:
+class Gm_Standard_Uncommon_Bandit:
     """GD_GrenadeMods.A_Item_Custom.GM_Standard_Uncommon_Bandit."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Custom.GM_Standard_Uncommon_Bandit"
@@ -456,7 +456,7 @@ class Gurnade_Gm_Standard_Uncommon_Bandit:
 
 
 @dataclass
-class Bonus_Package_Gm_Bonuspackage:
+class Gm_Bonuspackage:
     """GD_GrenadeMods.A_Item_Legendary.GM_BonusPackage."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Legendary.GM_BonusPackage"
@@ -470,7 +470,7 @@ class Bonus_Package_Gm_Bonuspackage:
 
 
 @dataclass
-class Bouncing_Bonny_Gm_Bouncingbonny:
+class Gm_Bouncingbonny:
     """GD_GrenadeMods.A_Item_Legendary.GM_BouncingBonny."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Legendary.GM_BouncingBonny"
@@ -484,7 +484,7 @@ class Bouncing_Bonny_Gm_Bouncingbonny:
 
 
 @dataclass
-class Fastball_Gm_Fastball:
+class Gm_Fastball:
     """GD_GrenadeMods.A_Item_Legendary.GM_Fastball."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Legendary.GM_Fastball"
@@ -496,7 +496,7 @@ class Fastball_Gm_Fastball:
 
 
 @dataclass
-class Fire_Bee_Gm_Firebee:
+class Gm_Firebee:
     """GD_GrenadeMods.A_Item_Legendary.GM_FireBee."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Legendary.GM_FireBee"
@@ -511,7 +511,7 @@ class Fire_Bee_Gm_Firebee:
 
 
 @dataclass
-class Breath_Of_Terramorphous_Gm_Flamespurt:
+class Gm_Flamespurt:
     """GD_GrenadeMods.A_Item_Legendary.GM_FlameSpurt."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Legendary.GM_FlameSpurt"
@@ -525,7 +525,7 @@ class Breath_Of_Terramorphous_Gm_Flamespurt:
 
 
 @dataclass
-class Fire_Leech_Gm_Leech:
+class Gm_Leech:
     """GD_GrenadeMods.A_Item_Legendary.GM_Leech."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Legendary.GM_Leech"
@@ -540,7 +540,7 @@ class Fire_Leech_Gm_Leech:
 
 
 @dataclass
-class Nasty_Surprise_Gm_Nastysurprise:
+class Gm_Nastysurprise:
     """GD_GrenadeMods.A_Item_Legendary.GM_NastySurprise."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Legendary.GM_NastySurprise"
@@ -554,7 +554,7 @@ class Nasty_Surprise_Gm_Nastysurprise:
 
 
 @dataclass
-class Pandemic_Gm_Pandemic:
+class Gm_Pandemic:
     """GD_GrenadeMods.A_Item_Legendary.GM_Pandemic."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Legendary.GM_Pandemic"
@@ -569,7 +569,7 @@ class Pandemic_Gm_Pandemic:
 
 
 @dataclass
-class Quasar_Gm_Quasar:
+class Gm_Quasar:
     """GD_GrenadeMods.A_Item_Legendary.GM_Quasar."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Legendary.GM_Quasar"
@@ -583,7 +583,7 @@ class Quasar_Gm_Quasar:
 
 
 @dataclass
-class Rolling_Thunder_Gm_Rollingthunder:
+class Gm_Rollingthunder:
     """GD_GrenadeMods.A_Item_Legendary.GM_RollingThunder."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Legendary.GM_RollingThunder"
@@ -596,7 +596,7 @@ class Rolling_Thunder_Gm_Rollingthunder:
 
 
 @dataclass
-class Storm_Front_Gm_Stormfront:
+class Gm_Stormfront:
     """GD_GrenadeMods.A_Item_Legendary.GM_StormFront."""
 
     path: ClassVar[str] = "GD_GrenadeMods.A_Item_Legendary.GM_StormFront"
@@ -611,7 +611,7 @@ class Storm_Front_Gm_Stormfront:
 
 
 @dataclass
-class Corrosive_Cloud_Gm_Areaeffect_1_Nointerp:
+class Gm_Areaeffect_1_Nointerp:
     """GD_Population_Marauder.ItemBalance.GM_AreaEffect_1_NoInterp."""
 
     path: ClassVar[str] = "GD_Population_Marauder.ItemBalance.GM_AreaEffect_1_NoInterp"
@@ -625,7 +625,7 @@ class Corrosive_Cloud_Gm_Areaeffect_1_Nointerp:
 
 
 @dataclass
-class Asidy_Jumpin_Biddy_Gm_Bouncingbetty_1_Nointerp:
+class Gm_Bouncingbetty_1_Nointerp:
     """GD_Population_Marauder.ItemBalance.GM_BouncingBetty_1_NoInterp."""
 
     path: ClassVar[str] = "GD_Population_Marauder.ItemBalance.GM_BouncingBetty_1_NoInterp"
@@ -640,7 +640,7 @@ class Asidy_Jumpin_Biddy_Gm_Bouncingbetty_1_Nointerp:
 
 
 @dataclass
-class Mirv_Gm_Mirv_1_Nointerp:
+class Gm_Mirv_1_Nointerp:
     """GD_Population_Marauder.ItemBalance.GM_Mirv_1_NoInterp."""
 
     path: ClassVar[str] = "GD_Population_Marauder.ItemBalance.GM_Mirv_1_NoInterp"
@@ -656,7 +656,7 @@ class Mirv_Gm_Mirv_1_Nointerp:
 
 
 @dataclass
-class Singularity_Gm_Singularity_1_Nointerp:
+class Gm_Singularity_1_Nointerp:
     """GD_Population_Marauder.ItemBalance.GM_Singularity_1_NoInterp."""
 
     path: ClassVar[str] = "GD_Population_Marauder.ItemBalance.GM_Singularity_1_NoInterp"
@@ -671,7 +671,7 @@ class Singularity_Gm_Singularity_1_Nointerp:
 
 
 @dataclass
-class Grenade_Gm_Standard_1_Nointerp:
+class Gm_Standard_1_Nointerp:
     """GD_Population_Marauder.ItemBalance.GM_Standard_1_NoInterp."""
 
     path: ClassVar[str] = "GD_Population_Marauder.ItemBalance.GM_Standard_1_NoInterp"
@@ -686,7 +686,7 @@ class Grenade_Gm_Standard_1_Nointerp:
 
 
 @dataclass
-class Transfusion_Gm_Transfusion_1_Nointerp:
+class Gm_Transfusion_1_Nointerp:
     """GD_Population_Marauder.ItemBalance.GM_Transfusion_1_NoInterp."""
 
     path: ClassVar[str] = "GD_Population_Marauder.ItemBalance.GM_Transfusion_1_NoInterp"
@@ -702,7 +702,7 @@ class Transfusion_Gm_Transfusion_1_Nointerp:
 
 
 @dataclass
-class Burnin_Gurnade_Gm_Standard_3_Rare_Flamer:
+class Gm_Standard_3_Rare_Flamer:
     """GD_Anemone_GrenadeMods.A_Item.GM_Standard_3_Rare_Flamer."""
 
     path: ClassVar[str] = "GD_Anemone_GrenadeMods.A_Item.GM_Standard_3_Rare_Flamer"
@@ -716,7 +716,7 @@ class Burnin_Gurnade_Gm_Standard_3_Rare_Flamer:
 
 
 @dataclass
-class Antifection_Gm_Antifection:
+class Gm_Antifection:
     """GD_Anemone_GrenadeMods.A_Item_Legendary.GM_Antifection."""
 
     path: ClassVar[str] = "GD_Anemone_GrenadeMods.A_Item_Legendary.GM_Antifection"
@@ -730,7 +730,7 @@ class Antifection_Gm_Antifection:
 
 
 @dataclass
-class Antifection_Gm_Antifection_Turret:
+class Gm_Antifection_Turret:
     """GD_Anemone_GrenadeMods.A_Item_Legendary.GM_Antifection_Turret."""
 
     path: ClassVar[str] = "GD_Anemone_GrenadeMods.A_Item_Legendary.GM_Antifection_Turret"
@@ -744,7 +744,7 @@ class Antifection_Gm_Antifection_Turret:
 
 
 @dataclass
-class Chain_Lightning_Gm_Chainlightning:
+class Gm_Chainlightning:
     """GD_Aster_GrenadeMods.A_Item.GM_ChainLightning."""
 
     path: ClassVar[str] = "GD_Aster_GrenadeMods.A_Item.GM_ChainLightning"
@@ -755,7 +755,7 @@ class Chain_Lightning_Gm_Chainlightning:
 
 
 @dataclass
-class Fireball_Gm_Fireball:
+class Gm_Fireball:
     """GD_Aster_GrenadeMods.A_Item.GM_Fireball."""
 
     path: ClassVar[str] = "GD_Aster_GrenadeMods.A_Item.GM_Fireball"
@@ -766,7 +766,7 @@ class Fireball_Gm_Fireball:
 
 
 @dataclass
-class Fire_Storm_Gm_Firestorm:
+class Gm_Firestorm:
     """GD_Aster_GrenadeMods.A_Item.GM_FireStorm."""
 
     path: ClassVar[str] = "GD_Aster_GrenadeMods.A_Item.GM_FireStorm"
@@ -777,7 +777,7 @@ class Fire_Storm_Gm_Firestorm:
 
 
 @dataclass
-class Lightning_Bolt_Gm_Lightningbolt:
+class Gm_Lightningbolt:
     """GD_Aster_GrenadeMods.A_Item.GM_LightningBolt."""
 
     path: ClassVar[str] = "GD_Aster_GrenadeMods.A_Item.GM_LightningBolt"
@@ -788,7 +788,7 @@ class Lightning_Bolt_Gm_Lightningbolt:
 
 
 @dataclass
-class Magic_Missile_Gm_Magicmissile:
+class Gm_Magicmissile:
     """GD_Aster_GrenadeMods.A_Item.GM_MagicMissile."""
 
     path: ClassVar[str] = "GD_Aster_GrenadeMods.A_Item.GM_MagicMissile"
@@ -799,7 +799,7 @@ class Magic_Missile_Gm_Magicmissile:
 
 
 @dataclass
-class Magic_Missile_Gm_Magicmissilerare:
+class Gm_Magicmissilerare:
     """GD_Aster_GrenadeMods.A_Item.GM_MagicMissileRare."""
 
     path: ClassVar[str] = "GD_Aster_GrenadeMods.A_Item.GM_MagicMissileRare"
@@ -810,7 +810,7 @@ class Magic_Missile_Gm_Magicmissilerare:
 
 
 @dataclass
-class Corrosive_Crossfire_Iris_Seraph_Grenademod_Crossfire_Balance:
+class Iris_Seraph_Grenademod_Crossfire_Balance:
     """GD_Iris_SeraphItems.Crossfire.Iris_Seraph_GrenadeMod_Crossfire_Balance."""
 
     path: ClassVar[str] = "GD_Iris_SeraphItems.Crossfire.Iris_Seraph_GrenadeMod_Crossfire_Balance"
@@ -824,7 +824,7 @@ class Corrosive_Crossfire_Iris_Seraph_Grenademod_Crossfire_Balance:
 
 
 @dataclass
-class Meteor_Shower_Iris_Seraph_Grenademod_Meteorshower_Balance:
+class Iris_Seraph_Grenademod_Meteorshower_Balance:
     """GD_Iris_SeraphItems.MeteorShower.Iris_Seraph_GrenadeMod_MeteorShower_Balance."""
 
     path: ClassVar[str] = "GD_Iris_SeraphItems.MeteorShower.Iris_Seraph_GrenadeMod_MeteorShower_Balance"
@@ -838,7 +838,7 @@ class Meteor_Shower_Iris_Seraph_Grenademod_Meteorshower_Balance:
 
 
 @dataclass
-class Shock_O_Negative_Iris_Seraph_Grenademod_Onegative_Balance:
+class Iris_Seraph_Grenademod_Onegative_Balance:
     """GD_Iris_SeraphItems.ONegative.Iris_Seraph_GrenadeMod_ONegative_Balance."""
 
     path: ClassVar[str] = "GD_Iris_SeraphItems.ONegative.Iris_Seraph_GrenadeMod_ONegative_Balance"
@@ -854,7 +854,7 @@ class Shock_O_Negative_Iris_Seraph_Grenademod_Onegative_Balance:
 
 
 @dataclass
-class Captain_Blade_S_Midnight_Star_Gm_Blade:
+class Gm_Blade:
     """GD_Orchid_GrenadeMods.A_Item_Custom.GM_Blade."""
 
     path: ClassVar[str] = "GD_Orchid_GrenadeMods.A_Item_Custom.GM_Blade"

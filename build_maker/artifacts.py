@@ -292,6 +292,7 @@ class Elemental_Relic_A_Elemental:
     class_name: ClassVar[str] = "InventoryBalanceDefinition"
     levels: list[int]
     upgrade: Upgrade_Grade_A | None = None
+    first: Enablefirst_Effect_A | None = None
 
 
 @dataclass
@@ -302,6 +303,7 @@ class Elemental_Relic_A_Elemental_Rare:
     class_name: ClassVar[str] = "InventoryBalanceDefinition"
     levels: list[int]
     upgrade: Upgrade_Grade_B | None = None
+    first: Enablefirst_Effect_A | None = None
 
 
 @dataclass
@@ -312,6 +314,8 @@ class Elemental_Relic_A_Elemental_Status:
     class_name: ClassVar[str] = "InventoryBalanceDefinition"
     levels: list[int]
     upgrade: Upgrade_Grade_A | None = None
+    first: Enablefirst_Effect_B | None = None
+    second: Enablesecond_Effect_A | None = None
 
 
 @dataclass
@@ -322,6 +326,8 @@ class Elemental_Relic_A_Elemental_Status_Rare:
     class_name: ClassVar[str] = "InventoryBalanceDefinition"
     levels: list[int]
     upgrade: Upgrade_Grade_B | None = None
+    first: Enablefirst_Effect_B | None = None
+    second: Enablesecond_Effect_A | None = None
 
 
 @dataclass
@@ -372,6 +378,9 @@ class Resistance_Relic_A_Resistance:
     class_name: ClassVar[str] = "InventoryBalanceDefinition"
     levels: list[int]
     upgrade: Upgrade_Grade_A | None = None
+    first: Enablefirst_Effect_C | None = None
+    second: Enablesecond_Effect_B | None = None
+    third: Enablethird_Effect_A | None = None
 
 
 @dataclass
@@ -382,6 +391,10 @@ class Resistance_Relic_A_Resistance_Rare:
     class_name: ClassVar[str] = "InventoryBalanceDefinition"
     levels: list[int]
     upgrade: Upgrade_Grade_B | None = None
+    first: Enablefirst_Effect_C | None = None
+    second: Enablesecond_Effect_B | None = None
+    third: Enablethird_Effect_A | None = None
+    fourth: Enablefourth_Effect_A | None = None
 
 
 @dataclass
@@ -392,6 +405,9 @@ class Stockpile_Relic_A_Stockpile:
     class_name: ClassVar[str] = "InventoryBalanceDefinition"
     levels: list[int]
     upgrade: Upgrade_Grade_A | None = None
+    first: Enablefirst_Effect_D | None = None
+    second: Enablesecond_Effect_C | None = None
+    third: Enablethird_Effect_B | None = None
 
 
 @dataclass
@@ -402,6 +418,9 @@ class Stockpile_Relic_A_Stockpile_Rare:
     class_name: ClassVar[str] = "InventoryBalanceDefinition"
     levels: list[int]
     upgrade: Upgrade_Grade_B | None = None
+    first: Enablefirst_Effect_D | None = None
+    second: Enablesecond_Effect_C | None = None
+    third: Enablethird_Effect_B | None = None
 
 
 @dataclass
@@ -620,6 +639,8 @@ class Bone_Of_The_Ancients_A_Elementalproficiency_Veryrare:
     class_name: ClassVar[str] = "InventoryBalanceDefinition"
     levels: list[int]
     upgrade: Gladiolus_Upgrade_Grade | None = None
+    first: Enablefirst_Effect_B | None = None
+    second: Enablesecond_Effect_A | None = None
 
 
 @dataclass
@@ -630,6 +651,10 @@ class Skin_Of_The_Ancients_A_Resistanceprotection_Veryrare:
     class_name: ClassVar[str] = "InventoryBalanceDefinition"
     levels: list[int]
     upgrade: Gladiolus_Upgrade_Grade | None = None
+    first: Enablefirst_Effect_E | None = None
+    second: Enablesecond_Effect_D | None = None
+    third: Enablethird_Effect_B | None = None
+    fourth: Enablefourth_Effect_B | None = None
 
 
 @dataclass
@@ -640,6 +665,8 @@ class Blood_Of_The_Ancients_A_Vitalitystockpile_Veryrare:
     class_name: ClassVar[str] = "InventoryBalanceDefinition"
     levels: list[int]
     upgrade: Gladiolus_Upgrade_Grade | None = None
+    second: Enablesecond_Effect_E | None = None
+    third: Enablethird_Effect_C | None = None
 
 
 @dataclass

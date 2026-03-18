@@ -8,3 +8,4 @@ per_save/tests
 .vscode/
 .ruff_cache/
 debugpy/
+onelife/
