@@ -1,3 +1,10 @@
+[project]
+name = "willow2-sdk-mods"
+version = "0.0.1"
+description = "Borderlands 2 and TPS mods"
+requires-python = ">=3.14"
+dependencies = []
+
 [tool.pyright]
 pythonVersion = "3.13"
 typeCheckingMode = "strict"
