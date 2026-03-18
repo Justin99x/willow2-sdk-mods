@@ -82,7 +82,7 @@ class GbxObject(Protocol):
 
     @property
     def Name(self) -> str: ...  # noqa: D102, N802
-    def _path_name(self) -> str: ...  # noqa: D102
+    def _path_name(self) -> str: ...
 
 
 def dedup_balances[T: GbxObject](balances: Sequence[T]) -> list[T]:
@@ -153,7 +153,7 @@ def make_part_set_enum(name: str, parts: tuple[GbxObject, ...], slot: Enum) -> s
     return output + "\n\n"
 
 
-def make_balance_class(name: str, slot_prefixes: dict[Enum, str], path: str, class_name: str) -> str:
+def make_balance_class[TSlot: Enum](name: str, slot_prefixes: dict[TSlot, str], path: str, class_name: str) -> str:
     """From name and set of slot and prefix pairs, make class definition."""
     output = f"@dataclass\nclass {to_class_name(name)}:\n"
     output += f'    """{path}."""\n\n'
@@ -261,7 +261,7 @@ def get_weapon_parts(
     return result
 
 
-def get_item_parts[TSlot: Enum](
+def get_item_parts[TSlot: Enum](  # noqa: C901
     balance: "ItemBalanceDefinition",
     slots: type[TSlot],
 ) -> dict[TSlot, list["EquipableItemPartDefinition"]]:
@@ -297,7 +297,7 @@ def get_item_parts[TSlot: Enum](
         if part_list_collection:
             collection_part_data = getattr(part_list_collection, info.part_list_field, None)
 
-            if mode == mode_enum.EPRM_Complete:
+            if mode == mode_enum.EPRM_Complete: # pyright: ignore[reportOptionalMemberAccess]
                 parts = set()
 
             if collection_part_data and collection_part_data.bEnabled:
@@ -306,7 +306,7 @@ def get_item_parts[TSlot: Enum](
                     {entry.Part for entry in collection_part_data.WeightedParts if entry.Part},
                 )
 
-                if mode == mode_enum.EPRM_Additive:
+                if mode == mode_enum.EPRM_Additive: # pyright: ignore[reportOptionalMemberAccess]
                     parts |= new_parts
                 else:
                     parts = new_parts
@@ -400,9 +400,9 @@ grenade_config = DumpConfig["ItemBalanceDefinition", "EquipableItemPartDefinitio
 )
 
 
-if __name__ == "__main__":
-    dump_balance_type(classmod_config)
-    dump_balance_type(weapon_config)
-    dump_balance_type(shield_config)
-    dump_balance_type(artifact_config)
-    dump_balance_type(grenade_config)
+
+dump_balance_type(classmod_config)
+dump_balance_type(weapon_config)
+dump_balance_type(shield_config)
+dump_balance_type(artifact_config)
+dump_balance_type(grenade_config)

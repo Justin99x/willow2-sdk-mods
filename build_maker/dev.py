@@ -6,8 +6,7 @@ from unrealsdk import find_object
 
 from build_maker.common import spawn_item_from_balance
 from build_maker.loadouts import krieg
-
-
+from build_maker.slots import ArtifactSlot, ClassModSlot, GrenadeSlot, ShieldSlot, WeaponSlot
 
 if TYPE_CHECKING:
     from _typeshed import DataclassInstance
