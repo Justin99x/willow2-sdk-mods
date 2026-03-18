@@ -7,10 +7,13 @@ include = ["speedrun_practice", "save_file_organizer", "dev"]
 extraPaths = ["C:/Program Files (x86)/Steam/steamapps/common/Borderlands 2 - New SDK/sdk_mods/.stubs",
     "C:/Program Files (x86)/Steam/steamapps/common/Borderlands 2 - New SDK/sdk_mods"]
 reportMissingModuleSource = false
+reportPrivateUsage = false
+reportUnusedClass = false
+
 
 [tool.ruff]
 target-version = "py313"
-line-length = 100
+line-length = 160
 
 [tool.ruff.lint]
 # Last time rules scrutinised: ruff 0.6.9 / 2024-10-08
@@ -79,6 +82,9 @@ ignore = [
     "D410",
     "D411",
     "D413",
+    "F403",
+    "F405",
+    "N801",
     "ANN101",
     "ANN102",
     "ANN401",
